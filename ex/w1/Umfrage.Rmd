@@ -1,0 +1,154 @@
+---
+title: "Züchtungslehre HS 2017 - Umfrage"
+author: "Peter von Rohr"
+date: "18 Sep 2017"
+output: pdf_document
+documentclass: article
+classoption: a4paper
+---
+
+Diese Umfrage hilft mir die verschiedenen Erfahrungen der Studierenden besser einzuschätzen. Bitte beantworten Sie die folgenden Fragen mit ein paar Stichworten oder in kurzen Sätzen. 
+
+Vielen Dank im Voraus für Ihre Mithilfe.
+
+--------
+
+# Tierzucht
+Im ersten Abschnitt geht es um Ihre Erfahrungen im Bereich Tierzucht. Welche der in den folgenden Fragen verwendeten Begriffe aus der Tierzucht sind Ihnen vertraut und welche nicht? Die Antworten werden mir Informationen liefern, welche Begriffe bei Ihnen bekannt und welche nicht. So kann ich bestimmen, wo ich mit dem Stoff anknüpfen kann.
+
+## Verwandtschaft
+### Frage 1: 
+Wann sind zwei Tiere miteinander verwandt?
+
+### Antwort
+```
+<!-- Bitte geben Sie Ihre Antwort hier -->
+
+```
+
+### Frage 2: 
+Mit welcher Grösse wird die Verwandtschaft zwischen zwei oder mehreren Tieren gemessen?
+
+### Antwort
+```
+<!-- Bitte geben Sie Ihre Antwort hier -->
+
+```
+
+## Inzucht
+### Frage 3: 
+Was bedeutet der Begriff `Inzucht`? 
+
+### Antwort
+```
+<!-- Bitte geben Sie Ihre Antwort hier -->
+
+```
+
+### Frage 4: 
+Wann ist ein Tier ingezüchtet?
+
+### Antwort
+```
+<!-- Bitte geben Sie Ihre Antwort hier -->
+
+```
+
+## Zuchtwert
+### Frage 5: 
+Was bedeutet der Begriff `Zuchtwert`?
+
+### Antwort
+```
+<!-- Bitte geben Sie Ihre Antwort hier -->
+
+```
+
+### Frage 6: 
+Wie lautet die Definition des Begriffs `Zuchtwert`?
+
+### Antwort
+```
+<!-- Bitte geben Sie Ihre Antwort hier -->
+
+```
+
+### Frage 7: 
+Wo haben Sie von dieser Definition des Begriffs `Zuchtwert` zuerst gehört?
+
+### Antwort
+```
+<!-- Bitte geben Sie Ihre Antwort hier -->
+
+```
+
+## Gesamtzuchtwert
+### Frage 8: 
+Was bedeutet der Begriff `Gesamtzuchtwert`?
+
+### Antwort
+```
+<!-- Bitte geben Sie Ihre Antwort hier -->
+
+```
+
+### Frage 9: 
+Wozu wird der Gesamtzuchtwert eines Tieres verwendet?
+
+### Antwort
+```
+<!-- Bitte geben Sie Ihre Antwort hier -->
+
+```
+
+### Frage 10: 
+Wie wird der Gesamtzuchtwert eines Tieres bestimmt?
+
+### Antwort
+```
+<!-- Bitte geben Sie Ihre Antwort hier -->
+
+```
+
+\pagebreak
+
+# Informatik und Programmierung
+Ähnlich wie in vielen anderen Gebieten hat der Computer auch die Tierzucht radikal verändert. Dies hat auch Auswirkungen auf unsere Vorlesung. Wir werden einfache Werkzeuge aus der Informatik und der Programmierung verwenden, damit ich den Stoff in einer aktuellen Art vermitteln kann. Dazu brauche ich Informationen zu Ihren Vorkenntnissen auf den Gebieten Informatik und Programmierung.
+
+## Programmiersprachen
+### Frage 11: 
+Kennen Sie eine oder mehrere Programmiersprachen und wenn ja welche? Bitte notieren Sie zu den jeweiligen Programmiersprachen auch noch das Niveau Ihrer Kenntnisse mit den Stufen \emph{Profi}, \emph{Mittelklasse} oder \emph{Anfänger}.
+
+### Antwort
+```
+<!-- Bitte geben Sie Ihre Antwort hier -->
+
+```
+### Frage 12: 
+In welchen Veranstaltungen (Vorlesungen, Übungen oder Praktika) mussten Sie auch schon Programmiersprachen, wie zum Beispiel R verwenden und was waren Ihre Erfahrungen damit?
+
+### Antwort
+```
+<!-- Bitte geben Sie Ihre Antwort hier -->
+
+```
+
+## Hilfsmittel und Tools
+### Frage 13: 
+Mit welchen Tools und Hilfsmitteln erledigen Sie Ihre Datenverarbeitungsjobs, d.h. wie erledigen Sie Datenaufbereitung, statistische Analysen und Erstellen von Diagrammen bei Semsterarbeiten, Praktika, der Bachelor- oder Masterarbeit
+
+### Antwort
+```
+<!-- Bitte geben Sie Ihre Antwort hier -->
+
+```
+
+## Motivation
+### Frage 14: 
+Wie gross ist Ihr Interesse und ihre Motivation mehr zum Thema Programmieren zu erfahren oder sogar eine Programmiersprache zu erlernen?
+
+### Antwort
+```
+<!-- Bitte geben Sie Ihre Antwort hier -->
+
+```
