@@ -195,3 +195,22 @@ cd ${CURWD}
 sudo chown -R ${ADMIN}:${ADMIN} ${PROJDIR}.${student}
 sleep 2
 done'
+
+cp_bash_cmd <- 'PROJDIR=LBGHS2017
+ADMIN=`whoami`
+CURWD=/home/${ADMIN}
+echo " * Project dir: $PROJDIR"
+echo " * Current working dir: $CURWD"
+for student in "ernstt" "martinfe" "dpisoni" "weberan" "wysss"
+do 
+echo $student
+cd /home/${student}
+sudo mv ${PROJDIR} ${PROJDIR}.${student}
+sudo git clone -b r4tea-platform https://github.com/charlotte-ngs/LBGHS2017.git
+sudo cp ${PROJDIR}.${student}/ex/w1/UmfrageAntworten.Rmd ${PROJDIR}/ex/w1
+sudo chown -R ${student}:${student} .
+sudo mv ${PROJDIR}.${student} ${CURWD}/${PROJDIR}.${student}
+cd ${CURWD}
+sudo chown -R ${ADMIN}:${ADMIN} ${PROJDIR}.${student}
+sleep 2
+done'
