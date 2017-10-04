@@ -178,7 +178,8 @@ generate_user_email <- function(pstempl_file = NULL,
 # alternative using git
 
 test_bash_cmd <- 'PROJDIR=LBGHS2017
-CURWD=`pwd`
+ADMIN=`whoami`
+CURWD=/home/${ADMIN}
 echo " * Project dir: $PROJDIR"
 echo " * Current working dir: $CURWD"
 for student in "vrohrp"
@@ -191,5 +192,6 @@ sudo cp ${PROJDIR}.${student}/ex/w1/UmfrageAntworten.Rmd ${PROJDIR}/ex/w1
 sudo chown -R ${student}:${student} .
 sudo mv ${PROJDIR}.${student} ${CURWD}/${PROJDIR}.${student}
 cd ${CURWD}
+sudo chown -R ${ADMIN}:${ADMIN} ${PROJDIR}.${student}
 sleep 2
 done'
