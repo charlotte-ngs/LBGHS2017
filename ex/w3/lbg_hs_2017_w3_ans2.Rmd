@@ -1,7 +1,7 @@
 ---
 title:  Züchtungslehre - Übung 2
 author: Peter von Rohr
-date: 2016-10-06
+date: 2017-10-06
 output: 
   pdf_document:
     includes:
@@ -12,21 +12,6 @@ output:
 knitr::opts_chunk$set(echo = FALSE, results = 'asis')
 ```
 
-```{r DocumentStatus, eval=FALSE}
-r6obj_docstat <- rmddochelper::R6ClassDocuStatus$new()
-r6obj_docstat$set_current_status(psVersion = "0.0.901",
-                                 psStatus  = "Initialisation",
-                                 psProject = "[REPLACE_WITH_PROJECT]")
-r6obj_docstat$include_doc_stat(psTitle = "## Document Status")
-```
-
-
-```{r TableAbbreviation}
-r6ob_abbrtable <- rmddochelper::R6ClassTableAbbrev$new()
-### # include table of abbreviations only, if there are any
-if (!r6ob_abbrtable$is_empty_abbr())
-  r6ob_abbrtable$include_abbr_table(psAbbrTitle = "## Abbreviations")
-```
 
 ## Aufgabe 1: Matrixdefinitionen in R
 In R werden Matrizen mit der Funktion `matrix` erstellt. Diese aktzeptiert verschiedene Optionen in Form von Funktionsparametern. Wir wollen uns hier anschauen, welche Auswirkungen die verschiedenen Parameter auf die erzeugten Matrizen haben.  
