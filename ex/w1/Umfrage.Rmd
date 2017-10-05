@@ -1,7 +1,7 @@
 ---
 title: "Züchtungslehre HS 2017 - Umfrage"
 author: "Peter von Rohr"
-date: "18 Sep 2017"
+date: "22 Sep 2017"
 output: pdf_document
 documentclass: article
 classoption: a4paper
@@ -10,6 +10,8 @@ classoption: a4paper
 Diese Umfrage hilft mir die verschiedenen Erfahrungen der Studierenden besser einzuschätzen. Bitte beantworten Sie die folgenden Fragen mit ein paar Stichworten oder in kurzen Sätzen. 
 
 Vielen Dank im Voraus für Ihre Mithilfe.
+
+### Name: 
 
 --------
 
@@ -22,7 +24,10 @@ Wann sind zwei Tiere miteinander verwandt?
 
 ### Antwort
 ```
-<!-- Bitte geben Sie Ihre Antwort hier -->
+
+
+
+
 
 ```
 
@@ -31,9 +36,14 @@ Mit welcher Grösse wird die Verwandtschaft zwischen zwei oder mehreren Tieren g
 
 ### Antwort
 ```
-<!-- Bitte geben Sie Ihre Antwort hier -->
+
+
+
+
 
 ```
+
+\pagebreak
 
 ## Inzucht
 ### Frage 3: 
@@ -41,7 +51,10 @@ Was bedeutet der Begriff `Inzucht`?
 
 ### Antwort
 ```
-<!-- Bitte geben Sie Ihre Antwort hier -->
+
+
+
+
 
 ```
 
@@ -50,7 +63,10 @@ Wann ist ein Tier ingezüchtet?
 
 ### Antwort
 ```
-<!-- Bitte geben Sie Ihre Antwort hier -->
+
+
+
+
 
 ```
 
@@ -60,7 +76,10 @@ Was bedeutet der Begriff `Zuchtwert`?
 
 ### Antwort
 ```
-<!-- Bitte geben Sie Ihre Antwort hier -->
+
+
+
+
 
 ```
 
@@ -69,16 +88,23 @@ Wie lautet die Definition des Begriffs `Zuchtwert`?
 
 ### Antwort
 ```
-<!-- Bitte geben Sie Ihre Antwort hier -->
+
+
+
+
 
 ```
+\pagebreak
 
 ### Frage 7: 
 Wo haben Sie von dieser Definition des Begriffs `Zuchtwert` zuerst gehört?
 
 ### Antwort
 ```
-<!-- Bitte geben Sie Ihre Antwort hier -->
+
+
+
+
 
 ```
 
@@ -88,7 +114,10 @@ Was bedeutet der Begriff `Gesamtzuchtwert`?
 
 ### Antwort
 ```
-<!-- Bitte geben Sie Ihre Antwort hier -->
+
+
+
+
 
 ```
 
@@ -97,7 +126,10 @@ Wozu wird der Gesamtzuchtwert eines Tieres verwendet?
 
 ### Antwort
 ```
-<!-- Bitte geben Sie Ihre Antwort hier -->
+
+
+
+
 
 ```
 
@@ -106,11 +138,14 @@ Wie wird der Gesamtzuchtwert eines Tieres bestimmt?
 
 ### Antwort
 ```
-<!-- Bitte geben Sie Ihre Antwort hier -->
+
+
+
+
 
 ```
 
-\pagebreak
+--------
 
 # Informatik und Programmierung
 Ähnlich wie in vielen anderen Gebieten hat der Computer auch die Tierzucht radikal verändert. Dies hat auch Auswirkungen auf unsere Vorlesung. Wir werden einfache Werkzeuge aus der Informatik und der Programmierung verwenden, damit ich den Stoff in einer aktuellen Art vermitteln kann. Dazu brauche ich Informationen zu Ihren Vorkenntnissen auf den Gebieten Informatik und Programmierung.
@@ -121,15 +156,23 @@ Kennen Sie eine oder mehrere Programmiersprachen und wenn ja welche? Bitte notie
 
 ### Antwort
 ```
-<!-- Bitte geben Sie Ihre Antwort hier -->
+
+
+
+
 
 ```
+
+
 ### Frage 12: 
 In welchen Veranstaltungen (Vorlesungen, Übungen oder Praktika) mussten Sie auch schon Programmiersprachen, wie zum Beispiel R verwenden und was waren Ihre Erfahrungen damit?
 
 ### Antwort
 ```
-<!-- Bitte geben Sie Ihre Antwort hier -->
+
+
+
+
 
 ```
 
@@ -139,7 +182,10 @@ Mit welchen Tools und Hilfsmitteln erledigen Sie Ihre Datenverarbeitungsjobs, d.
 
 ### Antwort
 ```
-<!-- Bitte geben Sie Ihre Antwort hier -->
+
+
+
+
 
 ```
 
@@ -149,6 +195,9 @@ Wie gross ist Ihr Interesse und ihre Motivation mehr zum Thema Programmieren zu 
 
 ### Antwort
 ```
-<!-- Bitte geben Sie Ihre Antwort hier -->
+
+
+
+
 
 ```

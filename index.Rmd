@@ -27,6 +27,11 @@ Methoden zur Analyse tierzüchterischer Daten, insbesondere zum Schätzen von Zu
     + Datum: Freitag 22.12.2017
     + Zeit: 09:15 - 11:15
     + Ort: LFW C 11
+    
+### Übungsplatform
+Zur Bearbeitung der Übungen wurde eine Übungsplatform eingerichtet. Diese ist erreichbar unter: http://r4tea.rteastem.org:8787/
+
+Der Benutzername entspricht dem Teil Ihrer Email-Adresse vor dem `@`. Das Passwort bekommen Sie per Email.
 
 ## Fragen
 Fragen können jederzeit während der Vorlesung und während der Übungsstunde oder via Email gestellt werden: 
@@ -88,7 +93,8 @@ Thema[nSubjHoliday] <- "keine Vorlesung"
 # exam
 Thema[length(Thema)] <- "Prüfung"
 # subjects per week
-#Thema[which(Datum == format(as.Date("2016/09/23"), "%d.%m"))] <- "Einführung, [Lineare Algebra](https://charlotte-ngs.github.io/LBGHS2016/w1/zl_hs_2016_course_notes_intro_lin_alg.pdf), [Einführung in R](https://charlotte-ngs.github.io/LBGHS2016/w1/zl_hs_2016_course_notes_intro_r.pdf)"
+Thema[which(Datum == format(as.Date("2017/09/22"), "%d.%m"))] <- "[Einführung in Lineare Algebra und R](https://charlotte-ngs.github.io/LBGHS2017/cn/w1/intro.pdf)"
+Thema[which(Datum == format(as.Date("2017/09/29"), "%d.%m"))] <- "[Repetition Quantitative Genetik](https://charlotte-ngs.github.io/LBGHS2017/cn/w2/rep_qg.pdf)"
 
 dfSlideTable <- data.frame(Woche, Datum, Thema, stringsAsFactors = FALSE)
 knitr::kable(dfSlideTable)
@@ -104,6 +110,7 @@ knitr::kable(dfSlideTable)
 dfExTable <- dfSlideTable
 dfExTable$Thema[which(Datum == format(as.Date("2017/09/22"), "%d.%m"))] <- "keine Übung"
 # dfExTable$Thema[which(Datum == format(as.Date("2016/09/30"), "%d.%m"))] <- "[Lineare Algebra](https://charlotte-ngs.github.io/LBGHS2016/w2/zl_hs_2016_ex1_w2.pdf)"
+dfExTable$Thema[which(Datum == format(as.Date("2017/09/29"), "%d.%m"))] <- "[Lineare Algebra](https://charlotte-ngs.github.io/LBGHS2017/ex/w2/lbg_hs_2017_ex1_w2.pdf)"
 
 knitr::kable(dfExTable)
 ```

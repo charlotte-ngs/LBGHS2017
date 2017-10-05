@@ -1,0 +1,430 @@
+# Einführung in Lineare Algebra  {#intro}
+Aus der linearen Algebra brauchen wir für diese Vorlesung nur das Rechnen mit Vektoren und Matrizen. Der Grund, weshalb Vektoren und Matrizen wichtig sind, ist dass sie uns das Aufstellen und das Lösen von Gleichungssystemen wesentlich erleichtern. Lineare Gleichungssysteme sind in der traditionellen Zuchtwertschätzung, d.h. überall dort, wo die genomische Selektion noch nicht angewendet wird, sehr wichtig.
+
+## Was ist ein Vektor {#vector}
+Ein Vektor ist durch seine __Länge__ und seine __Richtung__ eindeutig bestimmt. Das heisst, sind zwei Vektoren $v$ und $w$ gleich lang und haben die gleich Richtung, dann sind die beiden Vektoren gleich und somit gilt $v=w$. Haben zwei Vektoren $v$ und $x$ nicht die gleiche Richtung oder sind nicht gleich lang, dann sind die Vektoren nicht gleich und somit gilt $v \ne x$ und somit auch $w \ne x$.
+
+```{r VectorEquality, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, fig.align='center', echo=FALSE, results='asis', out.width="5cm"}
+knitr::include_graphics(path = "VectorEquality.pdf")
+```
+
+### Koordinaten
+Durch die Einführung eines Koordinatensystems wird jedem Punkt im n-dimensionalen Raum ein n-Tupel von Zahlen -die so genannten Koordinaten - zugewiesen. Zum Beispiel bekommt jeder Punkt in einer Ebene (zweidimensionaler Raum) ein Paar von Koordinaten zugewiesen.
+
+ Die Koordinaten eines Vektors errechnen sich aus der Differenz der Koordinaten des Endpunktes des Vektors minus die Koordinaten des Ausgangspunktes des Vektors. Betrachten wir als Beispiel im nachfolgenden Bild den Vektor $v$ mit Anfangspunkt $A$ und Endpunkt $E$, dann errechnen sich die Koordinaten als Differenzen zwischen den Koordinaten von $E$ minus die Koordinaten von $A$, das bedeutet
+ 
+$$ v = \left[\begin{array}{c} e_x - a_x \\ e_y - a_y \end{array}\right]$$
+ 
+```{r VektorKoordinaten, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, fig.align='center', echo=FALSE, results='asis'}
+knitr::include_graphics(path = "VektorKoordinaten.pdf")
+```
+
+ 
+### Geometrie
+In der elementaren Geometrie  werden Vektoren häufig durch Pfeile dargestellt. Parallele Pfeile mit gleicher Länge werden Repräsentanten des gleichen Vektors bezeichnet. Repräsentanten, welche ihren Anfangspunkt im Ursprung des Koordinatensystems haben, sind speziell und werden als Ortsvektoren des jeweiligen Endpunkts bezeichnet. Die Koordinaten des Endpunktes und die Koordinaten des Vektors sind identisch.
+
+
+## Operationen mit Vektoren {#vectoroperation}
+Vektoren als solches werden erst dann richtig nützlich, wenn man sie mit Operationen verknüpfen kann. Konkret heisst das, die Einführung von Operationen zwischen Vektoren erlaubt es uns mit ihnen zu rechnen.
+
+### Addition und Subtraktion
+Die Addition zweier Vektoren $v$ und $w$ hat als Resultat wieder einen Vektor, sagen wir er heisse $u$. Es gilt somit, dass 
+
+$$v + w = u$$
+
+Die Koordinaten des Summenvektors berechnen sich als die Summen der Koordinaten der Summandenvektoren. Angenommen die Koordinaten der Summandenvektoren $v$ und $w$ werden mit $v_x$, $v_y$, $w_x$ und $w_y$ bezeichnet, dann entsprechen die Koordinaten von $u$
+
+$$ u = \left[\begin{array}{c} u_x \\ u_y\end{array}\right]
+     = \left[\begin{array}{c} v_x + w_x \\ v_y + w_y\end{array}\right]$$
+
+Graphisch entspricht die Addition zweier Vektoren $v$ und $w$ der Verkettung der beiden Pfeile. 
+
+```{r VektorAddition, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, fig.align='center', echo=FALSE, results='asis'}
+knitr::include_graphics(path = "VektorAddition.pdf")
+```
+
+Die Reihenfolge der beiden Summanden ist nicht wichtig. Es gilt also, dass $v + w = u = w + v$. Dies ist auch aus der obigen Abbildung ersichtlich.
+
+Die Subtraktion kann aus der Addition abgeleitet werden. Subtrahiert man auf beiden Seiten der Additionsgleichung einer der Vektoren, dann folgt
+
+$$v = u - w$$
+
+und 
+
+$$w = u - v$$
+
+
+### Multiplikation mit einem Skalar
+Die Multiplikation eines Vektors mit einer skalaren Grösse, d.h. mit einer Zahl führt zu einer Streckung oder einer Stauchung des Vektors. Die Koordinaten des Resultatvektors entsprechen den Koordinaten des Ursprungsvektors, welche mit dem skalaren Faktor multipliziert werden.
+
+$$ u = \lambda * v 
+     = \left[\begin{array}{c} u_x \\ u_y\end{array}\right]
+     = \left[\begin{array}{c} \lambda * v_x \\ \lambda * v_y\end{array}\right]$$
+
+
+```{r VektorMalSkalar, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, fig.align='center', echo=FALSE, results='asis'}
+knitr::include_graphics(path = "VektorMalSkalar")
+```
+
+Je nach Wert von $\lambda$ verändert $v$ die Länge und die Richtung. Folgende Tabelle gibt eine Übersicht zu den Änderungen. 
+
+
+\begin{tabular}{|c|c|c|}
+\hline
+Faktor              &  Richtung  &  L\"ange \\
+\hline
+$\lambda < -1$      &  entgegengesetzt  &  länger \\
+\hline
+$\lambda = -1$      &  entgegengesetzt  &  gleich \\
+\hline
+$-1 < \lambda < 0$  &  entgegengesetzt  &  kürzer \\
+\hline
+$\lambda = 0$       &  unbestimmt       &  kürzer \\
+\hline
+$0 < \lambda < 1$   &  gleich           & kürzer  \\
+\hline
+$\lambda = 1$       &  gleich           & gleich  \\
+\hline
+$\lambda > 1$       &  gleich           & länger  \\
+\hline
+\end{tabular}
+
+
+### Skalarprodukt
+Das Skalarprodukt zweier Vektoren entspricht einer Zahl. Diese berechnet sich aus den Produkten der einzelnen Koordinaten, welche dann addiert werden. Konkret bedeutet das
+
+$$v \cdot w = v_x * w_x + v_y * w_y$$
+
+Wird das Skalarprodukt zweier Vektoren um das Produkt der Längen der beiden Vektoren skaliert, so resultiert der Kosinus des Zwischenwinkels der beiden Vektoren. Somit liefert das Skalarprodukt einen Vergleich bezüglich der Richtungen von zwei Vektoren. 
+
+```{r VektorenWinkel, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, fig.align='center', echo=FALSE, results='asis'}
+knitr::include_graphics(path = "VektorenWinkel.pdf")
+```
+
+In einer Formel geschrieben, heisst das
+
+$$cos(\alpha) = \frac{v \cdot w}{||v||*||w||}$$
+
+Aufgrund der Eigenschaften der Winkelfunktion $cos$ können wir sagen, dass Vektoren, deren Skalarprodukt $0$ ist, senkrecht zueinander stehen. Vektoren deren Skalarprodukt gleich $1$ ist, haben einen Zwischenwinkel von $0$ und verlaufen somit parallel zueinander.
+
+
+## Was ist eine Matrix {#matrix}
+Werden mehrere Vektoren "nebeneinander" gestellt, resultiert ein neues Objekt, welches wir als __Matrix__ bezeichnen. Stellen wir als Beispiel die Vektoren $v$ und $w$ nebeneinander, dann erhalten wir die Matrix $M$
+
+$$M = \left[\begin{array}{cc} v & w \end{array}\right] 
+    = \left[\begin{array}{cc} v_x & w_x \\ v_y & w_y \end{array}\right]$$
+    
+Eine Matrix kann auch als Schema von $m * n$ Zahlen definiert werden, welche in $m$ Zeilen und $n$ Kolonnen angeordnet sind. Man spricht dann auch von einer $m * n$ - Matrix. Matrizen werden im allgemeinen mit Grossbuchstaben bezeichnet. Die Elemente einer bestimmten Matrix $A$ werden mit $a_{ij}$ bezeichnet, wobei $i$ dem Zeilenindex und $j$ dem Kolonnenindex entsprechen. 
+
+Als Beispiel betrachten wir die $2 * 3$-Matrix $A$
+
+$$A = \left[\begin{array}{ccc} 2 & 3 & 0\\ -1 & 4 & 7\end{array}\right]$$
+
+Das Element $a_{12}$ ist das Element aus der ersten Zeile und der zweiten Kolonne von $A$ also ist $a_{12}=3$.
+
+
+### Eigenschaften von Matrizen
+Die Anzahl Zeilen und Kolonnen einer Matrix werden auch als __Dimension__ bezeichnet. Als Beispiel ist die Dimension der Matrix $M$, welche wir oben aus den Vektoren $v$ und $w$ zusammengesetzt haben ist $2*2$. 
+
+### Matrixoperationen
+__Addition__ und __Subtraktion__ von Matrizen sind analog zu den entsprechenden Operationen zwischen Vektoren definiert. Die Addition und Subtraktion von Matrizen wird Element-weise durchgeführt. Nehmen wir an, wir haben die Matrizen $A$ und $B$, dann ist deren Summen $S$ wieder eine Matrix, 
+
+$$S = A + B = \left[\begin{array}{cc} a_{11} & a_{12} \\ a_{21} & a_{22}\end{array}\right]
+    + \left[\begin{array}{cc} b_{11} & b_{12} \\ b_{21} & b_{22}\end{array}\right]
+    = \left[\begin{array}{cc} a_{11}+b_{11} & a_{12}+b_{12} \\ a_{21}+b_{21} & a_{22}+b_{22}\end{array}\right]$$
+
+Für die Subtraktion können wir schreiben 
+
+$$A = S - B = \left[\begin{array}{cc} s_{11} & s_{12} \\ s_{21} & s_{22}\end{array}\right]
+    - \left[\begin{array}{cc} b_{11} & b_{12} \\ b_{21} & b_{22}\end{array}\right]
+    = \left[\begin{array}{cc} s_{11}-b_{11} & s_{12}-b_{12} \\ s_{21}-b_{21} & s_{22}-b_{22}\end{array}\right]$$
+
+Die Addition und die Subtraktion ist nur zwischen Matrizen mit gleicher Dimension möglich.
+
+Die __Matrixmultiplikation__ zwischen den Matrizen $A$ und $B$ lässt sich als eine Serie von Skalarprodukten zwischen den Zeilen von $A$ und den Kolonnen von $B$ auffassen. Die nachfolgende Formel gibt eine formale Definition der Matrixmultiplikation. Das Produkt der Matrizen $A\cdot B$ ist wieder eine Matrix. Der Term $(A\cdot B)_{ij}$ steht für das Element auf Zeile $i$ und Kolonne $j$ der Produktmatrix. Dieses Element $(A\cdot B)_{ij}$ entspricht
+
+$$(A\cdot B)_{ij} = \sum_{k=1}^n a_{ik} * b_{kj}$$
+
+Die Summation in der oben gezeigten Formel läuft über die Kolonnen von Matrix $A$ und über die Zeilen von Matrix $B$. 
+
+Die Matrixmultiplikation ist nur möglich, falls die Dimensionen der beiden Matrixfaktoren kompatibel sind. Die Anzahl Kolonnen des ersten Faktors $A$ muss der Anzahl Zeilen des zweiten Faktors $B$ entsprechen, nur dann kann das Produkt 
+$A\cdot B$ berechnet werden. Es können also nur Matrizen der Dimension $m*n$ mit Matrizen der Dimension $n*p$ multipliziert werden. Im allgemeinen können die Faktoren auch nicht vertauscht werden, d.h. im allgemeinen Fall gilt, dass 
+
+$$A\cdot B \ne B\cdot A$$
+
+Werden Addition und Multiplikation kombiniert, gilt für entsprechend kompatible Matrizen $A$, $B$ und $C$ das Kommutativgesetz. 
+
+$$(A + B)\cdot C = A\cdot C + B\cdot C$$
+
+Wichtig ist aber auch hier die Einhaltung der Reihenfolge der Faktoren, das heisst, da Matrix $C$ von links zur Summe $(A + B)$ multipliziert wird, muss sie auch zu jedem Summanden von links multipliziert werden.
+
+
+### Spezielle Matrizen
+Die __Nullmatrix__ $O$ ist die Matrix, deren Elemente $o_{ij}$ alle gleich $0$ sind. 
+
+$$O = \left[\begin{array}{ccc} 0 & 0 & 0\\ 0 & 0 & 0\end{array}\right]$$
+
+Diese Matrix ist das Neutralelement der Addition und der Subtraktion. Somit gilt, dass 
+
+$$ A + O = A - O = A$$
+
+für alle Matrizen $A$. Das Produkt einer beliebigen Matrix $A$ mit der Nullmatrix $O$ ist wieder gleich der Nullmatrix. 
+
+$$A\cdot O = O$$
+
+Eine quadratische Matrix $R$ heisst __obere Dreiecksmatrix__ oder __Rechtsmatrix__ falls $(R)_{ij}=0$ für alle $i>j$. Als Beispiel ist 
+
+$$R = \left[\begin{array}{ccc} 1 & 3 & -7\\ 0 & 2 & 5\\ 0 & 0 & 9\end{array}\right]$$
+
+eine obere Dreiecksmatrix.
+
+Eine quadratische Matrix $L$ heisst __untere Dreiecksmatrix__ oder __Linksmatrix__ falls $(L)_{ij}=0$ für alle $i<j$. Die folgende Matrix $L$ ist ein Beispiel für eine untere Dreiecksmatrix.
+
+$$L = \left[\begin{array}{ccc} 1 & 0 & 0\\ 2 & 2 & 0\\ -2 & 4 & 9\end{array}\right]$$
+
+Die __Einheitsmatrix__ $I$ ist eine quadratische Matrix, deren Diagonolaelemente alle gleich $1$ sind und deren Off-Diagonalelemente alle gleich $0$ sind.
+
+$$I = \left[\begin{array}{ccc} 1 & 0 & 0\\ 0 & 1 & 0\\ 0 & 0 & 1\end{array}\right]$$
+
+Die Einheitsmatrix $I$ ist das Neutralelement der Matrixmultiplikation. Wir können also schreiben
+
+$$A \cdot I = A$$
+
+Die __Transponierte__ $A^T$ einer Matrix $A$ entsteht durch vertauschen von Zeilen und Kolonnen. Somit hat die Matrix $A^T$ einer $m*n$-Matrix die Dimensionen $n*m$. Die Elemente in Matrix $A$ werden einfach an der Hauptdiagonalen gespiegelt. 
+
+$$(A)_{ij} = (A^T)_{ji}$$
+
+Folgende Regeln im Bezug auf transponierte Matrizen gelten:
+
+* die Transponierte von $A^T$ ist wieder die Matrix $A$: $(A^T)^T = A$
+* Summe: $(A + B)^T = A^T + B^T$
+* Produkt: $(A\cdot B)^T = B^T \cdot A^T$
+* Einheitsmatrix: $I^T = I$
+
+Bei einer symmetrischen Matrix $A$, bei welcher gilt, dass $(A)_{ij} = (A)_{ji}$, ist die transponierte Matrix $A^T$ gleich der ursprünglichen Matrix $A$. 
+
+Die __Inverse__ $A^{-1}$ einer Matrix $A$ ist definiert, als diejenige Matrix für welche gilt, dass
+
+$$A\cdot A^{-1} = I$$
+
+Falls die inverse Matrix $A^{-1}$ existiert, dann wird die Matrix $A$ als invertierbar bezeichnet. Die Inverse ist eindeutig, das heisst, es gibt zu jeder Matrix $A$ nur eine inverse Matrix. Falls wir eine Matrix $B$ finden für welche gilt, dass 
+
+$$A\cdot B = I$$
+
+dann wissen wir sofort, dass $B = A^{-1}$. 
+
+Folgende Regeln gelten im Bezug auf inverse Matrizen.
+
+* Inverse der Inversen: $(A^{-1})^{-1} = A$
+* Produkt: $(A\cdot B)^{-1} = B^{-1} \cdot A^{-1}$
+* Transponierte: $(A^T)^{-1} = (A^{-1})^T$
+* Einheitsmatrix: $I^{-1} = I$
+
+
+## Gleichungssysteme {#equationsystem}
+Lineare Gleichungssysteme spielen in der Züchtung, namentlich bei der Zuchtwertschätzung eine wichtige Rolle. In einem Gleichungssystem werden Beziehungen zwischen bekannten und unbekannten Grössen verwendet um Lösungen für die unbekannten Grössen berechnen zu können. Bei der Klasse der linearen Gleichungssysteme beschränkt man sich auf lineare Beziehungen zwischen bekannten und unbekannten Grössen. Für unser Anwendungsbeispiel der Zuchtwertschätzung werden wir Beziehungen zwischen unbekannten Umwelteffekten und unbekannten Zuchtwerten den phänotypischen Leistungen für alle Tiere in einer Population gleichsetzen. Daraus resultieren sehr grosse Gleichungssystem, d.h. die Anzahl Gleichungen kann sehr gross sein.
+
+Als einführendes Beispiel schauen wir uns folgendes Gleichungssystem mit zwei Gleichungen und zwei Unbekannten $x_1$ und $x_2$ an.
+
+\begin{eqnarray}
+ x_1 + 2x_2 & = & 5 \nonumber\\
+2x_1 + 3x_2 & = & 8
+\end{eqnarray}
+
+Wir wollen nun Zahlen für die Unbekannten $x_1$ und $x_2$ finden, so dass beide Gleichungen erfüllt sind. Die Zahlen $x_1=1$ und $x_2=2$ erfüllen beide Gleichungen. Sie stellen somit die __Lösung__ für unser Gleichungssystem dar. Im allgemeinen besteht ein Gleichungssystem aus $m$ Gleichungen mit $n$ unbekannten. Für unser erstes Beispiel ist $m=2$ und $n=2$. 
+
+Aufgrund des folgenden Beispiels erkennen wir, dass nicht jedes Gleichungssystem eine Lösung hat. 
+
+\begin{eqnarray}
+ x_1 +  x_2 & = & 4 \nonumber\\
+2x_1 + 2x_2 & = & 5
+\end{eqnarray}
+
+Da wir keine Zahlen $x_1$ und $x_2$ finden können, deren Summe gleich $4$ ist und deren doppelte Summe gleichzeitig gleich $5$ ist. Aus der ersten Gleichung folgt, dass $2x_1 + 2x_2  =  8$ und das ist ein Widerspruch zur zweiten Gleichung.
+
+Als drittes Beispiel betrachten wir ein Gleichungssystem mit $m=2$ Gleichungen und $n=3$ Unbekannten. 
+
+\begin{eqnarray}
+ x_1 -  x_2  +  x_3 & = & 2 \nonumber\\
+2x_1 +  x_2  -  x_3 & = & 4
+\end{eqnarray}
+
+Es gilt $x_1 = 2$ und $x_2 = x_3$. Somit haben wir unendlich viele Lösungen, nämlich $x_1 = 2$, $x_2 = \alpha$ und $x_3 = \alpha$ für jede reelle Zahl $\alpha$.
+
+Für die gezeigten Beispiele von Gleichungssystem hatten wir gesehen, dass diese entweder eine Lösung, keine Lösung oder unendlich viele Lösungen haben können. Damit wir das Finden von Lösungen für Gleichungssysteme verallgemeinern können, ist der Begriff der __Lösungsmenge__ wichtig. Die Lösungsmenge eines Gleichungssystems ist definiert als die Menge aller Lösungen des Gleichungssystems.
+
+
+## Bestimmung der Lösungsmenge - das Gaussverfahren {#gausselimination}
+Das Ziel dieses Abschnitts ist es ein allgemein gültiges Verfahren zu entwickeln, welches uns für ein lineares Gleichungssystem die Lösungsmenge bestimmt. Die grundlegende Idee wird sein, ein existierendes Gleichungssystem mit bestimmten Operationen so umzuformen, dass die Bestimmung der Lösungsmenge einfach ist. Dieses Verfahren heisst __Gauss'sches Eliminationsverfahren__.
+
+Für die Herleitung des Gaussverfahrens müssen wir zuerst noch den Begriff der __Äquivalenz__ zwischen Gleichungssystemen einführen. Zwei Gleichungssystem $A$ und $B$ sind dann äquivalent zueinander, falls die beiden Gleichungssysteme $A$ und $B$ die gleichen Lösungsmengen haben. Mit zwei Operationen lässt sich aus einem bestehenden Gleichungssystem $A$ ein äquivalentes Gleichungssystem $B$ erzeugen.
+
+1. Vertauschen der Reihenfolge der Gleichungen
+2. Addition (oder Subtraktion) eines vielfachen einer Gleichung aus dem Gleichungssystem $A$ zur einer anderen Gleichung des Gleichungssystems $A$.
+
+### Vertauschen der Reihenfolge
+Als Beispiel sei das folgende lineare Gleichungssystem gegeben.
+
+\begin{eqnarray}
+ x_1 + 2x_2 & = & 5 \nonumber\\
+2x_1 + 3x_2 & = & 8
+\end{eqnarray}
+
+Dieses Gleichungssystem ist äquivalent zum folgenden Gleichungssystem
+
+\begin{eqnarray}
+2x_1 + 3x_2 & = & 8 \nonumber\\
+ x_1 + 2x_2 & = & 5
+\end{eqnarray}
+
+Die Gleichungssysteme sind äquivalent, da beide die Lösungsmenge $L = \{x_1=1, x_2=2 \}$ haben.
+
+### Addition eines Vielfachen der einen zur anderen Gleichung
+Gegeben sei das folgende Gleichungssystem
+
+\begin{eqnarray}
+ x_1 + 2x_2 & = & 5 \nonumber\\
+2x_1 + 3x_2 & = & 8
+\label{eq:OrigEq}     
+\end{eqnarray}
+
+Lassen wir die erste Gleichung unverändert und ersetzen die zweite Gleichung durch eine neue Gleichung, welche wir erhalten durch Subtraktion des Zweifachen der ersten Gleichung von der zweiten Gleichung, erhalten wir folgendes äquivalentes Gleichungssystem.
+
+\begin{eqnarray}
+ x_1 + 2x_2 & = & 5 \nonumber\\
+     -  x_2 & = & -2
+\label{eq:EquivTriangleEq}     
+\end{eqnarray}
+
+Aufgrund der zweiten Gleichung im Gleichungssystem (\ref{eq:EquivTriangleEq}) sehen wir sofort, dass $x_2=2$ ein Teil der Lösungsmenge des Gleichungssystems sein muss. Setzen wir $x_2=2$ in der ersten Gleichung von (\ref{eq:EquivTriangleEq}) ein, dann folgt $x_1 = 1$ und die Lösungsmenge $L = \{x_1=1, x_2=2 \}$ ist komplett. Wir haben also die Lösungsmenge des Gleichungssystems (\ref{eq:EquivTriangleEq}) gefunden. Wir können das Gleichungssystem (\ref{eq:OrigEq}) aus (\ref{eq:EquivTriangleEq}) herleiten, indem wir die erste Gleichung unverändert lassen und die zweite Gleichung durch eine neue Gleichung ersetzen, welche wir als Summe der zweiten Gleichung aus (\ref{eq:EquivTriangleEq}) plus das doppelte der ersten Gleichung aus (\ref{eq:EquivTriangleEq}) berechnen. Das heisst aber, dass die Lösungsmenge $L = \{x_1=1, x_2=2 \}$, welche wir für (\ref{eq:EquivTriangleEq}) gefunden hatten, auch die Lösungsmenge für (\ref{eq:OrigEq}) ist. Somit sind die Gleichungssystem (\ref{eq:OrigEq}) und (\ref{eq:EquivTriangleEq}) äquivalent.
+
+### Verfahren zur Bestimmung der Lösungsmenge
+Bei der Herleitung eines Verfahrens zur Bestimmung der Lösungsmenge eines Gleichungssystems, stellt sich die Frage, wann ist ein lineares Gleichungssystem einfach zu lösen? Ein Hinweis für eine mögliche Antwort liefert uns der Vergleich der äquivalenten Gleichungssysteme (\ref{eq:OrigEq}) und (\ref{eq:EquivTriangleEq}) im Bezug auf die Bestimmung der Lösungsmenge. Beim Gleichungssystem (\ref{eq:EquivTriangleEq}) konnten wir in der zweiten Gleichung den Lösungswert für die Variable $x_2$ sofort ablesen. Die Lösung für $x_1$ erhielten wir dann einfach durch Einsetzen des Wertes für $x_2$. Diese Vorgehensweise wie beim Gleichunssystem (\ref{eq:EquivTriangleEq}) ist beim Gleichungssystem (\ref{eq:OrigEq}) nicht möglich. 
+
+Die Einfachheit der Bestimmung der Lösungsmenge für das Gleichungssystem (\ref{eq:EquivTriangleEq}) basiert auf seiner speziellen Struktur. Der Fachterminus für diese Struktur lautet __Dreiecksgestalt__. Wir können aus unseren Beobachtungen also ableiten, dass Gleichungssystem mit einer Dreiecksgestalt einfach zu lösen sind.
+
+Das __Gaussverfahren__ zur Bestimmung der Lösungsmenge eines linearen Gleichungssystems besteht nun darin, die besprochenen Operationen zur Transformation von äquivalenten Gleichungssystem geschickt einzusetzen, damit ein gegebenes Gleichungssystem mit beliebiger Struktur in eine Dreiecksgestalt zu verwandeln. Dann können die Lösungswerte der unbekannten Variablen vom der letzten Gleichung her bestimmt und durch Rückwärtseinsetzen zur Berechnung der weiteren Variablen verwendet werden.
+
+Wir wollen das Gaussverfahren an einem allgemeinen Gleichungssystem mit $m=3$ Gleichungen und $n=3$ Unbekannten demonstrieren. Gegeben ist also das allgemeine lineare Gleichungssystem 
+
+\begin{eqnarray}
+a_{11}x_1 + a_{12}x_2 + a_{13}x_3 & = & b_1 \nonumber\\
+a_{21}x_1 + a_{22}x_2 + a_{23}x_3 & = & b_2 \nonumber\\
+a_{31}x_1 + a_{32}x_2 + a_{33}x_3 & = & b_3
+\label{eq:GaussElimM3N3Schema1}     
+\end{eqnarray}
+
+Zur Veranschaulichung der Schritte im Gaussverfahren wandeln wir das Gleichungssystem (\ref{eq:GaussElimM3N3Schema1}) in das folgende tabellarische Eliminationsschema um.
+
+\vspace{5ex}
+\begin{center}
+\begin{tabular}{|ccc|c|}
+\hline
+$a_{11}$  &  $a_{12}$  &  $a_{13}$  &  $b_1$\\
+$a_{21}$  &  $a_{22}$  &  $a_{23}$  &  $b_2$\\
+$a_{31}$  &  $a_{32}$  &  $a_{33}$  &  $b_3$\\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{5ex}
+
+Wir nehmen an, dass $a_{11} \ne 0$. Trifft diese Annahme nicht zu wird die Reihenfolge der Gleichungen im Gleichungssystem so geändert, dass $a_{11} \ne 0$ ist. Nun bilden wir ein äquivalentes Gleichungssystem, indem wir von der zweiten Zeile des Ausgangsschemas das $a_{21}/a_{11}$-fache der ersten Zeile subtrahieren und von der dritten das $a_{31}/a_{11}$-fache der ersten Zeile. Dadurch stehen im neuen Gleichungssystem an der ersten Stelle der zweiten und der dritten Zeile eine Null. Die anderen Koeffizienten werden mit dem oberen Index $(2)$ bezeichnet.  
+
+\vspace{5ex}
+\begin{center}
+\begin{tabular}{|ccc|c|}
+\hline
+$a_{11}$  &  $a_{12}$        &  $a_{13}$        &  $b_1$\\
+$0$       &  $a_{22}^{(2)}$  &  $a_{23}^{(2)}$  &  $b_2^{(2)}$\\
+$0$       &  $a_{32}^{(2)}$  &  $a_{33}^{(2)}$  &  $b_3^{(2)}$\\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{5ex}
+
+Im zweiten Schritt des Verfahrens wird das gleiche wie im Schritt 1 wiederholt mit dem Untersystem, welches durch die oberen Indices $(2)$ bezeichnet ist. Dabei wird als erstes wieder angenommen, dass $a_{22}^{(2)} \ne 0$ gilt. Von der dritten Gleichung wird das $a_{32}^{(2)}/a_{22}^{(2)}$-fache der zweiten Gleichung abgezogen. Daraus entsteht das folgende dritte Eliminationsschema, welches schon die gewünschte Dreiecksgestalt aufweist. 
+
+\vspace{5ex}
+\begin{center}
+\begin{tabular}{|ccc|c|}
+\hline
+$a_{11}$  &  $a_{12}$        &  $a_{13}$        &  $b_1$\\
+$0$       &  $a_{22}^{(2)}$  &  $a_{23}^{(2)}$  &  $b_2^{(2)}$\\
+$0$       &  $0$             &  $a_{33}^{(3)}$  &  $b_3^{(3)}$\\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{5ex}
+
+Aus diesem Schema in Dreiecksgestalt können wir die Lösung für $x_3$ bestimmen, da aufgrund der letzten Zeile gilt, dass 
+
+$$a_{33}^{(3)} * x_3 = b_3^{(3)}$$
+
+Somit ist
+
+$$x_3 = b_3^{(3)} / a_{33}^{(3)}$$
+
+Das ist die Lösung für die unbekannte Variable $x_3$, da der Ausdruck $b_3^{(3)} / a_{33}^{(3)}$ nicht mehr von einer der Unbekannten $x_1$, $x_2$ oder $x_3$ abhängig ist. Setzen wir die Läsung für $x_3$ in die zweite Zeile des Schemas in Dreiecksgestalt ein, dann folgt
+
+$$x_2 = \frac{b_2^{(2)} - a_{23}^{(2)} * b_3^{(3)} / a_{33}^{(3)}}{a_{22}^{(2)}}$$
+
+Wir haben jetzt Lösungen für die Unbekannten $x_2$ und $x_3$. Diese setzen wir in die erste Gleichung des Dreicks-Schemas ein und erhalten
+
+$$x_1 = \frac{b_1 - a_{12}*((b_2^{(2)} - a_{23}^{(2)} * b_3^{(3)} / a_{33}^{(3)})/a_{22}^{(2)}) - a_{13}*(b_3^{(3)} / a_{33}^{(3)})}{a_{11}}$$
+
+
+## Matrix- und Vektorschreibweise
+Bisher haben wir Gleichungssysteme explizit als Liste von Gleichungen notiert. Für das allgemeine lineare Gleichungssystem kennen wir das bereits schon aus der Beschreibung des Gaussverfahrens.
+
+\begin{eqnarray}
+a_{11}x_1 + a_{12}x_2 + a_{13}x_3 & = & b_1 \nonumber\\
+a_{21}x_1 + a_{22}x_2 + a_{23}x_3 & = & b_2 \nonumber\\
+a_{31}x_1 + a_{32}x_2 + a_{33}x_3 & = & b_3
+\label{eq:AllgLinEqSysM3N3}     
+\end{eqnarray}
+
+Für kleine Gleichungssystem wie (\ref{eq:AllgLinEqSysM3N3}) ist diese Notation befriedigend. Für praktische Anwendungen, wie z. Bsp. die Zuchtwertschätzung, wo die Anzahl Gleichungen in einem Gleichungssystem in der Grössenordnung von $10^6$ liegt, ist die Notation, wie sie in (\ref{eq:AllgLinEqSysM3N3}) verwendet wurde, ungeeignet. Somit brauchen wir für grosse Gleichungssystem eine effizientere Notation. Eine mögliche solche Notation ist die Schreibweise mit Matrizen und Vektoren.
+
+Wir definieren die Matrix $A$ und die Vektoren $x$ und $b$, wie folgt.
+
+$$A = \left[
+        \begin{array}{ccc} 
+          a_{11} & a_{12} & a_{13} \\ 
+          a_{21} & a_{22} & a_{23} \\
+          a_{31} & a_{32} & a_{33}
+      \end{array}\right]$$
+      
+$$x = \left[
+        \begin{array}{c}
+        x_1\\
+        x_2\\
+        x_3
+      \end{array}\right]$$
+      
+$$b = \left[
+        \begin{array}{c}
+        b_1\\
+        b_2\\
+        b_3
+      \end{array}\right]$$
+      
+Die Matrix $A$ und Vektoren $x$ und $b$ lassen sich nun zur Matrix-Vektorschreibweise des Gleichungssystems (\ref{eq:AllgLinEqSysM3N3}) kombinieren.
+
+\begin{eqnarray}
+A \cdot x & = & b
+\label{eq:AllgLinEqSysMatVec}     
+\end{eqnarray}
+
+Mit $\cdot$ ist die im Kapitel zu den Matrizen eingeführte Matrixmultiplikation gemeint. Aus der in (\ref{eq:AllgLinEqSysMatVec}) ist die Information zur Anzahl Gleichungen und zur Anzahl Unbekannten im Gleichungssystem verloren gegangen. Diese Information wird erst durch die Definitionen von $A$, $x$ und $b$ sichtbar. Die Matrix $A$ wird als Koeffizienten-Matrix, der Vektor $x$ als Vektor der Unbekannten und der Vektor $b$ als rechte Handseite bezeichnet.
+
+Was hier wie ein Nachteil der Matrix-Vektorschreibweise erscheinen mag, ist effektiv der grosse Vorteil dieser Notation. Denn ob wir über ein kleines Gleichungssystem wie in (\ref{eq:AllgLinEqSysM3N3}) oder über ein System mit $10^6$ Gleichungen sprechen wollen, wir können immer die Notation in (\ref{eq:AllgLinEqSysMatVec}) verwenden.
+
+Des weiteren können wir auch alle Eigenschaften der Matrizenrechnung zur Lösung des Gleichungssystems verwenden. Als Beispiel können wir unter Verwendung der Inversen $A^{-1}$ der Koeffzienten-Matrix, die Lösung für $x$ berechnen als
+
+$$ x = A^{-1} \cdot b$$
+
+Die Inverse $A^{-1}$ der Koeffizienten-Matrix ist zunächst unbekannt. Wir werden aber zu einem späteren Zeitpunkt noch sehen, dass uns auch bei der Berechnng von $A^{-1}$ das Gaussverfahren sehr nützlich sein kann.
+

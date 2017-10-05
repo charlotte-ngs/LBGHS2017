@@ -1,0 +1,528 @@
+# Repetition Quantitative Genetik
+
+## Einleitung
+Hier soll das Konzept des __Zuchtwertes__ wie er in der quantitativen Genetik für einen Genort eingeführt wurde, kurz repetiert werden. Der Sinn dieser Repetition ist, dass wir diesen Begriff des Zuchtwertes von einem Genort auf sehr viele (theoretisch gesehen unendlich viele) Genorte erweitern wollen. Diese Erweiterung wird uns dann in einem späteren Kapitel zur heute immer noch verwendeten BLUP-Zuchtwerschätzung führen.
+
+### Begriffe
+Der __Phänotyp__ oder die phänotypische Beobachtung ist eine messbare oder beobachtbare Eigenschaft oder Leistung eines Tieres. Beispiele dafür sind Milchleistung, Zuwachs, Körpergrösse, usw. Das __Genom__ bezeichnet die totale genetische Information eines Individuums. Ein __Genort__ oder __Locus__ steht für eine definierte Position auf dem Genom.  Der __Genotyp__ steht für eine bestimmte Kombination von Genvarianten an einem Locus. Ein __Allel__ bezeichnet eine mögliche Genvariante an einem Locus. Sind an einem bestimmten Genort die beiden Allele gleich, so spricht man von einem __homozygoten__ Locus. Sind die beiden Allele verschieden wird der Locus als __heterozygot__ bezeichnet.
+
+## Zuchtwert
+Das fundamentale Problem in der Tierzucht besteht in der Auswahl der Elterntiere für eine kommende Generation. Diese Auswahl geschieht immer mit einer Idealvorstellung eines optimalen Tieres im Hintergrund. Diese Idealvorstellung wird auch als __Zuchtziel__ bezeichnet. Konkret sollen die Elterntiere der kommenden Generation so ausgewählt werden, dass die zukünftigen Nachkommen näher am Zuchtziel sind im Vergleich zur aktuellen Population, aus der wir die Eltern auswählen.
+
+### Vererbung
+Eltern vererben ihren Nachkommen keine Phänotypen und keine Genotypen sondern eine zufällige Auswahl jeweilen einer Variante jedes Genorts. 
+
+### Informationsquellen
+Heute ist es zwar möglich ganze Genome zu sequenzieren und somit die komplette Information der gesamten Erbmasse eines Individuums zu bekommen. Leider ist die Entschlüsselung des Genoms, das heisst die Zuordnung der Genorte zu wichtigen Merkmalsausprägungen noch nicht sehr fortgeschritten. Somit können wir unsere Zuchtentscheide noch nicht auf das ganze Genom abstützen. 
+
+In der __genomischen Selektion__ wird eine für die wichtigsten Merkmale repräsentative Stichprobe von Genorten bestimmt. Die Varianten an diesen Genorten werden mit erwünschten Merkmalsausprägungen in Verbindung gebracht. Diese Assoziation zwischen Genort und Merkmalsausprägung liefern wertvolle Hinweise bei der Auswahl der Elterntiere.
+
+Bei den __traditionellen Zuchtverfahren__ ohne Berücksichtigung der genomischen Information stehen phänotypische Leistungen und Verwandtschaftsbeziehungen zwischen Tieren zur Verfügung. Dabei werden phänotypische Beobachtungen und das genetische Potential über das folgende einfache Modell miteinander verknüpft.
+
+\begin{eqnarray}
+y & = & g + e
+\label{eq:ModPhaenGen}
+\end{eqnarray}
+
+\noindent wobei: $y$ für die phänotypische Beobachtung steht, $g$ für den genetischen Anteil und $e$ für den nicht-erklärbaren Restanteil.
+
+Das Modell (\ref{eq:ModPhaenGen}) ist so parametrisiert, dass die nicht-erklärbaren Resteffekte $e$ sich im Mittel aufheben und somit ist der Erwartungswert $E\left[e\right] = 0$. Daraus folgt, dass im Mittel die genetischen Effekte $g$ den mittleren phänotypischen Leistungen $y$ entsprechen, d.h. $E\left[y\right] = E\left[g\right]$. Bei fehlender Genotyp-Umweltinteraktion sind die Varianzen additiv und somit folgt, dass 
+
+$$Var(y) = Var(g) + Var(e)$$
+
+Das Konzept der Modellierung der phänotypischen Leistung mittels genetischem Anteil und umweltbedingtem Restanteil kann mit folgendem Schema veranschaulicht werden.
+
+```{r PhenotypeGenotypSchema, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, fig.align='center', echo=FALSE, results='asis'}
+knitr::include_graphics(path = "PhenotypeGenotypSchema.pdf")
+```
+
+Aus diesem einfachen Schema lassen sich sehr einfach die Frequenzen $f(G_1G_1)$, $f(G_1G_2)$ und $f(G_2G_2)$ der Genotypen $G_1G_1$, $G_1G_2$ und $G_2G_2$ ableiten. In der gezeigten Population befinden sich vier Individuen mit dem Genotyp $G_1G_1$, und je drei Individuen mit den Genotypen $G_1G_2$ und $G_2G_2$. Somit sind die Frequenzen
+
+\begin{eqnarray}
+f(G_1G_1) &=& \frac{4}{10} = 0.4 \nonumber\\
+f(G_1G_2) &=& \frac{3}{10} = 0.3 \nonumber\\
+f(G_2G_2) &=& \frac{3}{10} = 0.3 \nonumber
+\end{eqnarray}
+
+Die Allelefrequenzen $f(G_1)$ und $f(G_2)$ lassen sich aufgrund der Genotypfrequenzen berechnen.
+
+\begin{eqnarray}
+f(G_1) &=& f(G_1G_1) + 1/2 f(G_1G_2) = 0.4 + 0.15 = 0.55 \nonumber\\
+f(G_2) &=& f(G_2G_2) + 1/2 f(G_1G_2) = 0.3 + 0.15 = 0.45 \nonumber
+\end{eqnarray}
+
+
+### Genotypischer Wert
+Der genotypische Wert $V_{ij}$ für einen bestimmten Genotypen $G_iG_j$ ist der mittlere Wert aller Individuen mit dem gleichen Genotyp $G_iG_j$ in der gleichen Umwelt. Zunächst nehmen wir an, dass wir nur einen Genort ($1$ Gen) mit $2$ Allelen (Genvarianten) betrachten. Die Population befinde sich im Hardy-Weinberg Gleichgewicht, welches besagt, dass sich bei zufälliger Paarung und unendlicher Populationsgrösse die Frequenz $f(G_iG_j)$ der Genotypen $G_iG_j$ von einer Generation zur nächsten konstant bleibt.
+
+Die Skala, auf welcher wir die genotypischen Werte $V_{ij}$ messen wird der Einfachheit halber so gelegt, dass der Nullpunkt zwischen den beiden homozygoten Genotypen $G_2G_2$ und $G_1G_1$ liegt. Das nachfolgende Diagramm zeigt die genotypischen Werte der drei Genotypen.  
+
+```{r GenotypischerWert, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, fig.align='center', echo=FALSE, results='asis'}
+knitr::include_graphics(path = "GenotypischerWert.pdf")
+```
+
+Aus dem oben gezeigten Diagramm erkennen wir, dass $G_1$ das vorteilhafte Allel ist. Das heisst mit jedem $G_1$ steigt der genotypische Wert. Die folgende Tabelle fasst die genotypischen Werte für die drei Genotypen zusammen.
+
+\begin{center}
+   {\renewcommand{\arraystretch}{1.7}
+   \renewcommand{\tabcolsep}{0.2cm}
+   \begin{tabular}{|l|c|}
+  \hline
+  Genotyp  &  genotypischer Wert\\
+  \hline
+  $G_1G_1$  &  $V_{11} = a$\\
+  \hline
+  $G_1G_2$  &  $V_{12} = d$\\
+  \hline
+  $G_2G_2$  &  $V_{22} = -a$\\
+  \hline
+  \end{tabular}}
+  \end{center}
+
+### Populationsmittel
+Eine Kenngrösse der gezeigten genotypischen Werte, welche wir später brauchen werden ist das Populationsmittel $\mu$. Dies entspricht dem Erwartungswert $E\left[V\right]$ der genotypischen Werte. Allgemein ist der Erwartungswert $E\left[X\right]$ für eine diskrete Zufallsvariable $X$ definiert als
+
+$$E\left[X\right] = \sum_{x_i\in \mathcal{X}} x_i* f(x_i)$$
+
+  \vspace*{1ex}
+  \begin{tabular}{p{1cm}p{1cm}p{6cm}}
+  wobei & $\mathcal{X}$: &  Menge aller m\"oglichen $x$-Werte\\
+        & $f(x_i)$         &  Wahrscheinlichkeit dass $x$ den Wert $x_i$ annimmt
+  \end{tabular}
+
+Wenden wir diese Definition auf die genotypischen Werte an, dann beträgt die Menge aller möglichen Genotypen $\mathcal{X}=\{V_{11}, V_{12}, V_{22} \}$ und somit beträgt das Populationsmittel.
+
+\begin{equation}
+\mu = E\left[V\right] = f(G_1G_1)*V_{11} + f(G_1G_2) * V_{12} + f(G_2G_2) * V_{22}
+\label{eq:PopMean}
+\end{equation}
+
+Die Frequenzen $f(G_1)$ und $f(G_2)$ der Allele $G_1$ und $G_2$ werden häufig mit den Variablen $p=f(G_1)$ und $q=f(G_2) = 1-p$ bezeichnet. Aufgrund des Hardy-Weinberg Gleichgewichts resultieren die folgenden Genotypfrequenzen.
+
+\begin{center}
+   {\renewcommand{\arraystretch}{1.7}
+   \renewcommand{\tabcolsep}{0.2cm}
+   \begin{tabular}{|l|c|}
+  \hline
+  Genotyp  &  Frequenzen\\
+  \hline
+  $G_1G_1$  &  $p*p = p^2$\\
+  \hline
+  $G_1G_2$  &  $p*q+q*p = 2pq$\\
+  \hline
+  $G_2G_2$  &  $q*q = q^2$\\
+  \hline
+  \end{tabular}}
+\end{center}
+
+Setzen wir die Frequenzen aus obiger Tabelle in die Gleichung (\ref{eq:PopMean}) für das Populationsmittel ein, dann erhalten wir 
+
+  \begin{eqnarray}
+    \mu &=& p^2 * a + 2pq*d - q^2*a \nonumber \\
+        &=& (p^2 - q^2)a + 2pqd \nonumber \\
+        &=& (p+q)(p - q)a + 2pqd \nonumber \\
+        &=& (p - q)a + 2pqd
+  \end{eqnarray}
+
+Das Populationsmittel ist von den Allelfrequenzen ($p$ und $q$) und somit von der Selektion abhängig.
+
+### Definition des Zuchtwertes
+Für die Zucht interessieren uns die genetischen Anlagen und deren Wert, welche potentielle Elterntiere an ihre Nachkommen weitergeben. Bei der Vererbung geben Eltern keine Genotypen, sondern eine zufällige Stichprobe der Allele an ihre Nachkommen weiter. Für die Auswahl von potentiellen Elterntieren aus einer Population geht es darum die erwartete Leistung von Nachkommen eines bestimmten Elterngenotyps zu bestimmen.
+
+Der __Zuchtwert__ eines bestimmten Tieres $i$ ist definiert als die doppelte Abweichung des erwarteten Mittelwertes der Nachkommen von Tier $i$ vom Populationsmittel.
+
+### Herleitung des Zuchtwertes $ZW_{11}$ für den Genotyp $G_1G_1$
+Zur Herleitung des Zuchtwertes $ZW_{11}$ müssen wir die erwartete mittlere Leistung der Nachkommen eines Tieres mit Genotyp $G_1G_1$ bestimmen. Die mittlere Leistung der Nachkommen eines Tieres mit Genotyp $G_1G_1$ ist als Erwartungswert definiert. Zur Berechnung des Erwartungswertes brauchen wir die Genotypfrequenzen der Nachkommen des Tieres mit Genotyp $G_1G_1$. Diese Frequenzen werden in der folgenden Tabelle bestimmt.
+
+\vspace{5ex}
+\begin{center}
+   {\renewcommand{\arraystretch}{1.7}
+   \renewcommand{\tabcolsep}{0.2cm}
+   \begin{tabular}{|c|c|c|}
+\hline
+& \multicolumn{2}{|c|}{Vater} \\
+\hline
+& $f(G_1) = p$       &  $f(G_2) = q$   \\
+\hline
+Mutter       &                    &                 \\
+\hline
+$f(G_1) = 1$ &  $f(G_1G_1) = p$   &  $f(G_1G_2) = q$\\
+\hline
+\end{tabular}}
+\end{center}
+
+Die Frequenzen der Nachkommen ist symmetrisch betreffend der Eltern. In der oben gezeigten Tabelle wird eine Mutter mit Genotyp $G_1G_1$ zufällig an Väter angepaart. Bei der Mutter kommt nur das $G_1$ Allel vor. Somit betragen die Allelefrequenzen $f(G_1) = 1$ und $f(G_2) = 0$, wobei das $G_2$ Allel bei der Mutter in der obigen Frequenz-Tabelle weggelassen wurde. Durch die Annahme der zufälligen Anpaarung der Mutter an die Väter entsprechen die Allelfrequenzen bei den Vätern dem Populationsdurchschnitt und somit ist $f(G_1) = p$ und $f(G_2) = q$. 
+
+Der erwartete Mittelwert der genotypischen Werte der Nachkommen der Mutter mit Genotyp $G_1G_1$ ist somit
+
+$$\mu_{11} = pa + qd$$
+
+Gemäss Definition können wir den Zuchtwert $ZW_{11}$ für die Mutter mit Genotyp $G_1G_1$ berechnen als
+
+\begin{eqnarray}
+ZW_{11} & = & 2*(\mu_{11} - \mu)  \nonumber\\
+          &=& 2\left(pa + qd - \left[(p - q)a + 2pqd \right] \right) \nonumber\\
+          &=& 2\left(pa + qd - (p - q)a - 2pqd \right) \nonumber\\
+          &=& 2\left(qd + qa - 2pqd\right) \nonumber \\
+          &=& 2\left(qa + qd(1 - 2p)\right) \nonumber \\
+          &=& 2q\left(a + d(1 - 2p)\right) \nonumber \\
+          &=& 2q\left(a + (q-p)d\right)
+\label{eq:ZWGen11}
+\end{eqnarray}
+
+Zuchtwerte für die Genotypen $G_2G_2$ und $G_1G_2$ können analog hergeleitet werden. 
+
+
+### Herleitung des Zuchtwertes $ZW_{22}$ für den Genotyp $G_2G_2$
+Als erstes bestimmen wir wieder die Frequenzen der Nachkommen einer Mutter mit Genotyp $G_2G_2$
+
+\vspace{5ex}
+\begin{center}
+   {\renewcommand{\arraystretch}{1.7}
+   \renewcommand{\tabcolsep}{0.2cm}
+   \begin{tabular}{|c|c|c|}
+\hline
+& \multicolumn{2}{|c|}{Vater} \\
+\hline
+& $f(G_1) = p$       &  $f(G_2) = q$   \\
+\hline
+Mutter       &                    &                 \\
+\hline
+$f(G_2) = 1$ &  $f(G_1G_2) = p$   &  $f(G_2G_2) = q$\\
+\hline
+\end{tabular}}
+\end{center}
+
+Der erwartete Mittelwert der genotypischen Werte der Nachkommen der Mutter mit Genotyp $G_2G_2$ ist somit
+
+$$\mu_{22} = pd - qa$$
+
+Der Zuchtwert $ZW_{22}$ ist somit
+
+\begin{eqnarray}
+ZW_{22} & = & 2*(\mu_{22} - \mu)  \nonumber\\
+          &=& 2\left(pd - qa - \left[(p - q)a + 2pqd \right] \right) \nonumber\\
+          &=& 2\left(pd - qa - (p - q)a - 2pqd \right) \nonumber\\
+          &=& 2\left(pd - pa - 2pqd\right) \nonumber \\
+          &=& 2\left(-pa + p(1-2q)d\right) \nonumber \\
+          &=& -2p\left(a + (q - p)d\right)
+\label{eq:ZWGen22}
+\end{eqnarray}
+
+
+### Herleitung des Zuchtwertes $ZW_{12}$ für den Genotyp $G_1G_2$
+Als erstes bestimmen wir wieder die Frequenzen der Nachkommen einer Mutter mit Genotyp $G_1G_2$
+
+\vspace{5ex}
+\begin{center}
+   {\renewcommand{\arraystretch}{1.7}
+   \renewcommand{\tabcolsep}{0.2cm}
+   \begin{tabular}{|c|c|c|}
+\hline
+& \multicolumn{2}{|c|}{Vater} \\
+\hline
+& $f(G_1) = p$       &  $f(G_2) = q$   \\
+\hline
+Mutter       &                    &                 \\
+\hline
+$f(G_1) = 0.5$ &  $f(G_1G_1) = 0.5p$   &  $f(G_1G_2) = 0.5q$\\
+\hline
+$f(G_2) = 0.5$ &  $f(G_1G_2) = 0.5p$   &  $f(G_2G_2) = 0.5q$\\
+\hline
+\end{tabular}}
+\end{center}
+
+Der erwartete Mittelwert der genotypischen Werte der Nachkommen der Mutter mit Genotyp $G_1G_2$ ist somit
+
+$$\mu_{12} = 0.5pa + 0.5d - 0.5qa = 0.5\left[(p-q)a + d \right]$$
+
+Der Zuchtwert $ZW_{12}$ ist somit
+
+\begin{eqnarray}
+ZW_{12} & = & 2*(\mu_{12} - \mu) \nonumber\\
+          &=& 2\left(0.5(p-q)a + 0.5d - \left[(p - q)a + 2pqd \right] \right) \nonumber\\
+          &=& 2\left(0.5pa - 0.5qa + 0.5d - pa + qa - 2pqd \right) \nonumber\\
+          &=& 2\left(0.5(q-p)a + (0.5 - 2pq)d \right) \nonumber\\
+          &=& (q-p)a + (1-4pq)d  \nonumber\\
+          &=& (q-p)a + (p^2 + 2pq + q^2 -4pq)d  \nonumber\\
+          &=& (q-p)a + (p^2 - 2pq + q^2)d  \nonumber\\
+          &=& (q-p)a + (q - p)^2d   \nonumber\\
+          &=& (q-p)\left[a + (q-p)d \right]
+\label{eq:ZWGen12}
+\end{eqnarray}
+
+### Zusammenfassung der Zuchtwerte
+In den Resultaten der Zuchtwerte kommt der Term $a + (q-p)d$ vor. Wir bezeichnen diesen Term mit $\alpha$ und fassen die Zuchtwerte in folgender Tabelle zusammen.
+
+ \begin{center}
+   {\renewcommand{\arraystretch}{1.7}
+   \renewcommand{\tabcolsep}{0.2cm}
+  \begin{tabular}{|c|c|}
+  \hline
+  Genotyp  &  Zuchtwert\\
+  \hline
+  $G_1G_1$  &  $2q\alpha$\\
+  \hline
+  $G_1G_2$  &  $(q-p)\alpha$\\
+  \hline
+  $G_2G_2$  &  $-2p\alpha$\\
+  \hline
+  \end{tabular}}
+  \end{center}
+
+
+## Allelsubstitution
+Vergleicht man die beiden Genotypen $G_2G_2$ und $G_1G_2$, dann kann der erste Genotyp in den zweiten verwandelt werden, indem eines der $G_2$ Allele vom ersten Genotypen durch ein $G_1$-Allel ersetzt wird. Dies wird als __Allelsubstitution__ bezeichnet. Der Unterschied der Zuchtwerte $ZW_{12}$ und $ZW_{22}$ beträgt
+
+  \begin{eqnarray}
+    ZW_{12} - ZW_{22} & = & (q-p)\alpha - \left( -2p\alpha \right)  \nonumber \\
+                      & = & (q-p)\alpha + 2p\alpha \nonumber \\
+                      & = & (q-p+2p)\alpha \nonumber \\
+                      & = & (q+p)\alpha \nonumber \\
+                      & = & \alpha
+  \label{eq:AdditiveBv1}
+  \end{eqnarray}
+
+Ersetzt man im Genotyp $G_1G_2$ das verbleibende $G_2$-Allel durch ein $G_1$-Allel so resultiert der Genotyp $G_1G_1$. Die Differenz der zugehörigen Zuchtwerte $ZW_{11}$ und $ZW_{12}$ beträgt somit
+
+  \begin{eqnarray}
+    ZW_{11} - ZW_{12} & = & 2q\alpha - (q-p)\alpha \nonumber \\
+                      & = & \left(2q - (q-p)\right)\alpha \nonumber\\
+                      & = & \alpha 
+  \label{eq:AdditiveBv2}
+  \end{eqnarray}
+
+Die Zuchtwerte sind abhängig von den Allelfrequenzen. Die Differenzen der Zuchtwerte sind additiv, d.h. die Abhängigkeit der Differenzen zur Anzahl der $G_1$-Allele ist linear.
+
+
+## Dominanzabweichung
+Aufgrund der Definition des Zuchtwerts sind Abweichungen zwischen dem genotypischen Wert $V_{ij}$ und dem Zuchtwert $ZW_{ij}$ eines Tieres zu erwarten. Betrachtet man diese Abweichungen zwischen genotypischem Wert und Zuchtwert für die drei Genotypen $G_1G_1$, $G_1G_2$ und $G_2G_2$ allgemein so erhalten wir folgende Resultate
+
+  \begin{eqnarray}
+  V_{11} - ZW_{11} & = & a - 2q \alpha \nonumber \\
+                   & = & a - 2q \left[ a + (q-p)d \right] \nonumber \\
+                   & = & a - 2qa -2q(q-p)d \nonumber \\
+                   & = & a(1-2q) - 2q^2d + 2pqd \nonumber \\
+                   & = & \left[(p - q)a + 2pqd\right] - 2q^2d \nonumber \\
+                   & = & \mu + D_{11} 
+  \end{eqnarray}
+
+  \begin{eqnarray}
+  V_{12} - ZW_{12} & = & d - (q-p)\alpha \nonumber \\
+                   & = & d - (q-p)\left[ a + (q-p)d \right] \nonumber \\
+                   & = & \left[(p-q)a + 2pqd\right] + 2pqd \nonumber \\
+                   & = & \mu + D_{12}
+  \end{eqnarray}
+
+  \begin{eqnarray}
+  V_{22} - ZW_{22} & = & -a - (-2p\alpha) \\
+                   & = & -a + 2p\left[ a + (q-p)d \right] \nonumber \\
+                   & = & \left[(p-q)a + 2pqd\right] - 2p^2d \nonumber \\
+                   & = & \mu + D_{22} \nonumber
+  \end{eqnarray}
+
+
+## Zusammenfassung: Genotypische Werte, Zuchtwerte und Dominanzabweichungen
+Die folgende Tabelle gibt eine Übersicht über Genotypische Werte, Zuchtwerte und Dominanzabweichungen
+
+\begin{center}
+  {\renewcommand{\arraystretch}{1.7}
+   \renewcommand{\tabcolsep}{0.2cm}
+   \begin{tabular}{|c|c|c|c|}
+   \hline
+   Genotyp  &  genotypischer Wert  &  Zuchtwert     &  Dominanzabweichung\\
+   $G_iG_j$ &  $V_{ij}$            &  $ZW_{ij}$     &  $D_{ij}$           \\
+   \hline
+   $G_1G_1$ &  $a$                 &  $2q\alpha$    &  $-2q^2d$          \\
+   \hline
+   $G_1G_2$ &  $d$                 &  $(q-p)\alpha$ & $2pqd$             \\
+   \hline
+   $G_2G_2$ &  $-a$                &  $-2p\alpha$   & $-2p^2d$           \\
+   \hline
+   \end{tabular}}
+\end{center}
+
+Die in der obigen Tabelle gezeigten Formeln basieren auf der Annahme, dass $G_1$ das Allel mit positiver Wirkung ist und dass die Allelfrequenz $f(G_1)$ von $G_1$ mit $p$ bezeichnet wird. Die Allelfrequenz $f(G_2)$ des Allels $G_2$ wird mit $q$ bezeichnet. Da wir von einem Locus mit zwei Allelen ausgehen, gilt dass $p + q = 1$.
+
+Aufgrund der Definition der Dominanzabweichung als Differenz vom um das Populationsmittel korrigierte genotypische Wert minus der Zuchtwert folgt die in Gleichung (\ref{eq:ZerlegungGenoWert}) gezeigte Zerlegung des genotypischen Wertes.
+
+\begin{eqnarray}
+V_{ij} & = & \mu + ZW_{ij} + D_{ij}
+\label{eq:ZerlegungGenoWert}
+\end{eqnarray}
+
+
+## Varianzen
+Genotypische Werte, Populationsmittel und Zuchtwerte wurden als Erwartungswerte definiert. Diese sind Lageparameter und geben Informationen für quantitative Vergleiche zwischen Tieren. Da die hier beschriebenen Prozesse der Vererbung nicht deterministisch sind, sondern immer auch eine stochastische oder zufällige Komponente haben, spielt die Streuung der verwendeten Modellparameter immer auch eine wichtige Rolle. 
+
+Für eine diskrete Zufallsvariable $X$ ist die Varianz $Var\left[X\right]$ definiert als
+
+$$Var\left[X\right] = \sum_{x_i \in \mathcal{X}} (x_i - \mu_X)^2 * f(x_i)$$
+
+  \vspace*{1ex}
+  \begin{tabular}{p{1cm}p{1cm}p{6cm}}
+  wobei & $\mathcal{X}$: &  Menge aller m\"oglichen $x$-Werte\\
+        & $f(x_i)$       &  Wahrscheinlichkeit dass $x$ den Wert $x_i$ annimmt \\
+        & $\mu_X $       &  Erwartungswert $E\left[X\right]$ von $X$
+  \end{tabular}
+
+Wenden wir diese Definition auf die genotypischen Werte $V_{ij}$ an, dann erhalten wir den folgenden Ausdruck für die genetische Varianz. 
+
+  \begin{eqnarray}
+  \sigma_G^2 = Var\left[V\right] &=&   (V_{11} - \mu)^2 * f(G_1G_1) \nonumber \\
+                                 & & +\  (V_{12} - \mu)^2 * f(G_1G_2) \nonumber \\
+                                 & & +\  (V_{22} - \mu)^2 * f(G_2G_2)
+  \end{eqnarray}
+
+  wobei $\mu = (p - q)a + 2pqd$ dem Populationsmittel entspricht.
+
+Gemäss dem Modell aus Gleichung (\ref{eq:ZerlegungGenoWert}) können wir die Abweichungen der genotypischen Werte vom Populationsmittel ersetzen durch $V_{ij} - \mu = ZW_{ij} + D_{ij}$. Die Genotypfrequenzen ersetzen wir durch die aus dem Hardy-Weinberg bekannten Terme. Somit können wir die genetische Varianz schreiben als
+
+ \begin{eqnarray}
+  \sigma_G^2  &=&   (ZW_{11} + D_{11})^2 * p^2      \nonumber \\
+              & & +\  (ZW_{12} + D_{12})^2 * 2pq      \nonumber \\
+              & & +\  (ZW_{22} + D_{22})^2 * q^2
+  \end{eqnarray}
+
+Für die Zuchtwerte $ZW_{ij}$ und die Dominanzabweichungen $D_{ij}$ können wir nun die bekannten Definitionen einsetzen. Danach lässt sich der Ausdruck für die genetische Varianz vereinfachen. Diese Vereinfachung ist im Anhang (siehe Gleichung (\ref{eq:GenVarZWD})) gezeigt. Das Resultat für die genetische Varianz lautet
+
+ \begin{eqnarray}
+  \sigma_G^2 &=& 2pq\alpha^2 + \left(2pqd \right)^2
+  \end{eqnarray}
+  
+Wie im Anhang in den Gleichungen (\ref{eq:AdditiveGeneticVariance}) und (\ref{eq:DominanceVariance}) gezeigt wurde, entspricht der Term $2pq\alpha^2$ der mit den Genotypfrequenz gewichteten Summe der quadrierten Zuchtwerte. Der Term $\left(2pqd \right)^2$ kann aus der mit den Genotypfrequenzen gewichteten Summe der quadrierten Dominanzabweichungen berechnet werden.
+
+Aufgrund der Beziehungen zwischen Zuchtwerten, welche wir in den Gleichungen (\ref{eq:AdditiveBv1}) und (\ref{eq:AdditiveBv2}) gezeigt haben, werden Zuchtwerte als __additiv__ bezeichnet. Da der Term $2pq\alpha^2$ von den Zuchtwerten abhängt wird dieser auch als __genetisch additive__ Varianz $\sigma_A^2$ bezeichnet. Analog dazu bezeichnen wir den Term $\left(2pqd \right)$ als Dominanzvarianz $\sigma_D^2$. Somit lässt sich die genetische Varianz in einen additiv genetischen Teil und einen Dominanz-Teil zerlegen. Formell können wir schreiben
+
+ \begin{eqnarray}
+  \sigma_G^2 &=& 2pq\alpha^2 + \left(2pqd \right)^2 \nonumber\\
+             &=& \sigma_A^2 + \sigma_D^2
+  \end{eqnarray}
+
+
+## Erweiterung auf mehrere Genorte
+Bis hierher haben wir uns mit der Modellierung des Einflusses eines Genortes auf ein bestimmtes kontinuierliches Merkmal. Viele wirtschaftlich interessante Merkmale sind aber von sehr vielen verschiedenen Genorten beeinflusst. Falls verschiedene Genorte auf dem gleichen Chromosom zu finden sind, dann ist deren Vererbung und deren Wirkung nicht mehr unabhängig voneinander. 
+
+### Abhängigkeit zwischen Genorten
+Mit Unabhängigkeit meinen wir hier, dass die Frequenz der Genotypen an zwei Loci nicht dem Produkt der Frequenzen der Genotypen an einem Locus entspricht. Für zwei Loci $A$ und $B$ mit je zwei Allelen sieht das beispielsweise so aus, dass die Frequenz $f(A_1A_1B_1B_1)$ nicht dem Produkt aus $f(A_1A_1)$ mal $f(B_1B_1)$ entsprechen. 
+
+\begin{equation}
+ f(A_1A_1B_1B_1) \ne f(A_1A_1) * f(B_1B_1)
+\end{equation}
+
+### Interaktionen
+Falls die Wirkung mehrerer Genorte auf ein Merkmal nicht der Summe der Wirkungen der einzelnen Gene entspricht, so spricht man von Interaktionen. Betrachten wir wieder die beiden Genorte $A$ und $B$ mit genotypischen Werten $V_{ij}^{(A)}$ und $V_{kl}^{(B)}$, dann entspricht der totale genotypische Wert $g$ nicht der Summe zwischen den genotypischen Werten an den einzelnen Loci, sondern es kommt noch ein sogenannter __Epistasieeffekt__ hinzu. 
+
+\begin{eqnarray}
+g + \mu & = & V_{ij}^{(A)} + V_{kl}^{(B)} + I_{ijkl}^{(A) \cdot (B)} \nonumber\\
+        & = & \mu^{(A)} ZW_{ij}^{(A)} + D_{ij}^{(A)} + \mu^{(B)} + ZW_{kl}^{(B)} + D_{kl}^{(B)} + I_{ijkl}^{(A) \cdot (B)}
+\label{eq:ZerlegungGenMitInteraktion}  
+\end{eqnarray}
+
+wobei $\mu^{(A)}$ und $\mu^{(B)}$ die Populationsmittel aufgrund der Wirkungen der Loci $A$ und $B$ sind. Mit $\mu$ bezeichnen wir die Summe aus den Populationsmitteln, d.h. $\mu = \mu^{(A)} + \mu^{(B)}$. Aufgrund der Interaktionen lassen sich die genotypischen Werte nicht mehr in additive Zuchtwerte plus Dominanzabweichung zerlegen. Hinzu kommt neu die Komponente der Epistasie. 
+
+### Polygenes Modell
+Betrachten wir anstelle von nur zwei Loci sehr viele (theoretisch unendlich viele) Genorte, dann sprechen wir von einem __polygenen Modell__. Für dieses Modell ist die Schreibweise aus Gleichung (\ref{eq:ZerlegungGenMitInteraktion}) nicht mehr praktikabel. Als Verbesserung fassen wir alle additiven Komponenten zusammen zu einem einzigen Effekt $a$, alle Dominanzeffekte werden im Effekt $d$ zusammengefasst und alle Interaktionen werden mit dem Effekt $i$ bezeichnet. Somit können wir den genetischen Wert zerlegen in 
+
+\begin{eqnarray}
+g & = & a + d + i
+\label{eq:ZerlegungInfinitModel}  
+\end{eqnarray}
+
+Da wir die Effekte $a$, $d$ und $i$ als Abweichungen vom Populationsmittel definiert haben sind deren Erwartungswerte alle gleich Null. Es gilt also, dass $E\left[a \right] = E\left[d \right] = E\left[i \right] = 0$. Somit resultiert der Erwartungswert für $g$ als 
+
+$$E\left[g \right] = E\left[a \right] + E\left[d \right] + E\left[i \right] = 0 $$
+
+Auch bei der genetische Varianz $\sigma_G^2$ kommt aufgrund von Interaktionen zwischen Genorten eine zusätzliche Varianzkomponente, nämlich die epistatische Varianz $\sigma_{I}^2$ hinzu. 
+
+ \begin{eqnarray}
+  \sigma_G^2 &=& \sigma_A^2 + \sigma_D^2 + \sigma_{I}^2
+  \end{eqnarray}
+
+### Zuchtwert als additiv genetischer Effekt
+Bei polygene Merkmalen gehen wir von sehr vielen Genorten, wobei jeder Genort nur eine sehr kleine Wirkung hat, aus. Da jeder Elternteil eine Stichprobe seiner Allele weitergibt, sind für die Züchtung vor allem die additiven Effekte $a$ von grosser Bedeutung. Diesen additiv genetische Effekt $a$ bezeichnen wir als __Zuchtwert__. Dominanz- und Epistasie-Effekte kommen erst durch die spezielle Kombinationen von Allelen und Genorten zustande und sind deshalb sehr schwer zu quantifizieren. Aus diesem Grund werden Dominanz und Epistasie oft vernachlässigt.
+
+Der zentrale Grenzwertsatz sagt, dass die Verteilung der Summe aus sehr vielen Zufallsvariablen mit sehr geringer Wirkung sich einer Normalverteilung nähert. Das Argument des zentralen Grenzwertsatzes und die Annahme, dass sich der additiv genetische Effekt aus Beiträgen von vielen Genorten zusammensetzt, rechtfertigen die Wahl der __Gausschen Normalverteilung__ als Dichteverteilung für die Zuchtwerte.
+
+### Phänotypische Beobachtung
+Am Anfang dieses Dokuments hatten wir schon gesehen, dass wir bei den traditionellen Zuchtverfahren die genetischen Werte und somit die Zuchtwerte nicht beobachten können. Als Informationsquellen stehen uns phänotypische Beobachtungen und die Verwandtschaftsbeziehungen zwischen den Tieren in der Population zur Verfügung. Wir brauchen also ein Modell, welches uns die phänotypischen Informationen mit genotypischen Werten verknüpft. Dieses Modell hatten wir schon in der Gleichung (\ref{eq:ModPhaenGen}) gesehen. Da wir alle genetischen Effekte als Abweichungen vom Populationsmittel definiert haben, müssen wir das Modell (\ref{eq:ModPhaenGen}) noch leicht modifizieren, indem wir das Populationsmittel $\mu$ aus dem $g$-Effekt herausziehen und es explizit als Faktor hinschreiben. Somit haben wir für die phänotypische Beobachtung $y$ folgendes Modell
+
+\begin{eqnarray}
+y &=& \mu + g + e
+\label{eq:ModPhenModel}
+\end{eqnarray}
+
+Da auch der umweltbedingte Resteffekt $e$ des Modells als Abweichung von $\mu$ definiert wurde, ist der Erwartungswert der phänotypischen Beobachtung $E\left[y \right] = \mu$. Die Varianz der phänotypischen Beobachtung kann aus dem Modell (\ref{eq:ModPhenModel}) abgeleitet werden.
+
+\begin{eqnarray}
+Var\left[y \right] &=& \sigma_p^2\ =\ \sigma_g^2 + \sigma_e^2 + 2Cov\left[g,e \right]
+\label{eq:VarPhen}
+\end{eqnarray}
+
+Der Ausdruck $Cov\left[g,e \right]$ im Modell (\ref{eq:VarPhen}) tritt nur dann auf, falls Genotyp-Umweltinteraktionen bestehen. Falls solche Interaktionen zwischen Genotypen und der Umwelt fehlen, dann können wir  $Cov\left[g,e \right] = 0$ setzen und somit vereinfacht sich das Modell (\ref{eq:VarPhen}) zu
+
+\begin{eqnarray}
+\sigma_p^2  &=&  \sigma_g^2 + \sigma_e^2
+\label{eq:VarPhenSimple}
+\end{eqnarray}
+
+
+
+\pagebreak
+
+## Anhang
+
+Hier wird die Vereinfachung der genetischen Varianz gezeigt.
+
+\begin{eqnarray}
+\sigma_G^2  &=&   (ZW_{11} + D_{11})^2 * p^2                                      \nonumber \\
+                               & & +\  (ZW_{12} + D_{12})^2 * 2pq                                    \nonumber \\
+                               & & +\  (ZW_{22} + D_{22})^2 * q^2                                    \nonumber \\
+                               &=&     \left(2q\alpha - 2q^2d   \right)^2 * p^2                      \nonumber \\
+                               & & +\  \left((q-p)\alpha + 2pqd \right)^2 * 2pq                      \nonumber \\
+                               & & +\  \left(-2p\alpha - 2p^2d  \right)^2 * q^2                      \nonumber \\
+                               &=&     \left(4q^2\alpha^2 - 8q^3d\alpha + 4q^4d^2  \right) * p^2     \nonumber \\
+                               & & +\  \left(q^2\alpha^2 - 2pq\alpha^2 + p^2\alpha^2
+                                              - 4(q-p)pqd\alpha + 4p^2q^2d^2\right) * 2pq            \nonumber \\
+                               & & +\  \left(4p^2\alpha^2 + 8p^3d\alpha + 4p^4\alpha^2 \right) * q^2 \nonumber \\
+                               &=&     4p^2q^2\alpha^2 - 8p^2q^3d\alpha + 4p^2q^4d^2                 \nonumber \\
+                               & & +\  2pq^3\alpha^2 - 4p^2q^2\alpha^2+ 2p^3q\alpha^2                \nonumber \\
+                               & & -\  8p^3q^2d\alpha + 8p^2q^3d\alpha + 8p^3q^3d^2                  \nonumber \\
+                               & & +\  4p^2q^2\alpha^2 + 8p^3q^2d\alpha + 4p^4q^2d^2                 \nonumber \\
+                               &=&     4p^2q^2\alpha^2 + 4p^2q^4d^2                                  \nonumber \\
+                               & & +\  2pq^3\alpha^2 + 2p^3q\alpha^2                                 \nonumber \\
+                               & & +\  8p^3q^3d^2                                                    \nonumber \\
+                               & & +\  4p^4q^2d^2                                                    \nonumber \\
+                               &=&     2pq\alpha^2 \left(p^2 + 2pq + q^2 \right)                     \nonumber \\
+                               & & +\  \left(2pqd \right)^2 \left(p^2 + 2pq + q^2 \right)            \nonumber \\
+                               &=&     2pq\alpha^2 + \left(2pqd \right)^2
+\label{eq:GenVarZWD}
+\end{eqnarray}
+
+Der Term $2pq\alpha^2$ entspricht der Summe der mit den Genotypfrequenzen gewichteten quadrierten Zuchtwerte. Konkret heisst das 
+
+\begin{eqnarray}
+2pq\alpha^2 & = & p^2 ZW_{11}^2 + 2pq ZW_{12}^2 + q^2 ZW_{22}^2 \nonumber \\
+            & = & p^2 (2q\alpha)^2 + 2pq ((q-p)\alpha)^2 + q^2 (-2p\alpha)^2 \nonumber \\
+            & = & 4p^2q^2\alpha^2 + 2pq (q^2\alpha^2 -2pq\alpha^2 + p^2\alpha^2) + 4p^2q^2\alpha^2 \nonumber \\
+            & = & 4p^2q^2\alpha^2 + 2pq^3\alpha^2 - 4p^2q^2\alpha^2 + 2p^3q\alpha^2 + 4p^2q^2\alpha^2 \nonumber \\
+            & = & (4p^2q^2 + 2pq^3 + 2p^3q)\alpha^2 \nonumber \\
+            & = & 2pq(2pq + q^2 + p^2)\alpha^2 \nonumber \\
+            & = & 2pq\alpha^2
+\label{eq:AdditiveGeneticVariance}
+\end{eqnarray}
+
+\pagebreak
+
+Den Term $\left(2pqd \right)^2$ setzen wir der Summe der mit den Genotypenfrequenzen gewichteten quadrierten Dominanzabweichungen gleich. Die entsprechende Ableitung ist nachfolgend gezeigt.
+
+\begin{eqnarray}
+\left(2pqd \right)^2 & = & p^2 D_{11}^2 + 2pq D_{12}^2 + q^2 D_{22}^2      \nonumber \\
+                     & = & p^2 (-2q^2d)^2 + 2pq (2pqd)^2 + q^2 (-2p^2d)^2  \nonumber \\
+                     & = & 4p^2q^4d^2 + 8p^3q^3d^2 + 4p^4q^2d^2  \nonumber \\
+                     & = & 4p^2q^2d^2 (q^2 + 2pq + p^2) \nonumber \\
+                     & = & 4p^2q^2d^2
+\label{eq:DominanceVariance}
+\end{eqnarray}
+
+

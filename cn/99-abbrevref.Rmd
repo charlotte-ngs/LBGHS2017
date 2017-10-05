@@ -1,0 +1,160 @@
+<!-- ------------------------------------------------------------------- --
+  -- END of document:  Below this must not be anything, except the stuff --
+  -- concerning the table of abbreviations                               --> 
+  
+
+```{r WriteTableOfAbbreviations, echo=FALSE, results='hide'}
+if (!r6objTableAbbrev$is_empty_abbr())
+  r6objTableAbbrev$writeToTsvFile()
+```
+
+```{r AbrTableToDocument, echo=FALSE, results='asis'}
+r6objTableAbbrev$include_abbr_table(psAbbrTitle = "# Abkürzungen {-}")
+```
+
+
+```{r Bibliography, eval=FALSE, echo=FALSE, results='hide'}
+bref <- c(bibentry(
+     bibtype = "Article",
+     title = "Prediction of total genetic value using genome-wide dense marker maps",
+     author = c(as.person("Theo HE Meuwissen [aut]"), 
+                as.person("Ben J Hayes [aut]]"),
+                as.person("Mike E Goddard [aut]")),
+     year = "2001",
+     journal = "Genetics",
+     number = "157",
+     pages = "1819-1829",
+     key = "MHG2001"),
+  bibentry(
+    bibtype = "Book",
+    title = "Handbook of Statistical Genetics",
+    editor = c(as.person("D. J. Balding"), as.person("M. Bishop"), as.person("C. Cannings")),
+    year = "2009",
+    publisher = "Wiley",
+    doi = "10.1002/9780470061619",
+    key = "BBC2008"
+  ),
+  bibentry(
+    bibtype = "PhdThesis",
+    title = "Schätzung von Zuchtwerten feldgeprüfter Schweine mit einem Mehrmerkmals-Tiermodell",
+    author = as.person("A. Hofer [aut]"),
+    year = "1990",
+    school = "ETH Zürich",
+    key = "Hofer1990"
+  ),
+  bibentry(
+    bibtype = "Unpublished",
+    title = "Züchtungslehre",
+    author = as.person("P. von Rohr [aut]"),
+    year = "2016",
+    note = "Vorlesungsunterlagen ETHZ, HS2016",
+    url = "https://charlotte-ngs.github.io/LBGHS2016",
+    key = "vonRohr2016"
+  ),
+  bibentry(
+    bibtype = "Article",
+    title   = "Deregressing Estimated Breeding Values and Weighting Information for Genomic Regression Analyses",
+    author  = c(as.person("D. Garrick"), 
+                as.person("J. Taylor"), 
+                as.person("R. Fernando")),
+    year    = "2009",
+    journal = "Genetics Selection Evolution",
+     number = "41(1)",
+     pages = "55",
+     key = "GTF2009"
+  ),
+  bibentry(
+    bibtype = "Unpublished",
+    title = "Computational Statistics",
+    author = c(as.person("Peter Bühlmann [aut]"),as.person("Martin Mächler [aut]")),
+    year = "2014",
+    note = "Vorlesungsunterlagen ETHZ, 2014",
+    key = "BM2014"
+  ),
+  bibentry(
+    bibtype = "Book",
+    title = "An Introduction to Statistical Learning",
+    chapter = "Linear Model Selection and Regularization",
+    author = c(as.person("G. James"), as.person("D. Witten"), as.person("T. Hastie"), as.person("R. Tibshirani")),
+    year = "2013",
+    publisher = "Springer",
+    doi = "10.1007/978-1-4614-7138-7",
+    key = "JWHT2013"
+  ),
+  bibentry(
+    bibtype = "Article",
+    title   = "Spatial Interaction and the Statistical Analysis of Lattice Systems",
+    author  = c(as.person("J. Besag")),
+    year    = "1974",
+    journal = "Journal of the Royal Statistical Society. Series B (Methodological)",
+    number = "36",
+    pages = "192-236",
+    url = "http://www.jstor.org/stable/2984812",
+    key = "Besa1974"
+  ),
+  bibentry(
+    bibtype = "Article",
+    title   = "The impact of genetic relationship information on genome-assisted breeding values",
+    author  = c(as.person("D. Habier"),as.person("RL Fernando"), as.person("JCM Dekkers")),
+    year    = "2007",
+    journal = "Genetics",
+    number  = "177",
+    pages   = "2389–2397",
+    key     = "HFD2007"
+  ),
+  bibentry(
+    bibtype = "Article",
+    author  = c(as.person("I Misztal"), as.person("A Legarra"), as.person("I Aguilar")),
+    year    = "2009",
+    title   = "Computing procedures for genetic evaluation including phenotypic, full pedigree, and genomic information", 
+    journal = "J Dairy Sci",
+    number  = "92",
+    pages   = "4648–4655",
+    key     = "MLA2009"
+  ),
+  bibentry(
+    bibtype = "Article",
+    author  = as.person("PM VanRaden"),
+    year    = "2008",
+    title   = "Efficient methods to compute genomic predictions",
+    journal = "J Dairy Sci",
+    number  = "91",
+    pages   = "4414–4423",
+    key     = "VanRaden2008"
+  ),
+  bibentry(
+    bibtype = "Article",
+    title   = "Additive Genetic Variability and the Bayesian Alphabet",
+    author  = c(as.person("Daniel Gianola"),as.person("Gustavo de los Campos"),
+                as.person("William G. Hill"),as.person("Eduardo Manfredi"),
+                as.person("Rohan Fernando")),
+    year    = "2009",
+    journal = "Genetics",
+    number  = "183",
+    pages   = "347–363",
+    key     = "GDHMF2009"
+  ),
+  bibentry(
+       bibtype = "InBook",
+       title   = "Genomic Best Linear Unbiased Prediction (gBLUP) for the Estimation of Genomic Breeding Values",
+       author  = c(as.person("Samuel A. Clark [aut]"),as.person("Julius van der Werf [aut]")),
+       year    = "2013",
+       booktitle = "Genome-Wide Association Studies and Genomic Prediction, Methods in Molecular Biology, vol 1019",
+       chapter   = 13,
+       editor    = c(as.person("Cedric Gondro"), 
+                     as.person("Julius van der Werf"),
+                     as.person("Ben Hayes")),
+       publisher = "Springer",
+       doi       = "10.1007/978-1-62703-447-0_13",
+       key       = "CV2013"
+     )
+)
+
+### # Fixed assignmen of bib file
+sBibFile <- "LBGHS2017.bib"
+if(!file.exists(sBibFile))
+  cat(paste(toBibtex(bref), collapse = "\n"), "\n", file = sBibFile)
+```
+
+
+`r if (knitr:::is_html_output()) '# References {-}'`

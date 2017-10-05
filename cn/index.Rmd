@@ -1,0 +1,42 @@
+---
+title: "Züchtungslehre"
+author: "Peter von Rohr"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+documentclass: book
+bibliography: ["LBGHS2017.bib"]
+biblio-style: apalike
+link-citations: yes
+description: "Unterlagen zur Vorlesung Züchtungslehre im Herbstsemester 2017 an der ETHZ."
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::knit_hooks$set(conv.odg = rmddochelper::odg.graphics.conv.hook)
+r6objTableAbbrev <- rmddochelper::R6ClassTableAbbrev$new()
+#docInfo <- rmddochelper::R6RmdDocInfo$new()
+```
+
+# Vorwort {-}
+__Züchtungslehre__ ist der Titel der Vorlesung 751-6305-00L, welche an der ETH Zürich im Herbstsemester für Studierende des Masterstudiengangs Agrarwissenschaften angeboten wird. Dieses Dokument enthält alle relevanten Unterlagen zu dieser Vorlesung. 
+
+Im Kontext dieser Vorlesung verstehen wir das Fachgebiet der Züchtungslehre als die Methoden und die Techniken, welche in der Züchtung von landwirtschaftlichen Nutztieren verwendet werden. Unter __Züchtung__ verstehen wir hier die gezielte Auswahl (Selektion) und die gezielte Anpaarung von Elterntieren. Aus diesen Paarungen entsteht dann eine Nachkommengeneration, welche dem Idealbild eines Nutztiers besser entspricht als die Eltern. Das Idealbild wird über das Zuchtziel festgelegt.
+
+
+## Voraussetzungen {-}
+Da bei der Paarung von Elterntieren von jedem Elternteil eine zufällige Auswahl von Genvarianten der Eltern an die Nachkommen weitergegeben wird, sind die in der Züchtung von Nutztieren ablaufenden Prozesse nicht deterministisch kontrollierbar. Das heisst, es gibt bei der Weitergabe von Genvarianten der Eltern an ihre Nachkommen immer einen gewissen unkontrollierbaren oder zufälligen Anteil im gesamten Prozess. 
+
+Sobald Zufallsprozesse ablaufen, kommen die Werkzeuge der Wahrscheinlichkeitsrechnung und der Statistik zur Anwendung. Für unsere Anwendung der Züchtung bedeutet das, dass wir den genetischen Wert eines Tieres anhand eines statistischen Modells charakterisieren. 
+
+Somit sind neben der statistischen Modellierung von Daten auch die Grundlagen der linearen Algebra und grundlegende Kenntnisse der quantitativen Genetik als Voraussetzung für diese Vorlesung in Züchtungslehre zu bezeichnen. 
+
+Die Voraussetzungen werden aber alle zu Beginn der Vorlesung erklärt. Somit braucht es keine Vorkenntnisse um diese Vorlesung erfolgreich zu absolvieren. 
+
+
+## Lernziele {-}
+Für die Verwendung des hier präsentierten Stoffs schlagen wir die folgenden Lernziele vor. 
+
+Die Studierenden ...
+
+

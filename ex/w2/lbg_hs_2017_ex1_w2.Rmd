@@ -1,0 +1,91 @@
+---
+title:  Züchtungslehre - Übung 1
+author: Peter von Rohr
+date: 2017-09-29
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis')
+```
+
+
+## Aufgabe 1: Vektoren
+
+Gegeben sind die Vektoren $a$ und $b$. Berechnen Sie 
+
+* die Summe $s = a+b$, 
+* die Differenz $d = a-b$ und 
+* das Skalarprodukt $p = a\cdot b$. 
+
+\begin{center}
+$a = \left[\begin{array}{c}
+  5  \\ 
+  -2 \\ 
+  6  \\ 
+  9  
+  \end{array}\right]$, \hspace{2ex} 
+$b = \left[\begin{array}{c}
+  13  \\ 
+  1 \\ 
+  -7  \\ 
+  22  \\
+  \end{array}\right]$
+\end{center}
+
+
+## Aufgabe 2: Zwischenwinkel
+
+Gegeben sind die Vektoren 
+
+\begin{center}
+$a = \left[\begin{array}{c}
+  3  \\ 
+  0 \\ 
+  4  
+  \end{array}\right]$ und  
+$b = \left[\begin{array}{c}
+  2  \\ 
+  13 \\ 
+  x  
+  \end{array}\right]$
+\end{center}
+
+Wie gross muss $x$ sein, dass die beiden Vektoren senkrecht zueinander stehen?
+
+
+## Aufgabe 3: Matrizen
+
+In der Vorlesung haben wir die Einheitsmatrix als eine spezielle Matrix kennengelernt. Bei der Einheitsmatrix sind alle Diagonalelemente gleich $1$ und alle Nicht-Diagonalelemente (auch Off-Diagonalelemente genannt) gleich $0$. Die Einheitsmatrix ist ein Spezialfall einer Klasse von speziellen Matrizen, welche in der Vorlesung nicht behandelt wurden. Es handelt sich dabei um die Klasse der __Diagonalmatrizen__. Diese haben alle Diagonalelemente ungleich $0$ und alle Off-Diagonalelemente gleich $0$. Als Beispiel ist 
+
+$$D = \left[\begin{array}{ccc}
+   3  &  0  &  0 \\
+   0  &  -5  &  0 \\
+   0  &   0  &  1
+ \end{array}\right]$$
+ 
+eine Diagonalmatrix. Diagonalmatrizen haben eine besondere Bedeutung, da das Finden ihrer Inversen relativ einfach ist. 
+
+__Ihre Aufgabe__ ist es die Inverse $D^{-1}$ der Matrix $D$ zu finden. 
+
+__Hinweise__
+
+* Die Inverse $D^{-1}$ der Matrix $D$ ist so definiert, dass $D^{-1} \cdot D = I$, wobei $I$ die Einheitsmatrix ist.
+* Stellen Sie das Kreuzschema der Matrixmultiplikation auf um die Komponenten der Inversen $D^{-1}$ zu finden
+* Die Inverse einer Diagonalmatrix ist wieder eine Diagonalmatrix
+
+
+## Aufgabe 4: Vektoren in R
+
+Überprüfen Sie die in Aufgabe 1 gerechneten Resultate mit R
+
+
+## Aufgabe 5: Matrizen in R
+
+Überprüfen Sie das Resultat der Inversen der Diagonalmatrix aus Aufgabe 3.
+
+__Hinweise__
+
+* Eine Diagonalmatrix kann einfach über die Funktion `diag()` erstellt werden.
+* Die Funktion `solve()` berechnet die Inverse einer Matrix
+

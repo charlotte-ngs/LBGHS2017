@@ -1,0 +1,434 @@
+---
+title: "Züchtungslehre - Einführung"
+author: "Peter von Rohr"
+date: "22 September 2017"
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = "asis")
+knitr::knit_hooks$set(conv.odg = rmddochelper::odg.graphics.conv.hook)
+```
+
+## Inhalt der heutigen Vorlesung
+
+- Einführung in die Vorlesung
+- Lineare Algebra
+- Einführung in R
+
+
+## Who Is Who
+
+- Studiengang
+- Motivation für diese Vorlesung
+- Erfahrungen in Tierzucht / R / Statistik / ...
+
+
+## Ziele dieser Vorlesung
+
+- Verstehen der Grundlagen
+- Erklärung von Zusammenhängen (siehe nächste Folie)
+- Weiterbildung in Statistik
+- Anwendung von R
+
+
+## Zitate
+
+- "Tiefe Kuhfamilien" (Schweizer Bauer - https://www.schweizerbauer.ch/tiere/milchvieh/eine-komplette-kuh-zuechten-17854.html)
+- "Bei der Auswahl von Kühen für die Zuchtprogramme sollten also auch Eigenleistungen, Leistungen von Vorfahren und die Blutlinien stimmen." (swissherdbookbulletin 5/15)
+- "Ich habe noch niemanden getroffen, der mir diese Zuchtwerte erklären kann. Eine Kuh von mir hat einen Zuchtwert von $-900$ und gibt immer noch Milch." (Leserbrief im Schweizer Bauer)
+
+
+## Informationen
+
+- Webseite: http://charlotte-ngs.github.io/LBGHS2017
+- Kreditpunkte: Schriftliche Prüfung am 22.12.2017
+
+
+## Ablauf einer Vorlesung
+
+- Typ G im Vorlesungsverzeichnis
+- Ab kommender Woche:
+    + U: 9-10
+    + V: 10-12 (Besprechung der Übung, neuer Stoff)
+
+
+## Vorlesungsprogramm
+
+```{r SlidesTable}
+# define course start date
+dCourseStart <- as.Date("2017/09/22")
+# set number of weeks in semester
+nNrSemesterWeeks <- 14
+# define columns for weaks, dates, and subjects
+Woche <- 1:nNrSemesterWeeks
+Datum <- format(seq(dCourseStart, by = "week", length.out = nNrSemesterWeeks), "%d.%m")
+Thema <- vector(mode = "character", length = nNrSemesterWeeks)
+# subjects per week
+Thema[which(Datum == format(as.Date("2017/09/22"), "%d.%m"))] <- "Einführung, Lineare Algebra, R"
+Thema[which(Datum == format(as.Date("2017/09/29"), "%d.%m"))] <- "keine Vorlesung"
+Thema[which(Datum == format(as.Date("2017/10/06"), "%d.%m"))] <- "Repetition Quantitative Genetik"
+Thema[which(Datum == format(as.Date("2017/10/13"), "%d.%m"))] <- "Selektionsindex"
+Thema[which(Datum == format(as.Date("2017/10/20"), "%d.%m"))] <- "Zuchtwertschätzung, Selektionsindex"
+Thema[which(Datum == format(as.Date("2017/10/27"), "%d.%m"))] <- "Verwandtschaft und Inzucht"
+Thema[which(Datum == format(as.Date("2017/11/03"), "%d.%m"))] <- "BLUP I"
+Thema[which(Datum == format(as.Date("2017/11/10"), "%d.%m"))] <- "BLUP II"
+Thema[which(Datum == format(as.Date("2017/11/17"), "%d.%m"))] <- "Varianzanalyse, Varianzkomponentenschätzung "
+Thema[which(Datum == format(as.Date("2017/11/24"), "%d.%m"))] <- "Linkage disequilibrium"
+Thema[which(Datum == format(as.Date("2017/12/01"), "%d.%m"))] <- "Genomische Selektion "
+Thema[which(Datum == format(as.Date("2017/12/08"), "%d.%m"))] <- "Genom-weite Assoziationsstudien"
+Thema[which(Datum == format(as.Date("2017/12/15"), "%d.%m"))] <- "Reserve, Fragen"
+Thema[which(Datum == format(as.Date("2017/12/22"), "%d.%m"))] <- "Prüfung"
+
+dfSlideTable <- data.frame(Woche, Datum, Thema, stringsAsFactors = FALSE)
+knitr::kable(dfSlideTable)
+```
+
+
+## Voraussetzungen für diese Vorlesung
+
+- Keine
+- Konzepte und Grundbegriffe werden erklärt
+- Hilfreich sind
+    + Kenntnisse in Quantitativer Genetik
+    + Statistik
+    + Lineare Algebra
+    + Erfahrungen mit R
+    
+
+## Übungen
+
+- Zu jedem Vorlesungsblock wird es eine Übung geben
+- Übungsstunde steht zur Bearbeitung der Aufgaben zur Verfügung
+- Lösungsvorschläge eine Woche nach der Übung
+- Stil der Übungsaufgaben: Bearbeitung einer Fragestellung mit R (oder anderer Programmiersprache)
+- **NEU**: Übungsplatform unter: 
+
+## Ihre Erfahrungen
+
+- Kennen Sie eine/mehrere Programmiersprachen, wenn ja welche?
+- Wie erledigen Sie Datenverarbeitungsjobs? (Semesterarbeit, Praktika, Bachelorarbeit)
+- Was hat Sie bis jetzt daran gehindert das Programmieren zu erlernen?
+- In welchen Veranstaltungen (Vorlesungen, Übungen, Praktika) wurden Sie schon mit Programmiersprachen konfrontiert und was sind Ihre Erfahrungen
+
+
+## Lineare Algebra
+
+Wichtige Elemente aus der linearen Algebra
+
+- Vektoren
+- Matrizen
+- Gleichungssysteme
+
+## Was ist ein Vektor
+
+Vektoren sind bestimmt durch __Länge__ und __Richtung__
+
+```{r VectorEquality, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, png.path="png", fig.align='center', echo=FALSE, results='asis', out.width="8cm"}
+knitr::include_graphics(path = "VectorEquality.pdf")
+```
+
+$\rightarrow$ Vektoren $v$ und $w$ sind gleich $v=w$, Vektor $x$ ist verschieden von den beiden anderen, $v\ne x$, $w\ne x$
+
+## Koordinaten
+
+Differenz zwischen Koordinaten des Endpunktes minus Koordinaten des Anfangspunktes
+
+$$ v = \left[\begin{array}{c} e_x - a_x \\ e_y - a_y \end{array}\right]$$
+ 
+```{r VektorKoordinaten, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, png.path="png", fig.align='center', echo=FALSE, results='asis', out.width="8cm"}
+knitr::include_graphics(path = "VektorKoordinaten.pdf")
+```
+
+## Operationen mit Vektoren
+
+- Addition
+- Subtraktion
+- Multiplikation mit Skalar
+- Skalarprodukt
+
+
+## Addition
+
+```{r VektorAddition, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, png.path="png", fig.align='center', echo=FALSE, results='asis', out.width="8cm"}
+knitr::include_graphics(path = "VektorAddition.pdf")
+```
+
+$\rightarrow$ Zusammensetzen der Pfeile: $u = v + w = w + v$
+
+
+## Subtraktion
+
+Aus Addition $u = v + w$ folgt, dass
+
+- $u - v = w$
+- $u - w = v$
+
+```{r VektorSubtraktion, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, png.path="png", fig.align='center', echo=FALSE, results='asis', out.width="8cm"}
+knitr::include_graphics(path = "VektorAddition.pdf")
+```
+
+
+## Multiplikation mit einem Skalar
+
+```{r VektorMalSkalar, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, png.path="png", fig.align='center', echo=FALSE, results='asis', out.width="8cm"}
+knitr::include_graphics(path = "VektorMalSkalar.pdf")
+```
+
+$u = \lambda * v 
+     = \left[\begin{array}{c} u_x \\ u_y\end{array}\right]
+     = \left[\begin{array}{c} \lambda * v_x \\ \lambda * v_y\end{array}\right]$
+
+
+## Multiplikation mit einem Skalar II
+
+\begin{tabular}{|c|c|c|}
+\hline
+Faktor              &  Richtung  &  L\"ange \\
+\hline
+$\lambda < -1$      &  entgegengesetzt  &  länger \\
+\hline
+$\lambda = -1$      &  entgegengesetzt  &  gleich \\
+\hline
+$-1 < \lambda < 0$  &  entgegengesetzt  &  kürzer \\
+\hline
+$\lambda = 0$       &  unbestimmt       &  kürzer \\
+\hline
+$0 < \lambda < 1$   &  gleich           & kürzer  \\
+\hline
+$\lambda = 1$       &  gleich           & gleich  \\
+\hline
+$\lambda > 1$       &  gleich           & länger  \\
+\hline
+\end{tabular}
+
+
+## Skalarprodukt
+
+$$v \cdot w = ||v||*||w|| * cos(\alpha) = v_x * w_x + v_y * w_y$$
+
+```{r VektorenWinkel, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, png.path="png", fig.align='center', echo=FALSE, results='asis', out.width="8cm"}
+knitr::include_graphics(path = "VektorenWinkel.pdf")
+```
+
+$$cos(\alpha) = \frac{v \cdot w}{||v||*||w||}$$
+
+
+## Was ist eine Matrix
+
+- Mehrere Vektoren "nebeneinander" gestellt
+
+$$M = \left[\begin{array}{cc} v & w \end{array}\right] 
+    = \left[\begin{array}{cc} v_x & w_x \\ v_y & w_y \end{array}\right]$$
+  
+- Beispiel einer $2*3$-Matrix
+
+$$A = \left[\begin{array}{ccc} 2 & 3 & 0\\ -1 & 4 & 7\end{array}\right]$$
+
+- Element $(A)_{12} = a_{12} = 3$    
+
+
+## Matrixoperationen: Addition und Subtraktion
+
+$$S = A + B = \left[\begin{array}{cc} a_{11} & a_{12} \\ a_{21} & a_{22}\end{array}\right]
+    + \left[\begin{array}{cc} b_{11} & b_{12} \\ b_{21} & b_{22}\end{array}\right]
+    = \left[\begin{array}{cc} a_{11}+b_{11} & a_{12}+b_{12} \\ a_{21}+b_{21} & a_{22}+b_{22}\end{array}\right]$$
+
+$$A = S - B = \left[\begin{array}{cc} s_{11} & s_{12} \\ s_{21} & s_{22}\end{array}\right]
+    - \left[\begin{array}{cc} b_{11} & b_{12} \\ b_{21} & b_{22}\end{array}\right]
+    = \left[\begin{array}{cc} s_{11}-b_{11} & s_{12}-b_{12} \\ s_{21}-b_{21} & s_{22}-b_{22}\end{array}\right]$$
+
+
+## Matrixmultiplikation
+
+$$(A\cdot B)_{ij} = \sum_{k=1}^n a_{ik} * b_{kj}$$
+
+
+## Spezielle Matrizen
+
+- __Nullmatrix__: alle Elemente $o_{ij} = 0$, Neutralelement von Addition und Subtraktion 
+- __Rechtsmatrix__: $(R)_{ij}=0$ für alle $i>j$
+- __Linksmatrix__: $(L)_{ij}=0$ für alle $i<j$
+- __Einheitsmatrix__: `diag(n)=1`
+- __Transponierte__: $(A)_{ij} = (A^T)_{ji}$
+- __Inverse__: $A\cdot A^{-1} = I$
+
+
+## Rechenregeln Transponierte
+
+* die Transponierte von $A^T$: $$(A^T)^T = A$$
+* Summe: $$(A + B)^T = A^T + B^T$$
+* Produkt: $$(A\cdot B)^T = B^T \cdot A^T$$
+* Einheitsmatrix: $$I^T = I$$
+
+
+## Rechenregeln Inverse
+
+* Inverse der Inversen: $$(A^{-1})^{-1} = A$$
+* Produkt: $$(A\cdot B)^{-1} = B^{-1} \cdot A^{-1}$$
+* Transponierte: $$(A^T)^{-1} = (A^{-1})^T$$
+* Einheitsmatrix: $$I^{-1} = I$$
+
+
+## Gleichungssysteme
+
+\begin{eqnarray}
+ x_1 + 2x_2 & = & 5 \nonumber\\
+2x_1 + 3x_2 & = & 8
+\end{eqnarray}
+
+* Welche Werte für $x_1$ und $x_2$ erfüllen beide Gleichungen
+* Versuch $x_1=1$ und $x_2=2$
+
+
+## Lösungsmenge
+
+* keine Lösung
+\begin{eqnarray}
+ x_1 +  x_2 & = & 4 \nonumber\\
+2x_1 + 2x_2 & = & 5
+\end{eqnarray}
+
+* unendlich viele Lösungen: $x_1 = 2$, $x_2 = \alpha$ und $x_3 = \alpha$
+\begin{eqnarray}
+ x_1 -  x_2  +  x_3 & = & 2 \nonumber\\
+2x_1 +  x_2  -  x_3 & = & 4
+\end{eqnarray}
+
+
+## Äquivalenz zwischen Gleichungssystemen
+
+* Gleichungssystem $A$ und $B$ sind äquivalent, falls deren Lösungsmengen gleich
+* Operationen zur Erzeugung von äquivalenten Gleichungssystemen
+    + Vertauschen der Reihenfolge der Gleichungen
+    + Addition eines Vielfachen einer Gleichung zu einer anderen Gleichung
+
+
+## Beispiel
+
+Zweite Gleichung minus zweimal erste Gleichung
+
+\begin{eqnarray}
+ x_1 + 2x_2 & = & 5 \nonumber\\
+2x_1 + 3x_2 & = & 8
+\label{eq:OrigEq}     
+\end{eqnarray}
+
+\begin{eqnarray}
+ x_1 + 2x_2 & = & 5 \nonumber\\
+     -  x_2 & = & -2
+\label{eq:EquivTriangleEq}     
+\end{eqnarray}
+    
+* Dreiecksgestalt $\rightarrow$ einfache Lösung für $x_2$
+
+
+## Gaussverfahren
+
+* Äquivalenzoperationen bis Gleichungssystem in Dreiecksgestalt
+* Rückwärts-Einsetzen der gefundenen Lösungen
+* Schema für Gaussverfahren
+
+\vspace{5ex}
+\begin{center}
+\begin{tabular}{|ccc|c|}
+\hline
+$a_{11}$  &  $a_{12}$  &  $a_{13}$  &  $b_1$\\
+$a_{21}$  &  $a_{22}$  &  $a_{23}$  &  $b_2$\\
+$a_{31}$  &  $a_{32}$  &  $a_{33}$  &  $b_3$\\
+\hline
+\end{tabular}
+\end{center}
+
+
+## Schritt 1
+
+* Vertauschen der Reihenfolge bis $a_{11} \ne 0$
+* Von zweiter $a_{21}/a_{11}$-fache der ersten abziehen
+* Von dritter $a_{31}/a_{11}$-fache der ersten abziehen
+
+\vspace{5ex}
+\begin{center}
+\begin{tabular}{|ccc|c|}
+\hline
+$a_{11}$  &  $a_{12}$        &  $a_{13}$        &  $b_1$\\
+$0$       &  $a_{22}^{(2)}$  &  $a_{23}^{(2)}$  &  $b_2^{(2)}$\\
+$0$       &  $a_{32}^{(2)}$  &  $a_{33}^{(2)}$  &  $b_3^{(2)}$\\
+\hline
+\end{tabular}
+\end{center}
+
+
+## Schritt 2
+
+* Analog zu Schritt 1 bis
+
+\vspace{5ex}
+\begin{center}
+\begin{tabular}{|ccc|c|}
+\hline
+$a_{11}$  &  $a_{12}$        &  $a_{13}$        &  $b_1$\\
+$0$       &  $a_{22}^{(2)}$  &  $a_{23}^{(2)}$  &  $b_2^{(2)}$\\
+$0$       &  $0$             &  $a_{33}^{(3)}$  &  $b_3^{(3)}$\\
+\hline
+\end{tabular}
+\end{center}
+
+
+## Rückwärts-Einsetzen
+
+* Aus dem letzten Schema in Dreiecksgestalt folgt
+
+$$x_3 = b_3^{(3)} / a_{33}^{(3)}$$
+
+* Einsetzen in zweite Gleichung
+
+$$x_2 = \frac{b_2^{(2)} - a_{23}^{(2)} * b_3^{(3)} / a_{33}^{(3)}}{a_{22}^{(2)}}$$
+
+* Einsetzen in erste Gleichung
+
+$$x_1 = ...$$
+
+
+## Matrix- und Vektorschreibweise
+
+* Gegeben sei das Gleichungssystem
+
+\begin{eqnarray}
+a_{11}x_1 + a_{12}x_2 + a_{13}x_3 & = & b_1 \nonumber\\
+a_{21}x_1 + a_{22}x_2 + a_{23}x_3 & = & b_2 \nonumber\\
+a_{31}x_1 + a_{32}x_2 + a_{33}x_3 & = & b_3
+\label{eq:AllgLinEqSysM3N3}     
+\end{eqnarray}
+
+* Definition der Matrix $A$ und der Vektoren $x$ und $b$
+
+$A = \left[
+        \begin{array}{ccc} 
+          a_{11} & a_{12} & a_{13} \\ 
+          a_{21} & a_{22} & a_{23} \\
+          a_{31} & a_{32} & a_{33}
+      \end{array}\right]$, 
+$x = \left[
+        \begin{array}{c}
+        x_1\\
+        x_2\\
+        x_3
+      \end{array}\right]$ und 
+$b = \left[
+        \begin{array}{c}
+        b_1\\
+        b_2\\
+        b_3
+      \end{array}\right]$
+      
+* Gleichung kann als $A\cdot x = b$ geschrieben werden      
+      
+
+## Vorteile
+
+* Notation ist unabhängig von Anzahl Unbekannten und Anzahl Gleichungen
+* Eigenschaften von Vektoren und Matrizen können auf Gleichungssystem angewendet werden
+* Lösung einfach darstellbar als 
+
+$$ x = A^{-1} \cdot b$$

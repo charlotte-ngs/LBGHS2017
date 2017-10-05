@@ -1,0 +1,159 @@
+---
+title:  Züchtungslehre - Übung 2
+author: Peter von Rohr
+date: 2016-10-06
+output: 
+  pdf_document:
+    includes:
+      in_header: header.tex
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis')
+```
+
+```{r DocumentStatus, eval=FALSE}
+r6obj_docstat <- rmddochelper::R6ClassDocuStatus$new()
+r6obj_docstat$set_current_status(psVersion = "0.0.901",
+                                 psStatus  = "Initialisation",
+                                 psProject = "[REPLACE_WITH_PROJECT]")
+r6obj_docstat$include_doc_stat(psTitle = "## Document Status")
+```
+
+
+```{r TableAbbreviation}
+r6ob_abbrtable <- rmddochelper::R6ClassTableAbbrev$new()
+### # include table of abbreviations only, if there are any
+if (!r6ob_abbrtable$is_empty_abbr())
+  r6ob_abbrtable$include_abbr_table(psAbbrTitle = "## Abbreviations")
+```
+
+## Aufgabe 1: Matrixdefinitionen in R
+In R werden Matrizen mit der Funktion `matrix` erstellt. Diese aktzeptiert verschiedene Optionen in Form von Funktionsparametern. Wir wollen uns hier anschauen, welche Auswirkungen die verschiedenen Parameter auf die erzeugten Matrizen haben.  
+
+__Ihre Aufgabe__ wird es sein die Matrizen mit den verschiedenen Optionen zu erstellen und so besser zu verstehen, was die Optionen für eine Bedeutung haben.
+
+### Parameter `data`
+* `data`: Angabe der Matrix-Elemente
+```{r echo=TRUE, results='markup', eval=FALSE}
+matA <- matrix(data = c(1:9), nrow = 3, ncol = 3)
+```
+
+* `data`: Ohne Angabe der Matrix-Elemente
+```{r echo=TRUE, results='markup', eval=FALSE}
+matB <- matrix(nrow = 3, ncol = 3)
+```
+
+* `data`: Spezifikation nicht aller Elemente
+```{r echo=TRUE, results='markup', eval=FALSE}
+matC <- matrix(data = c(1,2,3), nrow = 3, ncol = 3)
+```
+
+```{r echo=TRUE, results='markup', eval=FALSE}
+matC2 <- matrix(data = c(1,2,3,4), nrow = 3, ncol = 3)
+```
+
+### Parameter `nrow` und `ncol`
+* Weglassen einer der beiden Parameter
+
+```{r echo=TRUE, results='markup', eval=FALSE}
+matD <- matrix(data = c(1:9), nrow = 3)
+```
+
+```{r echo=TRUE, results='markup', eval=FALSE}
+matE <- matrix(data = c(1:9), ncol = 3)
+```
+
+### Parameter `byrow`
+```{r echo=TRUE, results='markup', eval=FALSE}
+matF <- matrix(data = c(1:9), nrow = 3, ncol = 3, byrow = TRUE)
+```
+
+```{r echo=TRUE, results='markup', eval=FALSE}
+matG <- matrix(data = c(1:9), nrow = 3, ncol = 3, byrow = FALSE)
+```
+
+
+## Aufgabe 2: Matrixmultiplikation in R
+Matrixmultiplikationen können in R mit dem Operator `%*%` oder mit den Funktionen `crossprod()` oder `tcrossprod()` ausgeführt werden. Der Vorteil von `crossprod()` und `tcrossprod()` gegenüber von `%*%` ist, dass wir mit `crossprod()` und `tcrossprod()` direkt Matrizen und Vektoren multiplizieren können. Das funktioniert mit `%*%` nicht. Bei der Matrix-Vektor-Multiplikation mit `%*%` muss der Vektor zuerst in eine Matrix verwandelt werden. 
+
+In einem ersten Teil der Aufgabe geht es um einen Vergleich zwischen `crossprod()`, `tcrossprod()` und `%*%` für die Matrix-Matrix-Multiplikation. 
+
+a) Gegeben sind die folgenden Matrizen
+
+```{r MatMultMatDef, echo=TRUE, results='markup'}
+(matA <- matrix(data = c(1:9), ncol = 3))
+(matB <- matrix(data = c(2:10), ncol = 3))
+```
+
+Finden Sie heraus welcher Multiplikationen mit `%*%` entspricht die folgende Anweisung?
+
+```{r, echo=TRUE, results='markup', eval=TRUE}
+crossprod(matA,matB)
+```
+
+
+Alternativ dazu gibt es die Funktion `tcrossprod()`. Finden Sie, welche Matrixmultiplikation mit `%*%`
+
+```{r, echo=TRUE, results='markup', eval=TRUE}
+tcrossprod(matA, matB)
+```
+
+ausführt.
+
+\pagebreak
+
+b) Gegeben ist zusätzlich der Vektor `vecB` als
+
+```{r, echo=TRUE}
+vecB <- c(-3,16,1)
+```
+
+Multiplizieren Sie die Matrix `matA` mit dem Vektor `vecB` einmal mit `%*%` und einmal mit `crossprod()`.
+
+__Hinweise__: Ein Vektor kann mit der Funktion `as.matrix()` in eine Matrix verwandelt werden.
+
+
+## Aufgabe 3: Gleichungssysteme
+
+Gegeben ist das folgende Gleichungssystem.
+
+\begin{IEEEeqnarray}{rCl}
+       2x_2 + 2x_3 &=& 1 \nonumber\\
+2x_1 + 4x_2 + 5x_3 &=& 9 \nonumber\\
+ x_1 -  x_2 + 2x_3 &=& 3
+\label{eq:GlsA1} 
+\end{IEEEeqnarray}
+
+a) Bestimmen Sie die Lösungsmenge des Gleichungssystems (\ref{eq:GlsA1}) mit dem Gaussverfahren
+
+
+b) Verwandeln Sie das Gleichungssystem (\ref{eq:GlsA1}) in Matrix-Vektor-Schreibweise
+
+
+c) Wie lautet die Lösung des Gleichungssystem (\ref{eq:GlsA1}) in Matrix-Vektor-Schreibweise
+
+
+d) Berechnen Sie die Lösung aus c) mit R
+
+__Hinweis__: Für die Multiplikation der Matrix $A^{-1}$ mit dem Vektor $b$ muss der Vektor $b$ in eine Matrix verwandelt werden. Dies kann mit der Funktion `as.matrix()` gemacht werden.
+
+
+## Aufgabe 4: Quantitative Genetik
+In einer Population wurden für einen Genort folgende Häufigkeiten bei Genotypen gezählt
+
+```{r GenotypeFreqs}
+dfGenotypeFreq <- data.frame(Genotypen = c("$A_1A_1$", "$A_1A_2$", "$A_2A_2$"),
+                             Anzahl    = c(24, 53, 23),
+                             stringsAsFactors = FALSE)
+knitr::kable(dfGenotypeFreq)
+```
+
+a) Bestimmen Sie die Genotypfrequenzen
+
+
+b) Bestimmen Sie die Allelfrequenzen
+
+c) Berechnen Sie das Populationsmittel $\mu$ unter der Annahme, dass die genotypischen Werte zwischen den homozygoten Genotypen $20$ Einheiten auseinanderliegen und dass der heterozygote Genotyp einen genotypischen Wert von $2$ hat.
+
+
