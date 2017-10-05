@@ -111,6 +111,9 @@ dfExTable <- dfSlideTable
 dfExTable$Thema[which(Datum == format(as.Date("2017/09/22"), "%d.%m"))] <- "keine Übung"
 # dfExTable$Thema[which(Datum == format(as.Date("2016/09/30"), "%d.%m"))] <- "[Lineare Algebra](https://charlotte-ngs.github.io/LBGHS2016/w2/zl_hs_2016_ex1_w2.pdf)"
 dfExTable$Thema[which(Datum == format(as.Date("2017/09/29"), "%d.%m"))] <- "[Lineare Algebra](https://charlotte-ngs.github.io/LBGHS2017/ex/w2/lbg_hs_2017_ex1_w2.pdf)"
+dfExTable$Thema[which(Datum == format(as.Date("2017/10/06"), "%d.%m"))] <- "[Repetition Quantitative Genetik](https://charlotte-ngs.github.io/LBGHS2017/ex/w3/lbg_hs_2017_w3_ex2.pdf)"
+
+
 
 knitr::kable(dfExTable)
 ```
