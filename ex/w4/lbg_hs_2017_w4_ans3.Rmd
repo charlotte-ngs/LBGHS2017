@@ -1,0 +1,84 @@
+---
+title: Züchtungslehre - Übung 3
+author: Peter von Rohr
+date: 2017-10-13
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis')
+```
+
+```{r ParameterAssignment, echo=FALSE}
+nHomDiff <- 15
+p <- 0.2
+q <- 1-p
+a <- nHomDiff/2
+d <- -1.5
+alpha <- a + (q-p)*d
+```
+
+## Aufgabe 1: Zuchtwert
+Wir betrachten ein Merkmal, welches von einem Locus $G$ mit zwei Allelen beeinflusst wird. Die Frequenz des positiven Allels beträgt $`r p`$. Wir nehmen an, dass für die Genotypfrequenzen das Hardy-Weinberg-Gleichgewicht gilt. Der Unterschied zwischen den homozygoten Genotypen beträgt $`r nHomDiff`$. Der heterozygote Genotyp hat einen genotypischen Wert von $`r d`$. 
+
+a) Berechnen Sie die Zuchtwerte und die Dominanzabweichungen für die drei Genotypen.
+<!-- Fügen Sie her einen neuen R-code-junk ein und berechnen Sie die Zuchtwerte --
+  -- für die drei Genotypen. Dazu können sie die oben schon definierten Variablen -- 
+  -- verwenden. 
+  -->
+b) Aufgrund der Selektion auf das positive Allele hat sich nach einer gewissen Zeit die Frequenz des positiven Allels auf $0.35$ erhöht, wie verändert diese Erhöhung die Zuchtwerte der drei Genotypen?
+<!-- Die gleichen Berechnungen wie unter a) nur mit einem anderen Wert für p -->
+
+__Hinweis__: Schauen Sie sich die Tabelle mit den Zuchtwerten in den Unterlagen an.
+
+
+
+## Aufgabe 2: Allelsubstitution
+Was bedeutet Allelsubstitution und wie gross ist sie für die in den Aufgaben 1a und 1b gegebenen Zahlen?
+<!-- Allelsubstitution ist eine Funktion der unter 1a) und 1b) berechneten Zuchtwerte --
+  -- falls diese in Variablen abgelegt wurden, können Sie diese hier wieder verwenden --
+  -->
+
+## Aufgabe 3: Einlesen von Daten in R
+Auf der Webseite der Vorlesung ist eine Datei im csv-Format unter 
+
+`https://charlotte-ngs.github.io/LBGHS2017/ex/w4/iris.csv` abgelegt. Lesen Sie dieses Datei mit dem Befehl `read.csv2` ein und testen Sie die Auswirkung, ob Sie beim Einlesen die Option `stringsAsFactors=FALSE` angeben oder nicht.
+
+__Hinweis__: Sie können die csv-Datei zuerst herunterladen und auf Ihrem Rechner speichern und dann vom lokalen Dateisystem einlesen. Sie können aber auch den oben angegebenen URL direkt in der Funktion `read.csv2` verwenden. Mehr Informationen dazu gibt es unter `?read.csv2`.
+
+<!-- Lesen Sie den Datensatz aus dem csv-File einmal mit und einmal ohne die Option stringsAsFactors=FALSE -- 
+  -- ein. Weisen Sie die jeweiligen data.frames unterschiedlichen Variablen zu. Verwenden Sie die Funktion -- 
+  -- str() auf beiden dataframes um den Unterschied zu sehen. Das könnte wie folgt aussehen, wobei sie     -- 
+  -- bei ... den Dateinamen der csv-Datei angeben müssen:
+  
+```{r CompareDataframes}
+df.iris.ohne <- read.csv2(file = ...)
+str(df.iris.ohne)
+
+df.iris.mit <- read.csv2(file = ..., stringsAsFactors=FALSE)
+str(df.iris.mit)
+```
+  
+  -->
+
+## Zusatzaufgabe: Plot in R
+Stellen Sie die Werte in den Kolonnen `Sepal.Length` und `Petal.Length` des Datensatzes aus der Datei `iris.csv` in einem Diagramm dar. Der Plot sollte ungefähr wie folgt aussehen:
+
+<!-- Es gibt sehr viele Arten, wie Sie Plots in R erstellen können. Eine Möglichkeit ist mit --
+
+```{r}
+plot(x,y)
+```
+
+  -- Dabei wird ein Vektor x auf der x-Achse gegen einen Vektor y auf der y-Achse geplottet. --
+  -- Aus einem dataframe können Sie die Kolonnen `Sepal.Length` und `Petal.Length` mit den   --
+  -- Anweisungen 
+  
+```{r}
+df.iris.mit$Sepal.Length
+# und
+df.iris.mit$Petal.Length
+```
+
+  -- als Vektoren extrahieren.
+  -->
