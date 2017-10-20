@@ -1,0 +1,201 @@
+---
+title:  Züchtungslehre - Lösung 1
+author: Peter von Rohr
+date: 2017-09-29
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, results = 'markup')
+```
+
+
+## Aufgabe 1: Vektoren
+
+Gegeben sind die Vektoren $a$ und $b$. Berechnen Sie 
+
+* die Summe $s = a+b$, 
+* die Differenz $d = a-b$ und 
+* das Skalarprodukt $p = a\cdot b$. 
+
+\begin{center}
+$a = \left[\begin{array}{c}
+  5  \\ 
+  -2 \\ 
+  6  \\ 
+  9  \\
+  \end{array}\right]$, \hspace{2ex} 
+$b = \left[\begin{array}{c}
+  13  \\ 
+  1   \\ 
+  -7  \\ 
+  22  \\
+  \end{array}\right]$
+\end{center}
+
+<!-- Tragen Sie das Resultat für die Summe im Vektor s ein -->
+
+$$s = \left[\begin{array}{c}
+  18 \\ 
+  -1 \\ 
+  -1 \\ 
+  31 \\
+  \end{array}\right]$$
+
+<!-- Tragen Sie das Resultat für die Differenz im Vektor d ein -->
+
+$$d = \left[\begin{array}{c}
+   -8 \\ 
+   -3 \\ 
+   13 \\ 
+   -13 \\
+  \end{array}\right]$$
+
+<!-- Tragen Sie das Resultat für das Skalarprodukt in der Variablen p ein. --
+  -- Mit `r 5*13 + (-2)*1 + 6*(-7) + 9*22` kann das Skalarprodukt direkt   --
+  -- berechnet werden.                                                     --
+  -->
+
+$$p = `r 5*13 + (-2)*1 + 6*(-7) + 9*22`$$
+
+## Aufgabe 2: Zwischenwinkel
+
+Gegeben sind die Vektoren 
+
+\begin{center}
+$a = \left[\begin{array}{c}
+  3  \\ 
+  0 \\ 
+  4  
+  \end{array}\right]$ und  
+$b = \left[\begin{array}{c}
+  2  \\ 
+  13 \\ 
+  x  
+  \end{array}\right]$
+\end{center}
+
+Wie gross muss $x$ sein, dass die beiden Vektoren senkrecht zueinander stehen?
+
+<!-- Tragen Sie Ihr Resultat für x hier ein. Versuchen Sie x direkt mit einer --
+  -- Formel in R zu berechnen.                                                --
+  -->
+
+$$x = `r -2*3/4`$$
+
+
+## Aufgabe 3: Matrizen
+
+In der Vorlesung haben wir die Einheitsmatrix als eine spezielle Matrix kennengelernt. Bei der Einheitsmatrix sind alle Diagonalelemente gleich $1$ und alle Nicht-Diagonalelemente (auch Off-Diagonalelemente genannt) gleich $0$. Die Einheitsmatrix ist ein Spezialfall einer Klasse von speziellen Matrizen, welche in der Vorlesung nicht behandelt wurden. Es handelt sich dabei um die Klasse der __Diagonalmatrizen__. Diese haben alle Diagonalelemente ungleich $0$ und alle Off-Diagonalelemente gleich $0$. Als Beispiel ist 
+
+$$D = \left[\begin{array}{ccc}
+   3  &  0  &  0 \\
+   0  &  -5  &  0 \\
+   0  &   0  &  1
+ \end{array}\right]$$
+ 
+eine Diagonalmatrix. Diagonalmatrizen haben eine besondere Bedeutung, da das Finden ihrer Inversen relativ einfach ist. 
+
+__Ihre Aufgabe__ ist es die Inverse $D^{-1}$ der Matrix $D$ zu finden. 
+
+__Hinweise__
+
+* Die Inverse $D^{-1}$ der Matrix $D$ ist so definiert, dass $D^{-1} \cdot D = I$, wobei $I$ die Einheitsmatrix ist.
+* Stellen Sie das Kreuzschema der Matrixmultiplikation auf um die Komponenten der Inversen $D^{-1}$ zu finden
+* Die Inverse einer Diagonalmatrix ist wieder eine Diagonalmatrix
+
+<!-- Geben Sie die Inverse D^{-1} hier -->
+$$D^{-1} = \left[\begin{array}{ccc}
+    1/3  &  0      & 0   \\
+    0    &  -1/5   & 0   \\
+    0    &  0      & 1   \\
+ \end{array}\right]$$
+
+
+## Aufgabe 4: Vektoren in R
+
+Überprüfen Sie die in Aufgabe 1 gerechneten Resultate mit R
+
+<!-- Geben Sie ihre Antwort hier. Mit der folgenden Anweisung --
+  -- werden die Zeilen zwischen den drei Backticks (```) als  --
+  -- R-code ausgeführt. Zur Kontrolle können sie die          --
+  -- R-Statements auch in der Console ausführen lassen.       --
+  -- Als Beispiel können wir den Vektor a wie folgt zuweisen  --
+  
+```{r}
+a <- c(5, -2, 6, 9)
+```
+
+  -- Führen Sie die analoge Zuweisung für den Vektor b aus    --
+  -- und berechnen Sie daraus die Summe und die Differenz.    --
+  -- Für das Skalarprodukt steht die Funktion crossprod()     --
+  -- oder der Operaptor %*% zur Verfügung.                    --
+-->
+
+```{r}
+# Zuweisung der Vektoren a und b
+a <- c(5, -2, 6, 9)
+b <- c(13, 1 , -7, 22)
+```
+
+Die Summe der beiden Vektoren a und b:
+
+```{r Summe}
+# Berechnung der Summe
+a+b
+```
+
+Die Differenz der beiden Vektoren
+
+```{r Differenz}
+# Berechnung der Differenz
+a-b
+```
+
+Das Skalarprodukt auf zwei Arten
+
+```{r Skalarprodukt}
+# Skalarprodukt auf 2 Arten
+crossprod(a,b)
+a %*% b
+```
+
+
+## Aufgabe 5: Matrizen in R
+
+Überprüfen Sie das Resultat der Inversen der Diagonalmatrix aus Aufgabe 3.
+
+__Hinweise__
+
+* Eine Diagonalmatrix kann einfach über die Funktion `diag()` erstellt werden.
+* Die Funktion `solve()` berechnet die Inverse einer Matrix
+
+<!-- Geben Sie ihre Antwort hier. Definieren Sie die Matrix D mit --
+  -- der Funktion diag(). Berechnen Sie die Inverse mit solve().  -- 
+  -->
+  
+__Lösung__:
+
+Eine Diagonalmatrix in R wird aus dem Vektor der Diagonalelemente erzeugt. Es gibt dabei zwei Möglichkeiten. 
+
+1. Zuerst wird eine Nullmatrix initialisiert und dann werden die Diagonalelemente der Nullmatrix auf die entsprechenden Werte angepasst.
+
+```{r AssignDiagMat1}
+D <- matrix(0, nrow = 3, ncol = 3)
+diag(D) <- c(3,-5,1)
+D
+```
+
+2. Als zweite Möglichkeit kann die Diagonalmatrix direkt mit `diag()` erzeugt werden.
+
+```{r AssignDiagMat2}
+D <- diag(c(3,-5,1))
+D
+```
+
+Zur direkten Berechnung der Inversen einer Matrix gibt es in R die Funktion `solve()`
+
+```{r InvDiag}
+solve(D)
+```
+
