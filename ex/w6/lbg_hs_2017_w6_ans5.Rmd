@@ -1,0 +1,143 @@
+---
+title:  Züchtungslehre - Übung 5
+author: Peter von Rohr
+date: 2017-11-03
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, results = 'asis')
+```
+
+
+## Aufgabe 1: Pedigree (Prüfungsaufgabe HS2015)
+
+Gegeben ist folgendes Pedigree
+
+```{r ExamPed, echo=FALSE, results='markup'}
+suppressPackageStartupMessages( library(pedigreemm) )
+nNrAni <- 5
+ped <- pedigree(sire = c(NA,NA,1,1,3), dam = c(NA,NA,2,2,4), label = 1:nNrAni)
+print(ped)
+```
+
+\begin{enumerate}
+\item[a)] Stellen Sie die additive genetische Verwandtschaftsmatrix für das oben dargestellte Pedigree auf.
+\end{enumerate}
+
+<!-- Sie können die Matrix im LaTeX-Format angeben. Das entsprechende Muster ist nach dem     --
+  -- Titel ### Lösung vorgegeben. Falls das LaTeX-Format nicht funktioniert, können sie die   --
+  -- Verwandetschaftsmatrix auch im Free-Format angeben. 
+
+  -- 8< --- Vorlage für die Matrix im Free-Format unterhalb dieser Zeile -------   --
+``` 
+A = [
+
+]
+```
+  -- 8< --- Ende des Free-Format ---------------------------------------------------------   --
+  --
+  -->
+
+
+### Lösung
+
+$$ 
+A = \left[\begin{array}{ccccc}
+    &      &     &    &     \\
+    &      &     &    &     \\
+    &      &     &    &     \\
+    &      &     &    &     \\
+    &      &     &    &     \\
+\end{array}\right]
+$$
+
+\begin{enumerate}
+\item[b)] Welches der fünf Tiere im gezeigten Pedigree ist ingezüchtet und wie gross ist der Inzuchtkoeffizient $F_X$?
+(Bitte auch für nicht ingezüchtete Tiere den Inzuchtkoeffizienten angeben)
+\end{enumerate}
+
+<!-- Die Inzuchtgrade der Tiere können Sie aus dem Pedigree lesen. --
+  -- Kopieren Sie die nachfolgenden Vorlage für eine Tabelle und   --
+  -- geben Sie die Antworten in der Tabelle.                      --
+  --
+  --
+  -->
+### Lösung
+
+\begin{tabular}{ccc}
+Tier ID  &  Ingezüchtet (ja/nein)  &  Inzuchtkoeffizient \\
+1        &                         &                     \\
+2        &                         &                     \\
+3        &                         &                     \\
+4        &                         &                     \\
+5        &                         &                     \\
+\end{tabular}
+
+
+```{r SpecialAnimal, echo=FALSE}
+nSpecialAnimalIdx <- 5
+```
+
+\vspace{5ex}
+\begin{enumerate}
+\item[c)] Wir interessieren uns speziell für Tier $`r nSpecialAnimalIdx`$. Welche Elemente der additiv genetischen Verwandtschaftsmatrix enthalten den Inzuchtkoeffizienten von Tier $`r nSpecialAnimalIdx`$. Am besten geben Sie die Elemente der Matrix über die jeweiligen Zeilen- und Kolonnennummern an.
+\end{enumerate}
+
+<!-- Hier reicht es, wenn Sie die entsprechenden Matrixelemente angeben -->
+### Lösung
+
+
+## Aufgabe 2: R-Package pedigreemm
+Das R-Package `pedigreemm` enthält ein paar Funktionalitäten zu Berechnungen mit Pedigrees. Wie alle R-packages, welche nicht mit der Grundversion von R mitkommen muss `pedigreemm` mit dem Befehl
+
+```{r InstallPackage, eval=FALSE}
+install.packages("pedigreemm")
+```
+
+installiert werden. Im Package `pedigreemm` gibt es die Funktion `getA()`, welche als Argument ein Objekt vom Typ `pedigree` übernimmt und daraus die Verwandtschaftsmatrix $A$ berechnet. Ein `pedigree`-Objekt wird mit der Funktion `pedigree()` erstellt. Die Funktion `pedigree()` braucht drei Vektoren als Argumente. Es sind dies die Vektoren 
+
+1. __sire__: gibt die Väter der Tiere an
+2. __dam__: gibt die Mütter der Tiere an
+3. __label__: gibt die TierIds an
+
+Auf der Hilfeseite von der Funktion `pedigree` welche mit `?pedigree` aufgerufen wird, ist ganz am Schluss ein Beispiel angegeben, wie ein Pedigree in ein `pedigree`-Objekt eingelesen wird.
+
+__Ihre Aufgabe__: Überprüfen Sie die in Aufgabe 1 berechnete Verwandtschaftsmatrix $A$ mit der Funktion `getA()`.
+
+<!-- Fügen Sie einen neuen R-code-junk ein und stellen Sie das in Aufgabe 1    --
+  -- verwendete Pedigree auf. Das Pedigree wird mit der Funktion pedigree()    --
+  -- aufgestellt. Für die Verwandtschaftsmatrix verwenden Sie die Funktion     --
+  -- getA(). Sie können die folgende Vorlage für Ihren R-code-junk verwenden   --
+  -- müssen aber die Option eval=TRUE setzen, sonst wird die Berechnung nicht  --
+  -- gestartet.
+  
+```{r RunGetAComment, echo=TRUE, results='markup', eval=FALSE}
+### # Anzahl Tiere in einer Variablen ablegen
+nNrAni <- 5
+### # Pedigree aufstellen
+ped <- pedigree(sire = ..., dam = ..., label = ...)
+### # Verwandtschaftsmatrix berechnen
+...
+```
+
+  -->
+### Lösung
+
+
+## Aufgabe 3: Heatmap
+Die sogenannte `Heatmap` kann als graphische Darstellung einer Verwandtschaftsmatrix verwendet werden. Die R-Statements sind in den Unterlagen beschrieben. Die Funktionen zur Erzeugung einer `Heatmap` sind im R-package `lattice` enthalten. Diese sollte schon mit der Basisversion von R dabei sein. 
+
+Versuchen Sie die Verwandtschaftsmatrix aus Aufgabe 1 als `Heatmap` darzustellen.
+
+__Hinweis__: Falls Sie die Verwandtschaftsmatrix mit der Funktion `getA()` aus Package `pedigreemm` erzeugen, dann müssen Sie das Resultat aus `getA()` mit der Funktion `as.matrix()` in eine Matrix verwandeln.
+
+\pagebreak
+
+<!-- Verwandeln Sie die unter Aufgabe 2 berechnete Verwandtschaftsmatrix in eine --
+  -- volle Matrix mit der Funktion as.matrix(). Verwenden Sie nachher die in den --
+  -- Unterlagen beschriebenen Anweisungen zur Erzeugung einer Heatmap.           --
+  -->
+  
+### Lösung
+

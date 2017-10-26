@@ -1,0 +1,358 @@
+---
+title:  Züchtungslehre - Lösung 2
+author: Peter von Rohr
+date: 2017-10-06
+output: 
+  pdf_document:
+    includes:
+      in_header: header.tex
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, results = 'asis')
+```
+
+
+## Aufgabe 1: Matrixdefinitionen in R
+In R werden Matrizen mit der Funktion `matrix` erstellt. Diese aktzeptiert verschiedene Optionen in Form von Funktionsparametern. Wir wollen uns hier anschauen, welche Auswirkungen die verschiedenen Parameter auf die erzeugten Matrizen haben.  
+
+__Ihre Aufgabe__ wird es sein die Matrizen mit den verschiedenen Optionen zu erstellen und so besser zu verstehen, was die Optionen für eine Bedeutung haben.
+
+### Lösung
+
+Die Lösungen werden direkt in der Aufgabestellung sichtbar gemacht. Dafür setzen wir die Option `eval`auf `TRUE` und machen runde Klammern () um die Zuweisungen der Matrizen. Somit werden die Resultate sichtbar.
+
+### Parameter `data`
+* `data`: Angabe der Matrix-Elemente
+<!-- Kopieren Sie die nachfolgende Anweisung an die Konsole oder -- 
+  -- setzen sie eval=TRUE und machen eine Klammer um die gesamte --
+  -- Anweisung, z.Bsp: (matA <- matrix(data = c(1:9), nrow = 3, ncol = 3)) --
+  -- so erscheit die erzeugte Matrix als output                  -- 
+  -->
+```{r echo=TRUE, results='markup', eval=TRUE}
+(matA <- matrix(data = c(1:9), nrow = 3, ncol = 3))
+```
+Dem Funktionsparameter `data` kann ein Vektor von Elementen übergeben werden. Diese Elemente werden dann in der Matrix platziert.
+
+* `data`: Ohne Angabe der Matrix-Elemente
+```{r echo=TRUE, results='markup', eval=TRUE}
+(matB <- matrix(nrow = 3, ncol = 3))
+```
+Der Default-Wert für den Funktionsparameter `data` ist `NA`. Das heisst, wenn `data` nicht angegeben wird, dann wird die Matrix mit lauter `NA`s abgefüllt.
+
+* `data`: Spezifikation nicht aller Elemente
+```{r echo=TRUE, results='markup', eval=TRUE}
+(matC <- matrix(data = c(1,2,3), nrow = 3, ncol = 3))
+```
+Sofern die Länge des an `data` übergebenen Vektors nicht der Anzahl Matrixelemente entspricht, werden die Elemente im `data`-Vektor wiederholt. In R spricht man dabei auch von Recycling. Sofern die Anzahl Matrixelemente ein Vielfaches der Länge des `data`-Vektors ist, geschieht dieses Recycling ohne weitere Meldung. Falls diese Bedingung nicht der Fall ist, wird eine Warnung ausgegeben. Dies wird im nächsten Code-Junk gezeigt.
+
+```{r echo=TRUE, results='markup', eval=TRUE}
+vecData <- c(1,2,3,4)
+(matC2 <- matrix(data = vecData, nrow = 3, ncol = 3))
+```
+Hier ist die Anzahl der Matrixelemente (`r nrow(matC2)*ncol(matC2)`) kein Vielfaches des `data`-Vektors (`r length(vecData)`).
+
+### Parameter `nrow` und `ncol`
+* Weglassen einer der beiden Parameter
+
+```{r echo=TRUE, results='markup', eval=TRUE}
+(matD <- matrix(data = c(1:9), nrow = 3))
+```
+
+```{r echo=TRUE, results='markup', eval=TRUE}
+(matE <- matrix(data = c(1:9), ncol = 3))
+```
+Wird einer der beiden Funktionsparameter `nrow` oder `ncol` weggelassen, dann wird der fehlende Parameter aus der Länge des `data`-Vektors und dem Wert des spezifizierten Parameters berechnet.
+
+### Parameter `byrow`
+```{r echo=TRUE, results='markup', eval=TRUE}
+(matF <- matrix(data = c(1:9), nrow = 3, ncol = 3, byrow = TRUE))
+```
+
+```{r echo=TRUE, results='markup', eval=TRUE}
+(matG <- matrix(data = c(1:9), nrow = 3, ncol = 3, byrow = FALSE))
+```
+
+Mit dem Funktionsparameter `byrow` kann die Richtung, in welcher die angegebenen Daten in die Matrix abgefüllt werden, angegeben werden. Wird der `byrow`-Parameter auf TRUE gesetzt, dann werden die Daten zeilenweise in die Matrix abgefüllt. In allen anderen Fällen ist die Richtung des Abfüllens der Werte in die Matrix kolonnenweise.
+
+
+## Aufgabe 2: Matrixmultiplikation in R
+Matrixmultiplikationen können in R mit dem Operator `%*%` oder mit den Funktionen `crossprod()` oder `tcrossprod()` ausgeführt werden. Der Vorteil von `crossprod()` und `tcrossprod()` gegenüber von `%*%` ist, dass wir mit `crossprod()` und `tcrossprod()` direkt Matrizen und Vektoren multiplizieren können. Das funktioniert mit `%*%` nicht. Bei der Matrix-Vektor-Multiplikation mit `%*%` muss der Vektor zuerst in eine Matrix verwandelt werden. 
+
+In einem ersten Teil der Aufgabe geht es um einen Vergleich zwischen `crossprod()`, `tcrossprod()` und `%*%` für die Matrix-Matrix-Multiplikation. 
+
+a) Gegeben sind die folgenden Matrizen
+
+```{r MatMultMatDef, echo=TRUE, results='markup'}
+(matA <- matrix(data = c(1:9), ncol = 3))
+(matB <- matrix(data = c(2:10), ncol = 3))
+```
+
+Finden Sie heraus welcher Multiplikationen mit `%*%` entspricht die folgende Anweisung?
+
+```{r, echo=TRUE, results='markup', eval=TRUE}
+crossprod(matA,matB)
+```
+
+<!-- Sie können hier einen neuen R-code-junk beginnen und die verschiedenen   --
+  -- Multiplikationen ausprobieren. Dabei können Sie sowohl die Reihenfolge   --
+  -- der Matrizen ändern und die Matrizen transponieren. Die Transponierte    -- 
+  -- einer Matrix matA erhalten sie in R mit t(matA).                         --
+  -- Die folgende Anweisung erzeugt einen neuen Code-Junk. Die R-Statements   --
+  -- müssen zwischen auf den Zeilen zwischen den drei Backticks (```) stehen  --
+  
+```{r}
+
+```
+  -->
+
+### Lösung
+Die Anweisung `crossprod(matA,matB)` entspricht der Matrixmultiplikation
+
+```{r, echo=TRUE, results='markup'}
+t(matA) %*% matB
+```
+
+
+Alternativ dazu gibt es die Funktion `tcrossprod()`. Finden Sie, welche Matrixmultiplikation mit `%*%`
+
+```{r, echo=TRUE, results='markup', eval=TRUE}
+tcrossprod(matA, matB)
+```
+
+ausführt.
+
+<!-- Analog zur Aufgabe oben mit crossprod(), hier das gleich für tcrossprod() -->
+
+### Lösung
+```{r, echo=TRUE, results='markup'}
+matA %*% t(matB)
+```
+
+
+b) Gegeben ist zusätzlich der Vektor `vecB` als
+
+```{r, echo=TRUE}
+vecB <- c(-3,16,1)
+```
+
+Multiplizieren Sie die Matrix `matA` mit dem Vektor `vecB` einmal mit `%*%` und einmal mit `crossprod()`.
+
+__Hinweise__: Ein Vektor kann mit der Funktion `as.matrix()` in eine Matrix verwandelt werden.
+
+<!-- Fügen Sie hier eine R-code-junk hinzu und multiplizieren Sie --
+  -- hier die Matrix matA mit dem Vektor vecB                     --
+  -->
+
+### Lösung
+```{r echo=TRUE, results='markup'}
+matA %*% as.matrix(vecB)
+```
+
+oder einfacher mit der Funktion `crossprod()`
+
+```{r echo=TRUE, results='markup'}
+crossprod(t(matA), vecB)
+```
+
+
+## Aufgabe 3: Gleichungssysteme
+
+Gegeben ist das folgende Gleichungssystem.
+
+\begin{IEEEeqnarray}{rCl}
+       2x_2 + 2x_3 &=& 1 \nonumber\\
+2x_1 + 4x_2 + 5x_3 &=& 9 \nonumber\\
+ x_1 -  x_2 + 2x_3 &=& 3
+\label{eq:GlsA1} 
+\end{IEEEeqnarray}
+
+a) Bestimmen Sie die Lösungsmenge des Gleichungssystems (\ref{eq:GlsA1}) mit dem Gaussverfahren
+
+<!-- Geben Sie hier die Schritte für die Bestimmung der Lösungsmenge mit dem Gaussverfahren      --
+  -- Am einfachsten ist, wenn Sie das Gleichungssystem aus der Aufgabe kopieren und nachfolgend  --
+  -- bei jedem Schritt des Gaussverfahrens wieder einfügen.                                      --
+  -->
+  
+### Lösung
+* Vertauschen der ersten und der zweiten Gleichung
+
+\begin{IEEEeqnarray*}{rCl}
+2x_1 + 4x_2 + 5x_3 &=& 9\\
+       2x_2 + 2x_3 &=& 1\\
+ x_1 -  x_2 + 2x_3 &=& 3
+\end{IEEEeqnarray*}
+
+* $1/2$-fache der ersten Gleichung von dritter abziehen
+
+\begin{IEEEeqnarray*}{rCl}
+2x_1 + 4x_2 + 5x_3   &=& 9\\
+       2x_2 + 2x_3   &=& 1\\
+     - 3x_2 - \frac{1}{2}x_3 &=& -\frac{3}{2}
+\end{IEEEeqnarray*}
+
+* Addition des $3/2$-fache der zweiten zur dritten Gleichung
+
+\begin{IEEEeqnarray*}{rCl}
+2x_1 + 4x_2 + 5x_3   &=& 9\\
+       2x_2 + 2x_3   &=& 1\\
+      \frac{5}{2}x_3 &=& 0
+\end{IEEEeqnarray*}
+
+Somit ist $x_3 = 0$.
+
+* Rückwärtseinsetzen in der zweiten Gleichung führt zu $x_2 = 1/2$. Aufgrund der ersten Gleichung folgt $x_1 = 7/2$.
+  
+
+b) Verwandeln Sie das Gleichungssystem (\ref{eq:GlsA1}) in Matrix-Vektor-Schreibweise
+
+<!-- Als Resultat erhalten Sie eine 3-mal-3-Matrix A, ein Vektor x und ein  --
+  -- Vektor b, wobei beide Vektoren die Länge 3 aufweisen.                  --
+  -- Die Matrix können Sie wie folgt angeben:                                      --
+  --
+$$A = \left[\begin{array}{ccc}
+      &     &    \\
+      &     &    \\
+      &     &    \\
+ \end{array}\right] $$
+ 
+  -- Der Vektor x
+$$x = \left[\begin{array}{c}
+      \\
+      \\
+      \\
+ \end{array}\right] $$
+  
+  -- Der Vektor b wird analog angegeben.                                  --
+  --
+$$b = \left[\begin{array}{c}
+      \\
+      \\
+      \\
+ \end{array}\right] $$
+  
+  -- -->
+  
+### Lösung
+\begin{IEEEeqnarray*}{rCl}
+A \cdot x &=& b
+\end{IEEEeqnarray*}
+
+wobei die sogenannte Koeffizientenmatrix $A$, der Vektor $x$ und die rechte Handseite $b$ wie folgt definiert sind
+
+$$A = \left[
+\begin{array}{ccc}
+0  &  2  &  2\\
+2  &  4  &  5\\
+1  & -1  &  2
+\end{array}
+\right]$$,
+
+$$x\left[
+\begin{array}{c}
+x_1 \\
+x_2 \\
+x_3
+\end{array}
+\right]$$
+
+und
+
+$$b=\left[
+\begin{array}{c}
+1 \\
+9 \\
+3
+\end{array}
+\right]$$  
+
+c) Wie lautet die Lösung des Gleichungssystem (\ref{eq:GlsA1}) in Matrix-Vektor-Schreibweise
+
+<!-- Hier soll das Gleichungssystem von Aufgabe b) nach x  --
+  -- aufgelöst werden. Somit lautet das Resultat           --
+  
+$$ x = $$  
+  -->
+
+$$x = A^{-1} \cdot b$$
+
+d) Berechnen Sie die Lösung aus c) mit R
+
+__Hinweis__: Für die Multiplikation der Matrix $A^{-1}$ mit dem Vektor $b$ muss der Vektor $b$ in eine Matrix verwandelt werden. Dies kann mit der Funktion `as.matrix()` gemacht werden.
+
+<!-- Hier ist die Funktion solve() wichtig. Für nähere Hinweise kann auch  --
+  -- die Hilfe mit ?solve von der Konsole aufgrufen werden.                --
+  -->
+
+### Lösung
+```{r SolEqn, echo=TRUE, results='markup'}
+matA <- matrix(data = c(0,2,2,2,4,5,1,-1,2),nrow = 3,ncol = 3, byrow = TRUE)
+matAInv <- solve(matA)
+vecB <- c(1,9,3)
+sol <- matAInv %*% as.matrix(vecB)
+print(sol)
+```
+
+Die so erhaltene Lösung ist eine 3 mal 1 Matrix. Alternativ erhalten wir die Lösungen mit nur einem Aufruf der Funktion `solve()` als Vektor mit
+
+```{r SolEqnSimple, echo=TRUE, results='markup'}
+solve(matA, vecB)
+```
+
+
+## Aufgabe 4: Quantitative Genetik
+In einer Population wurden für einen Genort folgende Häufigkeiten bei Genotypen gezählt
+
+```{r GenotypeFreqs}
+dfGenotypeFreq <- data.frame(Genotypen = c("$A_1A_1$", "$A_1A_2$", "$A_2A_2$"),
+                             Anzahl    = c(24, 53, 23),
+                             stringsAsFactors = FALSE)
+knitr::kable(dfGenotypeFreq)
+```
+
+a) Bestimmen Sie die Genotypfrequenzen
+
+<!-- Der Vektor der Anzahlen der Genotypen ist mit dfGenotypeFreq$Anzahl verfügbar. --
+  -- Mit der Funktion sum() wird die Summe der Elemente in einem Vektor berechnet.  --
+  -->
+
+### Lösung
+```{r echo=TRUE, results='markup'}
+nTotNrInd <- sum(dfGenotypeFreq$Anzahl)
+vGenoTypeFreq <- dfGenotypeFreq$Anzahl / nTotNrInd
+cat(paste("Genotyp-Frequenz", dfGenotypeFreq$Genotypen[1]), ": ", vGenoTypeFreq[1])
+cat(paste("Genotyp-Frequenz", dfGenotypeFreq$Genotypen[2]), ": ", vGenoTypeFreq[2])
+cat(paste("Genotyp-Frequenz", dfGenotypeFreq$Genotypen[3]), ": ", vGenoTypeFreq[3])
+```
+
+b) Bestimmen Sie die Allelfrequenzen
+
+<!-- Anstelle der Genotypen werden hier die Frequenzen der Allele A1 und A2 --
+  -- bestimmt.                                                              --
+  -->
+  
+### Lösung
+```{r echo=TRUE, results='markup'}
+vGenFreqP <- vGenoTypeFreq[1] + 0.5*vGenoTypeFreq[2]
+vGenFreqQ <-  vGenoTypeFreq[3] + 0.5*vGenoTypeFreq[2]
+cat("Allelfrequenz fuer A1: ", vGenFreqP)
+cat("Allelfrequenz fuer A2: ", vGenFreqQ)
+```
+  
+
+c) Berechnen Sie das Populationsmittel $\mu$ unter der Annahme, dass die genotypischen Werte zwischen den homozygoten Genotypen $20$ Einheiten auseinanderliegen und dass der heterozygote Genotyp einen genotypischen Wert von $2$ hat.
+
+<!-- Das Populationsmittel entspricht dem Erwartungswert und dieser berechnet --
+  -- sich aus Frequenz der Genotypen mal Wert dem genotypischen Wert          --
+  -->
+
+### Lösung
+```{r echo=TRUE, results='markup'}
+nDeltaHom <- 20
+### # additiver Wert A
+nAddValue <- nDeltaHom / 2
+nDom <- 2
+### # Populationsmittel
+nMu <- (vGenFreqP-vGenFreqQ) * nAddValue + 2 * vGenFreqP * vGenFreqQ * nDom
+cat("Populationsmittel: ", nMu, "\n")
+```
