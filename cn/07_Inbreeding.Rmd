@@ -1,0 +1,337 @@
+# Berechnung der Inzucht
+```{r Chapter07Setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis')
+```
+
+## Einleitung
+Im Kapitel __Inverse Verwandtschaftsmatrix__ haben wir besprochen, wie die inverse Verwandtschaftsmatrix direkt aufgestellt werden kann. Die verwendete Methode basiert auf der LDL-Zerlegung der Matrix $A$, wobei die Inversen der Matrizen $L$ und $D$ einfacher zu berechnen sind als jene von $A$. 
+
+Die Inverse $D^{-1}$ ist eine Diagonalmatrix, deren Elemente von den Inzuchtkoeffizienten der Tiere abhängen. Die Inzuchtkoeffizienten erscheinen auf der Diagonalen der Verwandtschaftsmatrix. Also müssten wir für die Berechnung der Inzuchtkoeffizienten die komplette Verwandtschaftsmatrix aufstellen. Für sehr grosse Populationen ist das zu aufwändig. Wir brauchen also eine effizientere Methode zur Berechnung der Inzuchtkoeffizienten.
+
+
+## Berechnung der Inzuchtkoeffizienten
+Grundsätzlich gibt es zwei Arten die Inzuchtkoeffizienten zu berechnen, ohne die gesamte Verwandtschaftsmatrix aufzustellen.
+
+1. Cholesky-Zerlegung der Verwandtschaftsmatrix
+2. Pfadkoeffizientenmethode
+
+
+## Cholesky-Zerlegung der Verwandtschaftsmatrix
+Die Bezeichnung dieser Methode ist etwas irreführend, da wir ja die Verwandtschaftsmatrix explizit nicht kennen und deshalb auch nicht zerlegen können. Viel mehr wollen wir günstige Eigenschaften der Cholesky-Zerlegung der Verwandtschaftsmatrix ausnützen um die Inzuchtkoeffizienten effizient berechnen zu können. Zur Ableitung der Eigenschaften der Cholesky-Zerlegung, nehmen wir vorübergehend an, dass wir die Verwandtschaftsmatrix $A$ kennen. 
+
+Bei bekannter Verwandtschaftsmatrix $A$ ist deren Cholesky-Zerlegung definiert als 
+
+\begin{equation}
+A = R * R^T
+\label{eq:CholMatA}
+\end{equation}
+
+wobei $R$ eine linke untere Dreiecksmatrix ist. Aufgrund der Dreiecksstruktur von $R$ lassen sich die Diagonalelemente von $A$ berechnen als Summen der quadrierten Elemente von $R$ bis zur Diagonalen. Als Formel bedeutet das 
+
+\begin{equation}
+a_{ii} = \sum_{j=1}^i r_{ij}^2
+\label{eq:DiagElemMatA}
+\end{equation}
+
+Für ein kleines Beispiel einer $3\times 3$ Matrix $A$ sieht das wie folgt aus
+```{r SetAnzAni}
+nAnzAni <- 3
+```
+
+
+```{r SmallExCholA, eval=TRUE}
+nAnzAni <- 3
+matA <- rmddochelper::matGetMatElem(psBaseElement = "a", pnNrRow = nAnzAni, pnNrCol = nAnzAni)
+matR <- rmddochelper::matLowerTri(psBaseElement = "r", pnNrRow = nAnzAni, pnNrCol = nAnzAni)
+cat("$$\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matA), collapse = "\n"))
+cat("\\right] \n")
+cat(" = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matR), collapse = "\n"))
+cat("\\right] \n")
+cat(" * \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = t(matR)), collapse = "\n"))
+cat("\\right] \n")
+cat("$$\n")
+```
+
+Für das gezeigte Beispiel berechnen wir die Diagonalelemente von $A$ als
+
+\begin{eqnarray}
+  a_{11} &=& r_{11}^2 \nonumber\\
+  a_{22} &=& r_{21}^2 + r_{22}^2\nonumber\\
+  a_{33} &=& r_{31}^2 + r_{32}^2 + r_{33}^2\nonumber
+\label{MatADiag}
+\end{eqnarray}
+
+Die Gleichung (\ref{eq:DiagElemMatA}) zeigt, wie die Diagonalelemente $a_{ii}$ der Verwandtschaftsmatrix $A$ und somit die Inzuchtkoeffizienten aufgrund einer Zeile aus der Matrix $R$ berechnet werden können. Als nächstes müssen wir klären, wie die Elemente der Matrix $R$ berechnet werden können.
+
+
+### Rekursive Berechnung der Matrix $R$
+Wir setzen die LDL-Zerlegung der Verwandtschaftsmatrix $A$ der Cholesky-Zerlegung von $A$ gleich.
+
+\begin{equation}
+A = R * R^T = L * D * L^T
+\label{eq:CholEqLdl}
+\end{equation}
+
+Schreiben wir die Matrix $R$ als Produkt aus den Matrizen $L$ und $S$ und setzen das in Gleichung (\ref{eq:CholEqLdl}) ein, dann folgt 
+
+\begin{equation}
+A = R * R^T = L * S * (L * S)^T = L * S * S^T * L^T= L * D * L^T
+\label{eq:CholRLSEqLdl}
+\end{equation}
+
+Aus Gleichung (\ref{eq:CholRLSEqLdl}) sehen wir, dass 
+
+$$D = S * S^T$$
+
+und somit ist $S$ eine Diagonalmatrix deren Elemente gegeben ist durch $s_{ii} = \sqrt{d_{ii}}$. Schauen wir uns die Zerlegung 
+
+$$R = L * S$$
+
+der Matrix $R$ an unserem kleinen $3\times 3$ Beispiel an
+
+\begin{equation}
+```{r RlsDecompEx, eval=TRUE}
+matL <- rmddochelper::matLowerTri(psBaseElement = "l", pnNrRow = nAnzAni, pnNrCol = nAnzAni, pvecDiag = 1)
+matS <- rmddochelper::matDiag(psBaseElement = "s", pnNrRow = nAnzAni, pnNrCol = nAnzAni)
+cat("\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matR), collapse = "\n"))
+cat("\\right]  = \n")
+cat("\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matL), collapse = "\n"))
+cat("\\right]  * \n")
+cat("\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matS), collapse = "\n"))
+cat("\\right]\n")
+```
+\label{eq:SmallExRLS}
+\end{equation}
+
+wird klar, dass aufgrund der speziellen Strukturen von $L$ und $S$ gilt, dass die Diagonalelemente von $R$ den Diagonalelementen von $S$ entsprechen. Es gilt somit 
+
+\begin{equation}
+r_{ii} = s_{ii} = \sqrt{d_{ii}}
+\label{eq:ComputeRii}
+\end{equation}
+
+Im Kapitel __Inverse Verwandtschaftsmatrix__ hatten wir gesehen, dass die Diagonalelemente $d_{ii}$ der Matrix $D$ aufgrund der Inzuchtgrade der Eltern berechnet werden können
+
+\begin{equation}
+d_{ii} = {1\over 2}\ - {1\over 4}\ (F_s + F_d) = 1 - 0.25(a_{ss} + a_{dd})
+\label{eq:ComputeDii}
+\end{equation}
+
+wobei $s$ und $d$ die Eltern von $i$ sind. Die Werte für $a_{ss}$ und $a_{dd}$ werden aufgrund der Gleichung (\ref{eq:DiagElemMatA}) berechnet. Setzen wir das Resultat von (\ref{eq:ComputeDii}) in (\ref{eq:ComputeRii}) ein, dann folgt
+
+\begin{equation}
+r_{ii} = \sqrt{1 - 0.25(a_{ss} + a_{dd})}
+\label{eq:ComputeRiiResult}
+\end{equation}
+
+
+Aufgrund des kleinen Beispiels in (\ref{eq:SmallExRLS}) werden Offdiagonalelement $r_{ij}$ der Matrix $R$ berechnet als 
+
+\begin{equation}
+r_{ij} = l_{ij} * s_{jj}
+\label{eq:ComputeRij}
+\end{equation}
+
+Die Elemente $l_{ij}$ aus Matrix $L$ werden als Durchschnitt der Elemente $l_{sj}$ und $l_{dj}$ berechnet, wobei $s$ und $d$ die Eltern von $i$ sind. Setzen wir dies in (\ref{eq:ComputeRij}) ein, dann folgt
+
+\begin{eqnarray}
+r_{ij} &=& l_{ij} * s_{jj} \nonumber\\
+       &=& {1\over 2}(l_{sj} + l_{dj}) * s_{jj} \nonumber\\
+       &=& {1\over 2}(r_{sj} + r_{dj})
+\label{eq:ComputeRijRec}
+\end{eqnarray}
+
+wobei wir im letzten Schritt von (\ref{eq:ComputeRijRec}) die Definition aus (\ref{eq:ComputeRij}) umgekehrt angewendet haben. 
+
+Somit haben wir die Diagonalelemente $r_{ii}$ und $r_{ij}$ rekursiv berechnet. Unter der gängigen Bedingung, dass im Pedigree die Tiere nach ihrem Alter sortiert sein müssen, können wir die Rekursionen auflösen.
+
+
+## Unser Beipielpedigree
+Das Beispielpedigree aus dem Kapitel __Inverse Verwandtschaftsmatrix__ soll hier nochmals verwendet werden, um die Berechnung der Inzuchtkoeffizienten zu zeigen.
+
+
+```{r 07_PedEx1, results='markup', eval=TRUE}
+suppressPackageStartupMessages(library(pedigreemm))
+nNrAni <- 6
+pedEx1 <- pedigree(sire = c(NA,NA,1,1,4,5),
+                   dam = c(NA,NA,2,NA,3,2),
+                   label = as.character(1:nNrAni))
+print(pedEx1)
+```
+
+Wir wollen nun die Diagonalelemente $a_{11}$ bis $a_{66}$ und damit die Inzuchtkoeffizienten $F_1$ bis $F_6$ berechnen ohne die gesamte Verwandtschaftsmatrix $A$ aufstellen zu müssen. 
+
+### Tier 1
+Wir beginnen mit Tier $1$ und dem entsprechenden Element $a_{11}$. Da Tier $1$ keine bekannten Eltern hat, ist es auch nicht ingezüchtet. Somit ist $F_1 = 0$ und 
+
+```{r StoreMatAMatR}
+matA <- as.matrix(getA(pedEx1))
+vecA <- as.vector(diag(matA))
+matR <- t(chol(matA))
+```
+
+$$a_{11} = 1 + F_1 = `r vecA[1]`$$
+
+### Tier 2
+Den Inzuchtgrad für Tier $2$ wird aufgrund von $a_{22}$ berechnet. Dazu verwenden wir die Gleichung (\ref{eq:DiagElemMatA}}). Somit ist 
+
+$$a_{22} = r_{21}^2 + r_{22}^2$$
+
+Da die Eltern von Tier $2$ unbekannt sind, sind die Terme $r_{sj}$ und $r_{dj}$ aus (\ref{eq:ComputeRijRec}) beide gleich $0$ und somit ist auch $r_{21} = `r matR[2,1]`$. Da die Eltern von Tier $2$ beide unbekannt sind, ist $r_{22} = `r matR[2,2]`$ und somit folgt
+
+$$a_{22} = r_{21}^2 + r_{22}^2 = `r matR[2,1]^2` + `r matR[2,2]^2` = `r matR[2,1]^2 + matR[2,2]^2`$$
+
+```{r VerifyA22}
+stopifnot(all.equal(matR[2,1]^2 + matR[2,2]^2, vecA[2]))
+```
+
+### Tier 3
+Die Berechnung des Diagonalelements $a_{33}$ erfordert die Elemente $r_{31}$, $r_{32}$ und $r_{33}$. Dabei berücksichtigen wir, dass Tier $3$ die Tiere $1$ und $2$ als Eltern hat.
+
+$$r_{31} = {1\over 2}(r_{11} + r_{21}) = {1\over 2}(`r matR[1,1]` + `r matR[2,1]`) = `r 0.5*(matR[1,1] + matR[2,1])`$$
+```{r VerifyR31}
+stopifnot(all.equal(0.5*(matR[1,1] + matR[2,1]), matR[3,1]))
+```
+
+
+$$r_{32} = {1\over 2}(r_{12} + r_{22}) = {1\over 2}(`r matR[1,2]` + `r matR[2,2]`) = `r 0.5*(matR[1,2] + matR[2,2])`$$
+```{r VerifyR32}
+stopifnot(all.equal(0.5*(matR[1,2] + matR[2,2]), matR[3,2]))
+```
+
+Für das Diagonalelement $r_{33}$ verwenden wir die Gleichung (\ref{eq:ComputeRiiResult})
+
+$$r_{33} = \sqrt{1 - 0.25(a_{11} + a_{22})} = \sqrt{1 - 0.25(`r vecA[1]` + `r vecA[2]`)}
+         = \sqrt{`r 1-0.25*(vecA[1]+vecA[2])`}
+         = `r sqrt(1-0.25*(vecA[1]+vecA[2]))`$$
+```{r VerifyR33}
+stopifnot(all.equal(sqrt(1-0.25*(vecA[1]+vecA[2])), matR[3,3]))
+```
+
+Das Diagonalelement $a_{33}$ der Verwandtschaftsmatrix $A$ für Tier $3$ kann nun berechnet werden als
+
+$$a_{33} = r_{31}^2 + r_{32}^2 + r_{33}^2
+         = `r matR[3,1]`^2 + `r matR[3,2]`^2 + `r matR[3,3]`^2
+         = `r matR[3,1]^2 + matR[3,2]^2 + matR[3,3]^2`
+$$
+```{r VerifyA33}
+stopifnot(all.equal(matR[3,1]^2 + matR[3,2]^2 + matR[3,3]^2, vecA[3]))
+```
+
+### Tier 4
+Bei Tier 4 haben wir eine spezielle Situation, da die Mutter unbekannt ist. Somit ist klar, dass der Inzuchtkoeffizient $F_4 = 0$ ist und somit $a_{44} = 1$. Da das Tier $4$ Nachkommen hat, berechnen wir aber trotzdem noch die Elemente auf der Zeile $4$ in der Matrix $R$. 
+
+$$r_{41} = {1\over 2} * r_{11} = {1\over 2}  * `r matR[1,1]` = `r 0.5 * matR[1,1]`$$
+```{r VerifyR41}
+stopifnot(all.equal(0.5 * matR[1,1], matR[4,1]))
+```
+
+$$r_{42} = {1\over 2} *  r_{12} = {1\over 2}  * `r matR[1,2]` = `r 0.5 * matR[1,2]`$$
+```{r VerifyR42}
+stopifnot(all.equal(0.5 * matR[1,2], matR[4,2]))
+```
+
+$$r_{43} = {1\over 2} *  r_{13} = {1\over 2}  * `r matR[1,3]` = `r 0.5 * matR[1,3]`$$
+```{r VerifyR43}
+stopifnot(all.equal(0.5 * matR[1,3], matR[4,3]))
+```
+
+$$r_{44} = \sqrt{1 - {1\over 4} * a_{11}}
+         = \sqrt{1 - {1\over 4} * `r vecA[1]`}
+         = `r sqrt(1 - 0.25*vecA[1])`
+$$
+```{r VerifyR44}
+stopifnot(all.equal(sqrt(1 - 0.25*vecA[1]), matR[4,4]))
+```
+
+
+### Tiere 5 und 6
+Bei den Tieren $5$ und $6$ sind die Berechnungen vergleichbar mit Tier $3$. Folgende Schritte sind nötig für die Berechnung der Inzuchtgrade $F_5$ und $F_6$.
+
+$$r_{51} = {1\over 2}(r_{41} + r_{31}) = {1\over 2}(`r matR[4,1]` + `r matR[3,1]`) = `r 0.5*(matR[4,1] + matR[3,1])`$$
+```{r VerifyR51}
+stopifnot(all.equal(0.5*(matR[4,1] + matR[3,1]), matR[5,1]))
+```
+$$r_{52} = {1\over 2}(r_{42} + r_{32}) = {1\over 2}(`r matR[4,2]` + `r matR[3,2]`) = `r 0.5*(matR[4,2] + matR[3,2])`$$
+```{r VerifyR52}
+stopifnot(all.equal(0.5*(matR[4,2] + matR[3,2]), matR[5,2]))
+```
+$$r_{53} = {1\over 2}(r_{43} + r_{33}) = {1\over 2}(`r matR[4,3]` + `r matR[3,3]`) = `r 0.5*(matR[4,3] + matR[3,3])`$$
+```{r VerifyR53}
+stopifnot(all.equal(0.5*(matR[4,3] + matR[3,3]), matR[5,3]))
+```
+$$r_{54} = {1\over 2}(r_{44} + r_{34}) = {1\over 2}(`r matR[4,4]` + `r matR[3,4]`) = `r 0.5*(matR[4,4] + matR[3,4])`$$
+```{r VerifyR54}
+stopifnot(all.equal(0.5*(matR[4,4] + matR[3,4]), matR[5,4]))
+```
+$$r_{55} = \sqrt{1 - 0.25*(a_{44}+a_{33})} = \sqrt{1 - 0.25*(`r vecA[4]` + `r vecA[3]`)}
+         = `r sqrt(1 - 0.25*(vecA[4] + vecA[3]))`
+$$
+```{r VerifyR55}
+stopifnot(all.equal(sqrt(1 - 0.25*(vecA[4] + vecA[3])), matR[5,5]))
+```
+
+$$a_{55} = r_{51}^2 + r_{52}^2 + r_{53}^2 + r_{54}^2 + r_{55}^2
+         = `r matR[5,1]^2 + matR[5,2]^2 + matR[5,3]^2 + matR[5,4]^2 + matR[5,5]^2`
+$$
+```{r VerifyA55}
+stopifnot(all.equal(matR[5,1]^2 + matR[5,2]^2 + matR[5,3]^2 + matR[5,4]^2 + matR[5,5]^2, vecA[5]))
+```
+
+
+$$r_{61} = {1\over 2}(r_{51} + r_{21}) = {1\over 2}(`r matR[5,1]` + `r matR[2,1]`) = `r 0.5*(matR[5,1] + matR[2,1])`$$
+```{r VerifyR61}
+stopifnot(all.equal(0.5*(matR[5,1] + matR[2,1]), matR[6,1]))
+```
+$$r_{62} = {1\over 2}(r_{52} + r_{22}) = {1\over 2}(`r matR[5,2]` + `r matR[2,2]`) = `r 0.5*(matR[5,2] + matR[2,2])`$$
+```{r VerifyR62}
+stopifnot(all.equal(0.5*(matR[5,2] + matR[2,2]), matR[6,2]))
+```
+$$r_{63} = {1\over 2}(r_{53} + r_{23}) = {1\over 2}(`r matR[5,3]` + `r matR[2,3]`) = `r 0.5*(matR[5,3] + matR[2,3])`$$
+```{r VerifyR63}
+stopifnot(all.equal(0.5*(matR[5,3] + matR[2,3]), matR[6,3]))
+```
+$$r_{64} = {1\over 2}(r_{54} + r_{24}) = {1\over 2}(`r matR[5,4]` + `r matR[2,4]`) = `r 0.5*(matR[5,4] + matR[2,4])`$$
+```{r VerifyR64}
+stopifnot(all.equal(0.5*(matR[5,4] + matR[2,4]), matR[6,4]))
+```
+$$r_{65} = {1\over 2}(r_{55} + r_{25}) = {1\over 2}(`r matR[5,5]` + `r matR[2,5]`) = `r 0.5*(matR[5,5] + matR[2,5])`$$
+```{r VerifyR65}
+stopifnot(all.equal(0.5*(matR[5,5] + matR[2,5]), matR[6,5]))
+```
+$$r_{66} = \sqrt{1 - 0.25*(a_{55}+a_{22})}
+         = \sqrt{1 - 0.25*(`r vecA[5]`+ `r vecA[2]`)}
+         = `r sqrt(1 - 0.25*(vecA[5]+ vecA[2]))`
+$$
+```{r VerifyR66}
+stopifnot(all.equal(sqrt(1 - 0.25*(vecA[5]+ vecA[2])), matR[6,6]))
+```
+$$a_{66} = r_{61}^2 + r_{62}^2 + r_{63}^2 + r_{64}^2 + r_{65}^2 + r_{66}^2
+         = `r matR[6,1]^2 + matR[6,2]^2 + matR[6,3]^2 + matR[6,4]^2 + matR[6,5]^2 + matR[6,6]^2`
+$$
+```{r VerifyA66}
+stopifnot(all.equal(matR[6,1]^2 + matR[6,2]^2 + matR[6,3]^2 + matR[6,4]^2 + matR[6,5]^2 + matR[6,6]^2, vecA[6]))
+```         
+
+\pagebreak
+
+## Zusammenfassung der Ergebnisse
+
+Als Zusammenfassung stellen wir die Ergebnisse in einer Tabelle zusammen.
+
+\begin{center}
+```{r SummaryResult, results='markup'}
+dfSummaryResult <- data.frame(TierId = 1:nNrAni, 
+                              Diagonalelement = vecA, 
+                              Inzuchtkoeffzient = vecA-1, 
+                              stringsAsFactors = FALSE )
+knitr::kable(dfSummaryResult)
+```
+\end{center}
+

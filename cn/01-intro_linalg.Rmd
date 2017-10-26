@@ -4,8 +4,8 @@ Aus der linearen Algebra brauchen wir für diese Vorlesung nur das Rechnen mit V
 ## Was ist ein Vektor {#vector}
 Ein Vektor ist durch seine __Länge__ und seine __Richtung__ eindeutig bestimmt. Das heisst, sind zwei Vektoren $v$ und $w$ gleich lang und haben die gleich Richtung, dann sind die beiden Vektoren gleich und somit gilt $v=w$. Haben zwei Vektoren $v$ und $x$ nicht die gleiche Richtung oder sind nicht gleich lang, dann sind die Vektoren nicht gleich und somit gilt $v \ne x$ und somit auch $w \ne x$.
 
-```{r VectorEquality, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, fig.align='center', echo=FALSE, results='asis', out.width="5cm"}
-knitr::include_graphics(path = "VectorEquality.pdf")
+```{r VectorEquality, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, odg.out.format=c("pdf","png"), fig.align='center', echo=FALSE, results='asis', out.width="5cm"}
+knitr::include_graphics(path = "png/VectorEquality.png")
 ```
 
 ### Koordinaten
@@ -15,8 +15,8 @@ Durch die Einführung eines Koordinatensystems wird jedem Punkt im n-dimensional
  
 $$ v = \left[\begin{array}{c} e_x - a_x \\ e_y - a_y \end{array}\right]$$
  
-```{r VektorKoordinaten, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, fig.align='center', echo=FALSE, results='asis'}
-knitr::include_graphics(path = "VektorKoordinaten.pdf")
+```{r VektorKoordinaten, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, odg.out.format=c("pdf","png"), fig.align='center', echo=FALSE, results='asis'}
+knitr::include_graphics(path = "png/VektorKoordinaten.png")
 ```
 
  
@@ -39,8 +39,8 @@ $$ u = \left[\begin{array}{c} u_x \\ u_y\end{array}\right]
 
 Graphisch entspricht die Addition zweier Vektoren $v$ und $w$ der Verkettung der beiden Pfeile. 
 
-```{r VektorAddition, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, fig.align='center', echo=FALSE, results='asis'}
-knitr::include_graphics(path = "VektorAddition.pdf")
+```{r VektorAddition, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, odg.out.format=c("pdf","png"), fig.align='center', echo=FALSE, results='asis'}
+knitr::include_graphics(path = "png/VektorAddition.png")
 ```
 
 Die Reihenfolge der beiden Summanden ist nicht wichtig. Es gilt also, dass $v + w = u = w + v$. Dies ist auch aus der obigen Abbildung ersichtlich.
@@ -62,8 +62,8 @@ $$ u = \lambda * v
      = \left[\begin{array}{c} \lambda * v_x \\ \lambda * v_y\end{array}\right]$$
 
 
-```{r VektorMalSkalar, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, fig.align='center', echo=FALSE, results='asis'}
-knitr::include_graphics(path = "VektorMalSkalar")
+```{r VektorMalSkalar, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, odg.out.format=c("pdf","png"), fig.align='center', echo=FALSE, results='asis'}
+knitr::include_graphics(path = "png/VektorMalSkalar.png")
 ```
 
 Je nach Wert von $\lambda$ verändert $v$ die Länge und die Richtung. Folgende Tabelle gibt eine Übersicht zu den Änderungen. 
@@ -97,8 +97,8 @@ $$v \cdot w = v_x * w_x + v_y * w_y$$
 
 Wird das Skalarprodukt zweier Vektoren um das Produkt der Längen der beiden Vektoren skaliert, so resultiert der Kosinus des Zwischenwinkels der beiden Vektoren. Somit liefert das Skalarprodukt einen Vergleich bezüglich der Richtungen von zwei Vektoren. 
 
-```{r VektorenWinkel, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, fig.align='center', echo=FALSE, results='asis'}
-knitr::include_graphics(path = "VektorenWinkel.pdf")
+```{r VektorenWinkel, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, odg.out.format=c("pdf","png"), fig.align='center', echo=FALSE, results='asis'}
+knitr::include_graphics(path = "png/VektorenWinkel.png")
 ```
 
 In einer Formel geschrieben, heisst das

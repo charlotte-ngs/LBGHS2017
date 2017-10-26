@@ -1,0 +1,52 @@
+---
+title: Züchtungslehre - Übung 3
+author: Peter von Rohr
+date: 2017-10-13
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis')
+```
+
+```{r ParameterAssignment, echo=FALSE}
+nHomDiff <- 15
+p <- 0.2
+q <- 1-p
+a <- nHomDiff/2
+d <- -1.5
+alpha <- a + (q-p)*d
+```
+
+## Aufgabe 1: Zuchtwert
+Wir betrachten ein Merkmal, welches von einem Locus $G$ mit zwei Allelen beeinflusst wird. Die Frequenz des positiven Allels beträgt $`r p`$. Wir nehmen an, dass für die Genotypfrequenzen das Hardy-Weinberg-Gleichgewicht gilt. Der Unterschied zwischen den homozygoten Genotypen beträgt $`r nHomDiff`$. Der heterozygote Genotyp hat einen genotypischen Wert von $`r d`$. 
+
+a) Berechnen Sie die Zuchtwerte und die Dominanzabweichungen für die drei Genotypen.
+b) Aufgrund der Selektion auf das positive Allele hat sich nach einer gewissen Zeit die Frequenz des positiven Allels auf $0.35$ erhöht, wie verändert diese Erhöhung die Zuchtwerte der drei Genotypen?
+
+__Hinweis__: Schauen Sie sich die Tabelle mit den Zuchtwerten in den Unterlagen an.
+
+
+
+## Aufgabe 2: Allelsubstitution
+Was bedeutet Allelsubstitution und wie gross ist sie für die in den Aufgaben 1a und 1b gegebenen Zahlen?
+
+
+## Aufgabe 3: Einlesen von Daten in R
+Auf der Webseite der Vorlesung ist eine Datei im csv-Format unter 
+
+`https://charlotte-ngs.github.io/LBGHS2017/ex/w4/iris.csv` abgelegt. Lesen Sie dieses Datei mit dem Befehl `read.csv2` ein und testen Sie die Auswirkung, ob Sie beim Einlesen die Option `stringsAsFactors=FALSE` angeben oder nicht.
+
+__Hinweis__: Sie können die csv-Datei zuerst herunterladen und auf Ihrem Rechner speichern und dann vom lokalen Dateisystem einlesen. Sie können aber auch den oben angegebenen URL direkt in der Funktion `read.csv2` verwenden. Mehr Informationen dazu gibt es unter `?read.csv2`.
+
+
+
+## Zusatzaufgabe: Plot in R
+Stellen Sie die Werte in den Kolonnen `Sepal.Length` und `Petal.Length` des Datensatzes aus der Datei `iris.csv` in einem Diagramm dar. Der Plot sollte ungefähr wie folgt aussehen:
+
+```{r IrisPlot, echo=FALSE}
+bIsSolution <- FALSE
+if(!bIsSolution)
+  plot(iris$Sepal.Length, iris$Petal.Length)
+```
+

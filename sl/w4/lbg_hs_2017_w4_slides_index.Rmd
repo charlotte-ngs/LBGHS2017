@@ -1,0 +1,291 @@
+---
+title: "Tierzucht und Selektionsindex"
+author: "Peter von Rohr"
+date: "2017-10-13"
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis')
+knitr::knit_hooks$set(conv.odg = rmddochelper::odg.graphics.conv.hook)
+```
+
+## Fundamentale Fragen
+
+1. Welches Tier ist das beste?
+2. Wie sollen Tiere ausgewählt werden, dass ihre Nachkommen besser sind als die aktuelle Population
+
+
+## Bestes Tier
+
+- "Bestes Tier": relativer Begriff, abhängig von der Umwelt
+- Beschreibung von Tieren basiert auf __Merkmalen__
+- Beispiele für beobachtete Merkmale sind 
+    + Fellfarbe
+    + Grösse
+    + Bemuskelung
+    + Fundament
+    + Euter
+- Beispiele für messbare Merkmale sind
+    + Körpergewicht
+    + Milchproduktion
+    + Wachstum
+    + Futteraufnahme
+    
+    
+## Genetische Veränderung
+
+- Tierzucht beschäftigt sich mit längerfristigen genetischen Veränderungen von Populationen
+- Genetisches Potential wird von einer Generation an die nächste weitergegeben
+- Beobachtbar sind phänotypische Merkmale
+- Zusammenhang zwischen Phänotyp $y$ und Genotyp $g$
+
+$$y = \mu + g + \epsilon$$
+    
+    
+## Zerlegung des Genotypischen Wertes
+
+- Genotypischer Wert in Zuchtwert $a$, Dominanzabweichung $d$ und Epistasie $i$
+
+$$ y = \mu + a + d + i + \epsilon$$
+
+- Neugruppierung von $d$, $i$ und $\epsilon$ in $e$
+
+$$ y = \mu + a + e$$
+
+- additiver Effekt ist wichtig bei züchterischer Veränderung einer Population
+
+
+## Auswahl der Elterntiere
+
+Zwei Werkzeuge
+
+1. Selektion
+2. Gezielte Anpaarung
+
+
+## Selektion
+
+```{r ZuechtungElternNachkommen, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, odg.out.format=c("pdf"), fig.align='center', echo=FALSE, results='asis', out.width="10cm"}
+knitr::include_graphics(path = "png/ZuechtungElternNachkommen.pdf")
+```
+
+
+## Vermehrung
+
+```{r VermehrungElternNachkommen, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, odg.out.format=c("pdf"), fig.align='center', echo=FALSE, results='asis', out.width="10cm"}
+knitr::include_graphics(path = "png/VermehrungElternNachkommen.pdf")
+```
+
+
+## Resultat der gerichteten Selektion
+
+```{r GerichteteSelektionElternNk, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, odg.out.format=c("pdf"), fig.align='center', echo=FALSE, results='asis', out.width="10cm"}
+knitr::include_graphics(path = "png/GerichteteSelektionElternNk.pdf")
+```
+
+ED: Elterndurchschnitt, SG: Selektionsgrenze, RD: Remontendurchschnitt
+
+
+## Gezielte Paarung
+
+- verschieden von Selektion
+- Zuordnung der Paarungspartner
+- verschiedene Kriterien
+    + Maximierung des Zuchtwertes
+    + Ausnützung gegensätzlicher Eigenschaften
+    + Erzielung von Heterosis-Effekten
+- Paarungen innerhalb Rasse $\rightarrow$ __Reinzucht__
+- Paarungen zwischen Rassen $\rightarrow$ __Kreuzungszucht__
+
+
+## Zuchtwertschätzung mit verschiedenen Informationsquellen
+
+- Gegensatz: Quantitative Genetik - Berechnung der wahren Zuchtwerte aufgrund
+    + Allelfrequenzen
+    + Genotypischer Werte
+    
+- Hier: Schätzung der Zuchtwerte aufgrund von phänotypischen Beobachtungen
+    + unterliegendes Modell
+    + Schätzung basiert auf Regression der wahren Zuchtwerte auf phänotypische Beobachtungen
+    + Schätzfehler
+    
+    
+## Regression
+
+```{r RegPhenAddGen, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, odg.out.format=c("pdf"), fig.align='center', echo=FALSE, results='asis', out.width="10cm"}
+knitr::include_graphics(path = "png/RegPhenAddGen.pdf")
+```
+
+    
+## Einzelne Eigenleistung
+
+- Modell: $$y_{ij} = \mu_i + a_i + e_{ij}$$
+- geschätzter Zuchtwert: $$\hat{a}_i = b(y_i - \mu)$$
+- Regressionskoeffizient: $$b = \frac{cov(a,y)}{var(y)}  =  \frac{var(a)}{var(y)} =  \frac{\sigma_a^2}{\sigma_y^2} = h^2$$
+
+ $$\rightarrow \hat{a}_i = h^2(y_i - \mu)$$
+
+    
+## Einzelne Eigenleistung II
+
+- Genauigkeit: Korrelation zwischen Selektionskriterium und wahrem Zuchtwert
+
+$$r_{a,y}  =  \frac{cov(a,y)}{\sigma_a \sigma_y}
+         =  \frac{\sigma_a^2}{\sigma_a \sigma_y} = h$$
+
+- Erwarteter Selektionserfolg pro Generation: Verbesserung der Nachkommen im Vergleich zu den Eltern
+
+\begin{equation}
+R = i r_{a,y}^2 \sigma_y = i h^2 \sigma_y \nonumber
+\end{equation}
+
+wobei $i$ die Selektionsintensität ist. Diese entspricht  der Überlegenheit der selektierten Individuen ausgedrückt in Einheiten einer phänotypischen Standardabweichung.
+
+
+## Wiederholte Messungen
+
+- mehrere wiederholte Messungen des gleichen Merkmals
+- Modell: $$var(y) = var(a) + var(pe) + var(te)$$
+- Wiederholbarkeit: $$t = \frac{var(a) + var(pe)}{var(y)}$$
+- Zuchtwert $\hat{a}_i$ aufgrund des Mittelwertes $\bar{y}$
+
+$$\hat{a}_i = b(\bar{y}_i - \mu)$$
+
+## Wiederholte Messungen II
+
+- Regressionskoeffizient $b$ 
+
+$$b = \frac{cov(a, \bar{y})}{var(\bar{y})}$$
+
+- Zähler Covarianz
+
+$$cov(a,\bar{y}) = cov(a, a + pe + {1\over n}\sum te) = \sigma_a^2$$
+
+- Nenner Varianz
+
+$$var(\bar{y}) = var(a) + var(pe) + {1\over n} var(te) = \left[ t + (1-t)/n \right]\sigma_y^2$$
+
+## Wiederholte Messungen III
+
+- Einsetzen in Regressionskoeffizienten
+$$b = \frac{cov(a, \bar{y})}{var(\bar{y})} = \frac{\sigma_a^2}{\left[ t + (1-t)/n \right]\sigma_y^2}
+ = \frac{nh^2}{1+(n-1)t}$$
+
+- Einsetzen in geschätzten Zuchtwert
+
+$$\hat{a}_i = b(\bar{y}_i - \mu) = \frac{nh^2}{1+(n-1)t}\ (\bar{y}_i - \mu)$$
+
+## Wiederholte Messungen IV
+
+- Genauigkeit
+\begin{equation}
+r_{a,\bar{y}} = \frac{cov(a,\bar{y})}{\sigma_a \sigma_{\bar{y}}}
+ = \frac{\sigma_a^2}{\sigma_a \sigma_y \sqrt{\left[ t + (1-t)/n \right]}} \nonumber
+\end{equation}
+
+\begin{equation}
+ = \frac{h\sqrt{n}}{\sqrt{(1 + (n-1)t)}}
+ = \sqrt{\frac{nh^2}{1+(n-1)t}} = \sqrt{b} \nonumber
+\label{eq:AccBreedValRepeat}
+\end{equation}
+
+- Zuwachs an Genauigkeit
+
+$${r_{a,\bar{y}} \over r_{a,y}} = \frac{\sqrt{\frac{nh^2}{1+(n-1)t}}}{h} = \sqrt{\frac{n}{1+(n-1)t}}$$
+
+
+## Nachkommen
+- $\tilde{y}_s$: Mittelwert von $n$ Nachkommen von Stier $s$
+- Zuchwert für Stier $s$: $$\hat{a}_s = b(\tilde{y}_s - \mu)$$
+- Regressionskoeffizient: $$b = \frac{cov(a,\tilde{y})}{var(\tilde{y})}$$
+
+## Nachkommen II
+
+- Zerlegung: $$\tilde{y}_s = \mu + {1\over n}\sum_i a_i + {1\over n}\sum_i e_i$$
+
+wobei: $a_i = {1\over 2}(a_s + a_{d(i)}) + m_i$
+
+- $s$ und $d$ nicht verwandt, $a_s$ ist konstant und $\sum_i m_i = 0$
+
+$$\tilde{y}_s = \mu + {1\over 2}a_s + {1\over n}\sum_i a_{d(i)}/2 + {1\over n}\sum_i e_i$$
+
+## Nachkommen III
+
+- Covarianz:
+
+$$cov(a,\tilde{y}) = cov(a,\mu + {1\over 2}a_s + {1\over n}\sum_i a_{d(i)}/2 + {1\over n}\sum_i e_i)$$
+$$= cov(a, {1\over 2}a_s) = {1\over 2}cov(a,a_s) = {1\over 2}var(a)$$
+
+- Varianz:
+
+$$var(\tilde{y}) = \left[ t + (1-t)/n \right]\sigma_y^2$$
+
+mit $t = \frac{0.25 \sigma_a^2}{\sigma_y^2} = {1\over 4}h^2$
+
+## Nachkommen IV: Regressionskoeffizient
+
+\begin{eqnarray}
+b & = & \frac{{1\over 2}\sigma_a^2}{\left[ t + (1-t)/n \right]\sigma_y^2} \nonumber\\
+  & = & \frac{{1\over 2}h^2\sigma_y^2}{\left[ {1\over 4}h^2 + (1-{1\over 4}h^2)/n \right]\sigma_y^2}  \nonumber\\
+  & = & \frac{{1\over 2}nh^2}{ {1\over 4}nh^2 + (1-{1\over 4}h^2) }\nonumber\\
+  & = & \frac{2nh^2}{nh^2 + 4 - h^2}\nonumber\\
+  & = & \frac{2n}{n + {(4 - h^2)\over h^2}}\nonumber\\
+  & = & \frac{2n}{n + k}\nonumber
+\label{eq:RegKoeffOffspring}
+\end{eqnarray}
+
+wobei $k = {(4 - h^2)\over h^2}$
+
+## Nachkommen V: Zuchtwert und Genauigkeit
+
+$$\hat{a}_s =  \frac{2n}{n + k}\ (\tilde{y}_s - \mu)$$
+
+\begin{eqnarray}
+r_{a,\tilde{y}} & = & \frac{cov(a,\tilde{y})}{\sqrt{var(a)\ var(\tilde{y})}}\nonumber\\
+  & = & \frac{{1\over 2}var(a)}{\sqrt{var(a)\ \left[ {1\over 4}h^2 + (1-{1\over 4}h^2)/n \right]\sigma_y^2}}\nonumber\\
+  & = & \frac{{1\over 2}h^2\sigma_y^2}{\sqrt{h^2\sigma_y^2\ \left[ {1\over 4}h^2 + (1-{1\over 4}h^2)/n \right]\sigma_y^2}}\nonumber\\
+  & = & \sqrt{\frac{nh^2}{nh^2 + (4-h^2)}}\nonumber\\
+  & = & \sqrt{\frac{n}{n+k}}\nonumber
+\label{eq:AccBreedValOffspring}
+\end{eqnarray}
+
+
+## Selektionsindex
+
+- Früher: Zuchtwerte eines Merkmals aufgrund verschiedener phänotypischer Informationsquellen
+
+$$I_i = \hat{a}_i = b_1(y_1 - \mu_1) + b_2(y_2 - \mu_2) + b_3(y_3 - \mu_3) + ... $$
+
+- Heute: Schätzung des Gesamtzuchtwertes
+
+
+## Gesamtzuchtwert
+
+- mathematische Formulierung des Zuchtziels
+
+$$H = w_1 * a_1 + w_2 * a_2 + w_3 * a_3 + ...$$
+
+- Schätzung mit
+
+$$I = \hat{H} = b_1 * x_1 + b_2 * x_2 + ...$$
+
+wobei $x_i$ verfügbare Informationen, meist mit BLUP geschätzte Zuchtwerte.
+
+
+## Indexgleichung
+
+- Aufgrund der Anforderung, dass $I$ den Gesamtzuchtwert $H$ möglichst gut schätzen soll, folgt die __Indexgleichung__
+
+$$Pb = Gw$$
+
+wobei $P$ die Co-Varianzmatrix der Informationen im Index und $G$ die genetische Co-Varianzmatrix zwischen Informationen im Index und den Merkmalen im Gesamtzuchtwert
+
+- Bestimmung der Gewichte $b$ als
+
+$$b = P^{-1}Gw$$
+
+
+
+
+

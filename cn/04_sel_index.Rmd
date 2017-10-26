@@ -1,0 +1,383 @@
+# Tierzucht
+In der Tierzucht gibt es zwei __fundamentale Fragen__, welche alle Züchterinnen und Züchter beschäftigt. 
+
+1. Welches Tier ist das beste?
+2. Wie sollen Tiere ausgewählt werden, dass ihre Nachkommen besser sind als die aktuelle Population
+
+## Das beste Tier
+Da wir im allgemeinen nicht nur an einer Eigenschaft bei den Nutztieren interessiert sind, stellt sich die Frage nach der optimalen Kombination an Eigenschaften. Ist zum Beispiel die Milchkuh die beste, welche eine möglichst hohe Milchleistung hat oder spielen Eutergesundheit, ein gutes Fundament oder Krankheitsresistenz auch eine Rolle? Müssen Schweine möglichst schnell wachsen oder sind ein gutes Geburtsverhalten und überdurchschnittliche Fleischqualität auch wichtig?
+
+Die Bezeichnung "das beste Tier" ist ein relativer Begriff. Absolut gesehen gibt es kein bestes Tier. Die Klassierung von Tieren ist immer relativ zu einer Umwelt, in welcher sich die Tiere befinden. Eine Hochleistungsmilchkuh hätte sehr viel Mühe in einem Wüstengebiet in Afrika zu überleben. Bei den kommenden Ausführungen gehen wir davon aus, dass die Umwelt für die Tiere optimal ist.
+
+Die Beschreibung von Tieren basiert entweder auf deren äusserem Erscheinungsbild oder aufgrund von Leistungen oder einer Kombination von beidem. In jedem Fall sprechen wir von __Merkmalen__. Ein Merkmal ist definiert als beobachtbare oder messbare Eigenschaft eines Tieres. 
+
+Als Beispiele für beobachtete Merkmale sind 
+
+* Fellfarbe
+* Grösse
+* Bemuskelung
+* Fundament
+* Euter
+
+Beispiele für messbare Merkmale sind
+
+* Körpergewicht
+* Milchproduktion
+* Wachstum
+* Futteraufnahme
+
+Wichtig ist, dass es bei den Merkmalen nicht um die Beschreibung eines einzelnen Tieres geht. Ein Tier kann rote Fellfarbe und ein Körpergewicht von $343 kg$ aufweisen. Aber `rot` und $343 kg$ sind nicht die Merkmale, sondern die Merkmalsausprägungen oder der __Phänotyp__. Die Merkmale sind nur __Körpergewicht__ und __Fellfarbe__. 
+
+In der Tierzucht beschäftigen wir uns vor allem mit der genetischen Veränderung von Populationen. Das genetische Potential wird von einem Tier an die nächste Generation weitergegeben. Das genetische Potential eines Tieres wird durch den __Genotypen__ repräsentiert. Den Zusammenhang zwischen phänotypischem Merkmal und Genotyp eines Individuums wird durch das folgende uns schon bekannte Modell hergestellt.
+
+$$ y = \mu + g + \epsilon$$
+
+wobei $y$ der phänotypische Wert eines Merkmals ist, $\mu$ dem Populationsmittel entspricht, $g$ für den genotypischen Wert steht und $\epsilon$ der umweltbedingte Rest darstellt.
+
+Schon im Kapitel "Quantitative Genetik" hatten wir gesehen, dass aufgrund der Vererbung, nicht der Genotyp eines Tieres an die nächste Generation weitergegeben wird sondern nur eine zufällige Auswahl der Allele. Somit ist nicht der genotypische Wert sondern der genetisch additive Anteil des genotypischen Wertes von zentraler Bedeutung. Den genetsch additiven Anteil hatten wir als __Zuchtwert__ bezeichnet und wir sehen hier, dass der Zuchtwert eines Tieres in der Beurteilung der Tiere hinsichtlich ihrer Eignung als Elterntiere eine zentrale Rolle spielt. Formell hatten wir im Kapitel "Quantitative Genetik" den genotypischen Wert $g$ in Zuchtwert $a$, Dominanzabweichung $d$ und Epistasie $i$ aufgeteilt. Somit setzt sich der phänotypische Wert eines Merkmals wie folgt zusammen.
+
+$$ y = \mu + a + d + i + \epsilon$$
+
+Bei der Dominanzabweichung $d$ und der Epistasie $i$ handelt es sich um Interaktionen an einem Lokus oder zwischen Loci. Diese sind somit abhängig vom Paarungsparter und nur schwer zu quantifizieren. Deshalb werden diese beiden Effekte auch häufig zusammen mit den Umweltfaktoren $e$ in einen neuen Restterm $e$ zusammengefasst.
+
+\begin{IEEEeqnarray}{rCl}
+y &=& \mu + a + e
+\label{eq:PhenAddGen}
+\end{IEEEeqnarray}
+
+
+## Auswahl der Elterntiere
+Bei der Auswahl der Elterntiere stehen uns zwei Werkzeuge zur Verfügung. 
+
+1. Selektion
+2. Gezielte Anpaarung
+
+
+## Selektion
+Selektion wird verwendet um langfristige genetische Änderungen in einer Population zu bewirken. Der Unterschied zwischen gerichteter Selektion und Vermehrung sind in den nachfolgenden beiden Diagrammen gezeigt. 
+
+```{r ZuechtungElternNachkommen, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, odg.out.format=c("pdf","png"), fig.align='center', echo=FALSE, results='asis', out.width="6cm"}
+knitr::include_graphics(path = "png/ZuechtungElternNachkommen.png")
+```
+
+Im Gegensatz zur gerichteten Selektion steht die reine Vermehrung, welche im folgenden Schema gezeigt ist. Bei der Vermehrung wird keine Verbesserung der Nachkommen im Vergleich zu den Elterntieren angestrebt.
+
+```{r VermehrungElternNachkommen, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, odg.out.format=c("pdf","png"), fig.align='center', echo=FALSE, results='asis', out.width="6cm"}
+knitr::include_graphics(path = "png/VermehrungElternNachkommen.png")
+```
+
+
+Als Selektion versteht man den Prozess, welcher bestimmt welche Tiere aus einer Population Eltern werden, wie viele Nachkommen sie produzieren sollen und wie lange sie in der Zuchtpopulation verbleiben. Wir sind vertraut mit der __natürlichen Selektion__, welche auch oft mit dem Schlagwort "survival of the fittest" zusammengefasst wird. Damit ist gemeint, dass Tiere, welche optimal an eine Umwelt angepasst sind haben eine höhere Wahrscheinlichkeit zu überlegen und sich somit fortzupflanzen. 
+
+In der Tierzucht ist aber vor allem die __künstliche Selektion__ von Interesse. Die Idee hinter der künstlichen Selektion ist, die Individuen mit dem besten Set von Genen auszuwählen und diese sich vermehren zu lassen. Die Tiere mit dem besten Set von Genen haben den besten Wert als Zuchttiere. Dieser Wert wird anhand unseres vorher definierten Begriffs des __Zuchtwertes__ gemessen.
+
+Die einfachste Form der Selektion ist die phänotypische Selektion. Dabei werden die Tiere alleine aufgrund der phänotypischen Leistung selektiert. Diese Art der Selektion wird kaum mehr verwendet, ist aber sehr einfach und illustrativ für Erklärungen. Aktuell sollten Tiere aufgrund ihrer __Zuchtwerte__ selektiert werden. Unter der Annahme, dass Zuchtwerte normal verteilt sind, sind die Vorgänge von der phänotypischen Selektion auf die Selektion nach Zuchtwerten übertragbar.
+
+Das nachfolgende Bild zeigt die Verteilung eines phänotypischen Merkmals in einer Population. Dabei stehen ED für Elterndurchschnitt, SG für Selektionsgrenze und RD für Remontendurchschnitt.
+
+```{r GerichteteSelektionElternNk, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, odg.out.format=c("pdf","png"), fig.align='center', echo=FALSE, results='asis'}
+knitr::include_graphics(path = "png/GerichteteSelektionElternNk.png")
+```
+
+## Gezielte Paarung
+Die gezielte Paarung ist der Prozess, in welchem bestimmt wird, welche Tiere miteinander gepaart werden sollen. Dies ist verschieden von der Selektion. In der Selektion werden nur die zukünftigen Eltern aus der Population ausgewählt. Bei der gezielten Paarung geschieht die Zuordnung der Paarungspartner. Die Zuordnung der Paarungspartner kann auf sehr verschiedene Arten passieren. Die Art der Zuordnung bestimmt dann das Paarungssystem. Dabei können verschiedene Ziele verfolgt werden, wie zum Beispiel
+
+a) Maximierung des Zuchtwertes
+b) Ausnützung gegensätzlicher Eigenschaften
+c) Erzielung von Heterosis-Effekten
+
+Paarungen können innerhalt der gleichen Rasse geplant werden, dann spricht man von __Reinzucht__. Werden Partner aus verschiedenen Rassen gepaart, bezeichnen wir das als __Kreuzungszucht__. 
+
+Der Mittelwert der Zuchtwerte der Elterntiere liefert uns eine erste Information über den zu erwartenden Zuchtwert des Nachkommens. Dieser wird als __Abstammungszuchtwert__ bezeichnet. Dieser erste geschätzte Zuchtwert liegt schon vor bevor der Nachkomme geboren wurde. Abstammungszuchtwerte sind aber nicht die einzige Art von Zuchtwerten, welche in der Tierzucht verwendet werden. In den nachfolgenden Abschnitten werden wir uns noch etwas genauer damit beschäftigen, welche verschiedenen Arten von Zuchtwerten es gibt und wie diese geschätzt werden.
+
+
+## Zuchtwertschätzung unter Verwendung verschiedener Informationsquellen
+In jedem Zuchtprogramm ist die Schätzung von Zuchtwerten eine zentraler Bestandteil. Die Genauigkeit der geschätzten Zuchtwerte hängt sehr stark von den verfügbaren Daten ab. Bei den Daten handelt es sich meist um phänotypische Beobachtungswerte und um Verwandtschaftsbeziehungen. Die verfügbaren SNP-Informationen für die genomische Selektion wird hier noch nicht betrachtet. 
+
+Zu Beginn der züchterischen Arbeit sind meist nur phänotypische Informationen von einzelnen Tieren verfügbar. In späteren Stadien kommen Messungen von verwandten Tieren und von Nachkommen hinzu. Zuchtwerte müssen also zuerst auf der Basis von phänotypischen Informationen des Tieres alleine geschätzt werden. Nach und nach können für die Zuchtwertschätzung auch Informationsquellen von verwandten Tieren berücksichtigt werden. 
+
+Meist werden in Zuchtprogrammen nicht nur einzelne Merkmale bearbeitet. Häufig sind ganze Gruppen von Merkmalen von Interesse. Verschiedene Merkmale können gleichzeitig über die Definition eines sogenannten __Selektionsindexes__ berücksichtigt werden.
+
+### Das Modell
+Eine phänotypische Beobachtung $y_{ij}$ eines Tieres $i$ in einem Merkmal $j$ ist beeinflusst durch allgemeine identifizierbare Umweltfaktoren $\mu_i$, durch die additiv genetischen Effekte $a_i$ und durch einen Restterm $e_{ij}$. 
+
+\begin{IEEEeqnarray}{rCl}
+y_{ij} &=& \mu_i + a_i + e_{ij}
+\label{eq:BasicModel}
+\end{IEEEeqnarray}
+
+Die Aufteilung des totalen genotypischen Wertes $g_i$ in additiven Effekt $a_i$, Dominanzabweichung $d_i$ und Epistasis $i_i$ und die Verschiebung der Dominanzabweichung und der Epistasie in den Restterm wurde schon bei der Herleitung des Modells (\ref{eq:PhenAddGen}) besprochen und deshalb hier nicht weiter ausgeführt.
+
+Das Modell in (\ref{eq:BasicModel}) ist ein lineares Modell, welches in der Tierzucht sehr weit verbreitet ist. Meist wird angenommen, dass der Vektor $y$ aller Beobachtungen in  einer Population einer multivariaten Normalverteilung folgt. Diese Annahme wird durch den zentralen Grenzwertsatz begründet, welcher besagt, dass eine Zufallsvariable, welche aus einer Summe mit sehr vielen Summanden mit sehr kleinem Effekt zusammengesetzt ist, sich einer Normalverteilung nähert. Das Argument des zentralen Grenzwertsatzes wird zuerst einmal auf den additiv genetischen Effekt $a$ angewendet. Auch für den Resteffekt $e$ wird angenommen, dass sich diese zufälligen Resteffekte aus sehr vielen kleinen Effekten zusammensetzen. Somit folgen $a$ und $e$ einer Normalverteilung. Die systematischen mittleren Umwelteffekte $\mu$ werden als fix angenommen und zeigen somit nicht den Charakter einer Zufallsvariablen mit einer Verteilung. Da $a$ und $e$ normal verteilt sind und $\mu$ als fixer Effekt angenommen wird, folgt auch $y$ einer Normalverteilung. Dieses hier beschriebene Modell trägt den Namen __infinitesimal model__.
+
+Zu den Annahmen der Verteilungen der Zufallsvariablen im Modell (\ref{eq:BasicModel}) gehören auch die __Erwartungswerte__ und die __Varianzen__. Da die Effekte $a$ und $e$ als Abweichungen von einem Mittel definiert sind, ist deren Erwartungswert $E(a) = E(e) = 0$. Somit gilt für den Erwartungswert $E(y)$ von $y$: $E(y) = \mu$. Die Varianzen von $a$ und $e$ werden als bekannt angenommen. Zwischen $a$ und $e$ sollen keine Covarianzen auftreten, d.h. $cov(a,e) = 0$. Auch zwischen den Resteffekten verschiedener Tiere $i$ ud $k$ sollen keine Covarianzen bestehen, d.h. $cov(e_i, e_k) = 0$. Aus diesen Annahmen lässt sich für die Varianz von $y$ ableiten, dass
+
+$$var(y) = var(a) + var(e)$$
+
+
+## Schätzung des Zuchtwertes aufgrund von Eigenleistungen
+### Eine einzelne Eigenleistung
+Falls nur eine Leistung pro Tier zur Verfügung steht, dann lassen sich die Zuchtwerte aus der Regression der phänotypischen Leistungen auf die additiv genetischen Werte schätzen. Da die additiv genetischen Werte unbekannt sind, ist auch die Regression unbekannt. Aber es ist trotzdem hilfreich sich vorzustellen, wie diese Regression aussehen würde. 
+
+```{r RegPhenAddGen, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, odg.out.format=c("pdf","png"), fig.align='center', echo=FALSE, results='asis'}
+knitr::include_graphics(path = "png/RegPhenAddGen.png")
+```
+
+Die rote Gerade im obigen Diagramm zeigt die Regressionsgerade der additiv genetischen Werte auf die phänotypischen Beobachtungen. Da wir den additiv genetischen Wert $a_i$ nicht kennen schätzen wir ihn und bezeichnen den Schätzwert als $\hat{a}_i$. Den Schätzwert berechnen wir als
+
+\begin{IEEEeqnarray}{rCl}
+\hat{a}_i &=& b(y_i - \mu)
+\label{eq:HatA}
+\end{IEEEeqnarray}
+
+wobei $b$ der Regressionskoeffizient der additiv genetischen Werte auf die phänotypischen Beobachtungen darstellt. Den Regressionskoeffizienten $b$ berechnen wir aus den Covarianzen der Zufallsvariablen als
+
+\begin{IEEEeqnarray}{rCl}
+b & = & \frac{cov(a,y)}{var(y)}
+\label{eq:RegCoefB}
+\end{IEEEeqnarray}
+
+wobei $$cov(a,y) = cov(a,\mu + a + e) = cov(a,\mu) + cov(a,a) + cov(a,e)$$ Aus den Annahmen zum Modell (\ref{eq:BasicModel}) wissen wir, dass $cov(a,\mu) = cov(a,e) = 0$. Die Covarianz der Zufallsvariablen mit sich selber entspricht der Varianz der Zufallsvariablen und somit ist $cov(a,a) = var(a)$. Somit haben wir als Resultat für den Regressionskoeffizienten 
+
+\begin{equation}
+b = \frac{cov(a,y)}{var(y)}  =  \frac{var(a)}{var(y)} = h^2
+\label{eq:RegCoefBResult}
+\end{equation}
+
+Der Term $h^2$ steht für die Heritabilität. Somit entspricht der geschätzte Zuchtwert aufgrund einer Eigenleistung das Produkt aus Heritabilität mal die um den Mittelwert $\mu$ korrigierten Phänotypen $y$
+
+\begin{equation}
+\hat{a}_i  =  b(y_i - \mu) = h^2(y_i - \mu)
+\label{eq:HatAResult}
+\end{equation}
+
+Die Korrelation zwischen dem wahren Zuchtwert und dem Selektionskriterium, hier die phänotypische Beobachtung, entspricht der Genauigkeit des geschätzten Zuchtwertes. Diese Korrelation bietet eine Möglichkeit die verschiedenen Selektionskriterien auf ihre Genauigkeit hin zu vergleichen. Je höher die Korrelation, desto besser die Genauigkeit und desto geeigneter das Selektionskriterium. Die Schätzgenauigkeit wird sehr oft auch als Bestimmtheitsmass ($r^2$) ausgewiesen. Für unser Beispiel einer einzelnen Eigenleistung ist die Genauigkeit
+
+\begin{IEEEeqnarray}{rCl}
+r_{a,y} & = & \frac{cov(a,y)}{\sigma_a \sigma_y} \nonumber\\
+        & = & \frac{\sigma_a^2}{\sigma_a \sigma_y} = h
+\label{eq:BreedValAcc}        
+\end{IEEEeqnarray}
+
+und das Bestimmtheitsmass $r^2 = h^2$.
+
+Der __erwartete Selektionserfolg__ ($R$) auf der Basis einer einzelnen Eigenleistung beträgt
+
+\begin{equation}
+R = i r_{a,y}^2 \sigma_y = i h^2 \sigma_y
+\end{equation}
+
+wobei $i$ die Selektionsintensität ist. Diese entspricht  der Überlegenheit der selektierten Individuen ausgedrückt in Einheiten einer phänotypischen Standardabweichung.
+
+Die Varianz der geschätzten Zuchtwerte ist
+
+\begin{equation}
+var(\hat{a}) = var(by) = var(h^2y) = h^4 \sigma_y^2 = r_{a,y}^2 h^2 \sigma_y^2 = r_{a,y}^2 \sigma_a^2
+\label{eq:VarHatA}
+\end{equation}
+
+### Wiederholte Messungen
+Falls bei einem Tiere mehrere wiederholte Messungen des gleichen Merkmals vorliegen, kann der Zuchtwert aus dem Mittelwert der wiederholten Messungen geschätzt werden. Mit den wiederholten Messungen wird angenommen, dass sich die Messungen eines Tieres aufgrund der permanenten Umweltfaktoren ähnlicher sind. Was zwischen den wiederholten Messungen bei einem Tier variiert sind die sogenannten temporären Umwelteffekte. Es gibt also eine zusätzliche Covarianz bei Messungen eines Tieres. Die Varianz ($var(y)$) der phänotypischen Beobachtung kann somit aufgeteilt werden in 
+
+$$var(y) = var(a) + var(pe) + var(te)$$
+
+wobei $var(pe)$ die Varianz aufgrund der permanenten Umwelt darstellt und $var(te)$ der zufälligen Umweltvarianz entspricht.
+
+Neu wird der Begriff der Wiederholbarkeit $t$ oder intra-klassen Korrelation definiert als
+
+\begin{equation}
+t = \frac{var(a) + var(pe)}{var(y)}
+\label{eq:DefRepeatability}
+\end{equation}
+
+Bei diesem Modell nehmen wir an, dass die wiederholten Messungen bei einem Tier $i$ vom gleichen Merkmal her stammen. Somit ist die genetische Korrelation zwischen den wiederholten Messungen gleich eins, da es sich um das gleiche Merkmal handelt. Weiter wird angenommen, dass die Varianzen der Messungen alle gleich sind und dass die Korrelationen der Umwelteffekte zwischen zwei Messungen gleich sind.
+
+Der Zuchtwert $\hat{a}_i$ soll nun aufgrund des Mittelwertes $\bar{y}$ der wiederholten Messungen geschätzt werden.
+
+\begin{equation}
+\hat{a}_i = b(\bar{y}_i - \mu)
+\label{eq:BreedValRepMeasure}
+\end{equation}
+
+Hier wird der Regressionskoeffizient $b$ berechnet als
+
+\begin{equation}
+b = \frac{cov(a, \bar{y})}{var(\bar{y})}
+\label{eq:RegCoeffRepMeasure}
+\end{equation}
+
+dabei ist $$cov(a,\bar{y}) = cov(a, a + pe + {1\over n}\sum te) = \sigma_a^2$$
+
+und
+
+$$var(\bar{y}) = var(a) + var(pe) + {1\over n} var(te)$$
+
+Kombinieren wir das mit der Definition in (\ref{eq:DefRepeatability}) dann führt das zu
+
+\begin{equation}
+var(\bar{y}) = \left[ t + (1-t)/n \right]\sigma_y^2
+\label{eq:VarBarY}
+\end{equation}
+
+Setzen wir diese Beziehungen für $cov(a,\bar{y})$ und für $var(\bar{y})$ in Gleichung (\ref{eq:RegCoeffRepMeasure}) ein dann erhalten wir als Resultat für $b$
+
+$$b = \frac{\sigma_a^2}{\left[ t + (1-t)/n \right]\sigma_y^2} = \frac{nh^2}{1+(n-1)t}$$
+
+Den Zuchtwert $\hat{a}_i$ erhalten wir durch Einsetzen von $b$ in Gleichung (\ref{eq:BreedValRepMeasure})
+
+$$\hat{a}_i = \frac{nh^2(\bar{y}_i - \mu)}{1+(n-1)t}$$
+
+Die Genauigkeit des geschätzen Zuchtwertes berechnen wir wieder als Korrelation des wahren Zuchtwertes und des Selektionskriteriums. 
+
+\begin{equation}
+r_{a,\bar{y}} = \frac{cov(a,\bar{y})}{\sigma_a \sigma_{\bar{y}}}
+ = \frac{\sigma_a^2}{\sigma_a \sigma_y \sqrt{\left[ t + (1-t)/n \right]}}
+ = \frac{h\sqrt{n}}{\sqrt{(1 + (n-1)t)}}
+ = \sqrt{\frac{nh^2}{1+(n-1)t}} = \sqrt{b}
+\label{eq:AccBreedValRepeat}
+\end{equation}
+
+Wiederholte Messungen bringen einen Zuwachs an Genauigkeit. Bilden wir das Verhältnis der beiden Genauigkeiten aus (\ref{eq:AccBreedValRepeat}) und (\ref{eq:BreedValAcc}) so erhalten wir
+
+$${r_{a,\bar{y}} \over r_{a,y}} = \frac{\sqrt{\frac{nh^2}{1+(n-1)t}}}{h} = \sqrt{\frac{n}{1+(n-1)t}}$$
+
+Dieser Ausdruck zeigt, dass zusätzliche Messungen vor allem bei tiefer Wiederholbarkeit einen grossen Zuwachs an Genauigkeit bringen.
+
+Der erwartete Selektionserfolg $R$ für wiederholte Messungen beträgt
+
+$$R = i*r_{a,\bar{y}}^2 * \sigma_y \sqrt{\left[ t + (1-t)/n \right]}$$
+
+### Zuchtwertschätzung aufgrund von Nachkommen
+Für Merkmale, welche nur bei weiblichen Tieren beobachtbar sind, werden Zuchtwerte für männliche Tiere aufgrund der durchschnittlichen Leistungen ihrer Nachkommen geschätzt. Diese Situation ist typisch für Milchrinder, bei welchen die Milchleistung nur bei den weiblichen Tieren erhoben werden kann. Zuchtwerte der Bullen werden dann aufgrund der Töchterleistung geschätzt. Wir nehmen also an, dass $\tilde{y}_s$ der Mittelwert von $n$ Messungen der Nachkommen von Stier $s$ darstellen. Die $n$ Töchter von Stier $s$ sind also Halbgeschwister und wir nehmen an, dass sie nur über den Vater verwandt sind. Der geschätzte Zuchtwert von Stier $s$ ist somit
+
+\begin{equation}
+\hat{a}_s = b(\tilde{y}_s - \mu)
+\label{eq:BreedValOffspring}
+\end{equation}
+
+wobei 
+
+\begin{equation}
+b = \frac{cov(a,\tilde{y})}{var(\tilde{y})}
+\label{eq:RegCoeffOffspring}
+\end{equation}
+
+Wir berechnen nun Zähler und Nenner von (\ref{eq:RegCoeffOffspring}) separat und fügen diese dann wieder zusammen. Als Vorbereitung schauen wir uns noch die Zerlegung der phänotypischen Beobachtung an. 
+
+$$\tilde{y}_s = \mu + {1\over n}\sum_i a_i + {1\over n}\sum_i e_i$$
+
+Die genetisch additiven Werte $a_i$ lassen sich zerlegen in 
+
+$$a_i = {1\over 2}(a_s + a_d) + m_i$$
+
+wobei $m_i$ als __Mendelian Sampling__ bezeichnet wird und die Abweichung eines Zuchtwertes vom Elterndurchschnitt darstellen. Diese $m_i$-Effekte sind unkorreliert zu den Zuchtwerten und heben sich aufgrund ihrer Definition als Abweichungen über alle Halbgeschwister auf, d.h. $\sum_i m_i = 0$.
+
+\begin{equation}
+\tilde{y}_s = \mu + {1\over 2}a_s + {1\over n}\sum_i a_{d(i)}/2 + {1\over n}\sum_i e_i
+\label{eq:EffectYtilde}
+\end{equation}
+
+Dies setzen wir in die Formel für die Covarianz ein. Dabei vereinfacht sich der Ausdruck für die Covarianz dadurch, dass $a$ jeweilen unkorreliert zu $\mu$, $m_i$ und $e$ ist. Da nur die Verwandtschaft über den Vater berücksichtigt wird, ist auch $a$ und $a_d$ unkorreliert. 
+
+$$cov(a,\tilde{y}) = cov(a,\mu + {1\over 2}a_s + {1\over n}\sum_i a_{d(i)}/2 + {1\over n}\sum_i e_i) = cov(a, {1\over 2}a_s) = {1\over 2}cov(a,a_s) = {1\over 2}var(a)$$
+
+Für die Varianz $var(\tilde{y})$ gehen wir analog vor wie bei den wiederholten Messungen und verwenden die Formel  (\ref{eq:VarBarY}). 
+
+\begin{equation}
+var(\tilde{y}) = \left[ t + (1-t)/n \right]\sigma_y^2
+\label{eq:VarTildeY}
+\end{equation}
+
+Die Intra-Klassen-Korrelation $t$ zwischen den Messungen der Halbschwestern ist hier 
+
+$$t = \frac{0.25 \sigma_a^2}{\sigma_y^2} = {1\over 4}h^2$$ 
+
+Aus den bisherigen Zwischenresultaten können wir nun den Regressionskoeffizienten berechnen.
+
+\begin{IEEEeqnarray}{rCl}
+b & = & \frac{{1\over 2}\sigma_a^2}{\left[ t + (1-t)/n \right]\sigma_y^2} \nonumber\\
+  & = & \frac{{1\over 2}h^2\sigma_y^2}{\left[ {1\over 4}h^2 + (1-{1\over 4}h^2)/n \right]\sigma_y^2}  \nonumber\\
+  & = & \frac{{1\over 2}nh^2}{ {1\over 4}nh^2 + (1-{1\over 4}h^2) }\nonumber\\
+  & = & \frac{2nh^2}{nh^2 + 4 - h^2}\nonumber\\
+  & = & \frac{2n}{n + {(4 - h^2)\over h^2}}\nonumber\\
+  & = & \frac{2n}{n + k}
+\label{eq:RegKoeffOffspring}
+\end{IEEEeqnarray}
+
+wobei $k = {(4 - h^2)\over h^2}$. 
+
+Somit ist der geschätzte Zuchtwert $\hat{a}_s$ aufgrund eines Durchschnitts von Nachkommenleistungen
+
+\begin{equation}
+\hat{a}_s =  \frac{2n}{n + k}\ (\tilde{y}_s - \mu)
+\label{eq:BreedValOffspringResult}
+\end{equation}
+
+Die Genauigkeit des geschätzten Zuchtwertes $\hat{a}_s$ berechnet sich als
+
+\begin{IEEEeqnarray}{rCl}
+r_{a,\tilde{y}} & = & \frac{cov(a,\tilde{y})}{\sqrt{var(a)\ var(\tilde{y})}}\nonumber\\
+  & = & \frac{{1\over 2}var(a)}{\sqrt{var(a)\ \left[ {1\over 4}h^2 + (1-{1\over 4}h^2)/n \right]\sigma_y^2}}\nonumber\\
+  & = & \frac{{1\over 2}h^2\sigma_y^2}{\sqrt{h^2\sigma_y^2\ \left[ {1\over 4}h^2 + (1-{1\over 4}h^2)/n \right]\sigma_y^2}}\nonumber\\
+  & = & \sqrt{\frac{nh^2}{nh^2 + (4-h^2)}}\nonumber\\
+  & = & \sqrt{\frac{n}{n+k}}
+\label{eq:AccBreedValOffspring}
+\end{IEEEeqnarray}
+
+
+### Zuchtwertschätzung aufgrund von Pedigreeinformation
+Falls für ein Tier keine phänotypischen Beobachtungen existieren, dann kann sein Zuchtwert aufgrund der geschätzten Elternzuchtwerte geschätzt werden. Dies entspricht dann einem Abstammungszuchtwert. Der geschätzte Zuchtwert $\hat{a}_o$ für Tier $o$ aufgrund der geschätzten Zuchtwerte $\hat{a}_s$ und $\hat{a}_d$ der Eltern $s$ und $d$ ist somit 
+
+$$\hat{a}_o = {1\over 2}(\hat{a}_s + \hat{a}_d)$$
+
+Setzen wir $f = {1\over 2}(\hat{a}_s + \hat{a}_d)$, dann ist die Genauigkeit
+
+$$r_{a,f} = \frac{cov(a_o, f)}{\sqrt{\sigma_a^2\ var(1/2\hat{a}_s + 1/2\hat{a}_d)}}$$
+
+Unter der Annahme, dass die Eltern $s$ und $d$ nicht verwandt sind, folgt
+
+$$cov(a_o, f) = {1\over 4} cov(a_s,\hat{a}_s) + {1\over 4} cov(a_d,\hat{a}_d) = {1\over 4} var(\hat{a}_s) + {1\over 4}  var(\hat{a}_d)$$
+
+Verwenden wir für die Varianzen der geschätzten Zuchtwerte die Beziehung in (\ref{eq:VarHatA}) dann folgt
+
+$$cov(a_o, f) = {1\over 4} (r_s^2 + r_d^2) \sigma_a^2$$
+
+Aufgrund der hier gezeigten Berechnungen folgt auch, dass
+
+$$var(1/2\hat{a}_s + 1/2\hat{a}_d) = {1\over 4} (r_s^2 + r_d^2) \sigma_a^2$$. Somit folgt für die Genauigkeit
+
+$$r_{a,f} = \frac{{1\over 4} (r_s^2 + r_d^2) \sigma_a^2}{\sqrt{\sigma_a^2 {1\over 4} (r_s^2 + r_d^2) \sigma_a^2}}
+  = {1\over 2}\sqrt{(r_s^2 + r_d^2)}$$
+
+
+### Selektionsindex
+Traditionellerweise bezeichnete man die Methode um Zuchtwerte eines Merkmals aufgrund verschiedener phänotypischer Informationsquellen zu schätzen als __Selektionsindex__. Bei dieser Methode wurden die verschiedenen Beobachtungen zu einem sogenannten Index $I$ zusammengefasst. Diese Zusammenfassung entsprach einem gewichteten Mittel der Abweichungen der phänotypischen Beobachtung von deren Mittelwert. Für ein bestimmtes Tier $i$ war der Index definiert als
+
+$$I_i = \hat{a}_i = b_1(y_1 - \mu_1) + b_2(y_2 - \mu_2) + b_3(y_3 - \mu_3) + ... $$
+
+Die Gewichtungsfaktoren $b$ werden so bestimmt, dass die mittleren quadrierten Fehler der geschätzten Zuchtwerte minimal sind. Diese Art der Schätzung von Zuchtwerten wurde bis etwa in die 1990er-Jahre bei den Schweinen auf der Stationprüfung verwendet. Seit dann findet diese Methode aber keine Anwendung mehr.
+
+### Schätzung des Gesamtzuchtwertes
+Die Indextheorie wird aber in einem anderen Gebiet immer noch verwendet und zwar zur Schätzung des Gesamtzuchtwertes. In jedem Zuchtprogramm muss ja ein Zuchtziel vorliegen. Dies ist meist eine Vorstellung der Eigenschaften eines optimalen Tieres. Damit wir mit züchterischen Methoden unser Ziel erreichen können müssen wir eine mathematische Formulierung des Zuchtziels definieren. Diese mathematische Version des Zuchtziels bezeichnen wir als __Gesamtzuchtwert__ $H$. Da wir in unserem Gesamtzuchtwert mehrere Merkmale berücksichtigen ist auch $H$ als gewichtetes Mittel der wahren Zuchtwerte der Merkmale im Gesamtzuchtwert definiert. Die Gewichtungsfaktoren entsprechen den wirtschaftlichen Gewichten der Merkmale im Zuchtziel.
+
+Das wirtschaftliche Gewicht $w$ eines Merkmals entspricht dem zusätzlichen Gewinn, welcher erzielt wird, wenn sich das Populationsmittel eines Merkmals um eine kleine Einheit ändert. Als Beispiel wäre das wirtschaftliche Gewicht für Zuwachs bei Fleischrindern, der zusätzliche Gewinn, den wir erzielen, falls unsere Population eine um $1$ Gramm erhöhte Tageszunahme hat.
+
+Somit ist der Gesamtzuchtwert $H$ definiert als
+
+$$H = w_1 * a_1 + w_2 * a_2 + w_3 * a_3 + ...$$
+
+Den Gesamtzuchtwert $H$ können wir nur schätzen, da die wahren Zuchtwerte unbekannt sind. Für die Schätzung von $H$ stellen wir einen Index auf, welcher jetzt nicht nur einen Zuchtwert sondern den Gesamtzuchtwert $H$ schätzen soll. Wir definieren also einen neuen Index
+
+$$I = \hat{H} = b_1 * x_1 + b_2 * x_2 + ...$$
+
+Hier stehen die $x_i$ für die verfügbaren Informationen. Meist sind dies mit BLUP geschätzte Zuchtwerte (siehe später). Die Merkmale im Gesamtzuchtwert und im Index müssen nicht die gleichen sein. Die Gewichtungsfaktoren $b_i$ werden so abgeleitet, dass die Varianz $var(H-I)$ des Fehlers minimal ist. Daraus folgt in Matrix-Vektor-Schreibweise die sogenannte __Indexgleichung__
+
+$$Pb = Gw$$
+
+wobei $P$ die Co-Varianzmatrix der Merkmale im Index ist und $G$ die genetische Co-Varianzmatrix zwischen den Merkmalen im Index und den Merkmalen im Gesamtzuchtwert darstellt.
+
+Aufgrund der Indexgleichung können die Gewichtungsfaktoren $b$ berechnet werden als
+
+$$b = P^{-1}Gw$$
+
+

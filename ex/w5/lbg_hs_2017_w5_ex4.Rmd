@@ -1,0 +1,129 @@
+---
+title: Züchtungslehre - Übung 4
+author: Peter von Rohr
+date: 2017-10-27
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis')
+```
+
+## Aufgabe 1: Zuchtwert und Bestimmtheitsmass
+```{r SetUpEx1}
+y <- 320
+mu <- 250
+h2 <- 0.45
+```
+
+Rind Elsa hat ein Absetzgewicht von $`r y`$ kg. Das Populationsmittel liegt bei $`r mu`$ kg. Die Heritabilität ($h^2$) für das Merkmal Absetzgewicht ist $`r h2`$. 
+
+a) Wie gross ist der Zuchtwert von Elsa für das Merkmal Absetzgewicht? 
+b) Berechnen Sie das Bestimmtheitsmass für den geschätzten Zuchtwert.
+
+<!--   Sie können die oben zugewiesenen Variablen für die Berechnung verwenden. --
+  --   Die Bedeutung der Variablen ist hier aufgelistet.                        --
+  --      y:    phänotypischen Eigenleistung im Merkmal Absetzgewicht           --
+  --      mu:   Populationsmittel für das Merkmal Absetztgewicht                --
+  --      h2:   Heritabilität für das Merkmal Absetzgewicht                     --
+  --   
+  --   Für die Berechnung können sie einen einfachen R-code-junk verwenden.     --
+  --   Dazu können sie die folgende Vorlage kopieren
+
+```{r ComputeBreedingValue, echo = TRUE}
+
+```
+
+  -->
+  
+```{r ResultComputeBreedingValue, echo = FALSE}
+### # Hier wird der geschätzte Zuchtwert mit R berechnet
+hat_a_el <- h2*(y-mu)
+```
+
+
+## Aufgabe 2: Zuchtwert aufgrund wiederholter Beobachtungen
+```{r SetupEx2}
+geb_gew <- 52
+mu2 <- 170
+rep <- 0.65
+```
+Neben dem Absetzgewicht wurde für Rind Elsa auch das Geburtsgewicht ($`r geb_gew`$ kg) und weitere Gewichtsmessungen vorgenommen. Wir nehmen an, die Heritabilität ($h^2 = `r h2`$) sei gleich wie unter Aufgabe 1 und das Populationsmittel für die wiederholten Gewichtsmessungen liege bei $`r mu2`$ kg. Die Wiederholbarkeit der Gewichtsmessungen liege bei $t = `r rep`$. 
+
+Die Liste der erhobenen Gewichte sieht wie folgt aus.
+
+```{r WeightTable}
+nr_measure <- 10
+wean_weight <- y
+slope <- (wean_weight-geb_gew)/(nr_measure-1)
+measure <- c(1:nr_measure)
+weight <- round(slope*(measure-1) + geb_gew, digits = 0)
+mean_weight <- mean(weight)
+dfWeightTable <- data.frame(Messung = measure, Gewicht = weight)
+knitr::kable(dfWeightTable)
+```
+
+a) Schätzen Sie den Zuchtwert für Elsa aufgrund der wiederholten Gewichtsmessungen
+b) Wie gross ist das Bestimmtheitsmass?
+c) Vergleichen Sie das unter b) berechnete Bestimmtheitsmass mit dem Bestimmtheitsmass aus Aufgabe 1.
+
+<!--    Wie unter Aufgabe 1 können Sie auch hier die zugewiesenen Variablen aus der Aufgabe   --
+  --    verwenden. Die Variablen haben die folgende Bedeutung                                 --
+  --       nr_measure:   Anzahl Messungen im Merkmal Gewicht
+  --       h2:           Heritabilität des Merkmals
+  --       rep:          Wiederholbarkeit der Messungen
+  --       mean_weight:  Mittelwert der Gewichte
+  --       mu2:          Populationsmittel des Gewichts
+  -->
+
+
+
+## Aufgabe 3: Zuchtwert und Vertrauensintervall
+In der Vorlesung hatten wir das Bestimmtheitsmass als Genauigkeitsangabe für den geschätzten Zuchtwert kennen gelernt. Das Bestimmtheitsmass ist das Quadrat der Korrelation zwischen dem wahren Zuchtwert und dem Selektionskriterium. Das Bestimmtheitsmass macht also eine Aussage, wie gut das Selektionskriterium (in unseren Beispielen die jeweiligen phänotypischen Beobachtungen) geeignet ist den unbekannten Zuchtwert zu schätzen. 
+
+Alternativ zum Bestimmtheitsmass, ist die Standardabweichung $\sqrt{var(\hat{a})}$ des geschätzten Zuchtwerts eine Information zur Schätzgenauigkeit. Mit dieser Standardabweichung des geschätzten Zuchtwertes können Vertrauensintervalle berechnet werden. Diese geben an, mit wieviel Unsicherheit der geschätzte Zuchtwert behaftet ist. Ein enges Vertrauensintervall bedeutet, dass der geschätzte Zuchtwert eine tiefe Unsicherheit aufweist. Die Vertrauensintervalle sind immer mit einer Irrtumswahrscheinlichkeit assoziiert. Ein gängiger Wert für die Irrtumswahrscheinlichkeit ist $\alpha = 0.05$. Die führt dann zum $95\%$-Vertrauensintervall. 
+
+Für einen geschätzten Zuchtwert $\hat{a}$ lässt sich das $95\%$-Vertrauensintervall mit der folgenden Prozedur berechnen. Bis anhin haben wir Zuchtwerte aufgrund einer angenommenen Regression der wahren Zuchtwerte auf phänotypische Beobachtungen geschätzt. Die phänotypischen Beobachtungen sind mit einer gewissen Unsicherheit behaftet und werden als Zuvallsvariable mit einer gewissen Häufigkeitsverteilung betrachtet. Da der geschätzte Zuchtwert $\hat{a}$ eine Funktion der Daten ($y$) ist, ist auch $\hat{a}$ eine Zufallsvariable mit einer zugehörigen Häufigkeitsverteilung. Wir nehmen an, dass die Häufigkeitsverteilung der phänotypischen Beobachtungen ($y$) und der geschätzten Zuchtwerte $\hat{a}$ eine Normalverteilung ist. Für die geschätzten Zuchtwerte liegt der Erwartungswert beim entsprechenden Schätzwert $\hat{a}$ und die Varianz ($var(\hat{a})$) kann berechnet werden aufgrund der Schätzgleichung für $a$. 
+
+```{r DefinePhenStd}
+phen_sd <- 20
+```
+
+Beim Beispiel aus Aufgabe 1, wo der Zuchtwert aufrund einer Eigenleistung berechnet wurde, sieht die Berechnung der Standardabweichung $\sqrt{var(\hat{a})}$ des geschätzten Zuchtwertes, wie folgt aus. An dieser Stelle nehmen wir an, dass die phänotypische Standardabweichung für das Absetzgewicht und das Gewicht `r phen_sd` kg betrage.
+
+```{r ResultHatAElSd}
+hat_a_el_sd <- h2*phen_sd
+```
+
+\begin{equation}
+\sqrt{var(\hat{a})} = \sqrt{var(b(y-\mu))} = b \sqrt{var(y)} = h^2 \sqrt{var(y)}
+  = `r h2` * `r phen_sd` = `r hat_a_el_sd`\nonumber
+\label{eq:VarHatA}
+\end{equation}
+
+Aufgrund der Eigenschaften der Normalverteilung liegen 95% der Wahrscheinlichkeitsmasse $\pm 1.96$ Standardabweichungen um den Erwartungswert. Somit sind die untere ($ug$) und die obere ($og$) Grenze des $95\%$-Vertrauensintervalls definiert als 
+
+```{r ConvIntHatAEl}
+conv_int_hat_a_el_ug <- hat_a_el - 1.96 * hat_a_el_sd
+conv_int_hat_a_el_og <- hat_a_el + 1.96 * hat_a_el_sd
+```
+
+$$ug = \hat{a} - 1.96 * \sqrt{var(\hat{a})} 
+     = `r hat_a_el`\ \text{kg} - 1.96 * `r hat_a_el_sd`\ \text{kg}
+     = `r conv_int_hat_a_el_ug`\ \text{kg}$$
+
+$$og = \hat{a} + 1.96 * \sqrt{var(\hat{a})} 
+     = `r hat_a_el`\ \text{kg} + 1.96 * `r hat_a_el_sd`\ \text{kg}
+     = `r conv_int_hat_a_el_og`\ \text{kg}$$
+     
+Dies bedeutet, dass wenn wir sehr viele (theoretisch unendlich viele) Tiere mit gleichem wahren Zuchtwert haben und deren phänotypische Leistung beobachten und aufgrund dieser Leistungen jeweilen den entsprechenden Zuchtwert schätzen, dann liegen $95\%$ dieser geschätzten Zuchtwerte innerhalb des Vertrauensintervalls zwischen $`r conv_int_hat_a_el_ug`\ \text{kg}$ und $`r conv_int_hat_a_el_og`\ \text{kg}$.
+
+
+## Ihre Aufgabe
+Berechnen Sie das $95\%$-Vertrauensintervall für den in Aufgabe 2 geschätzten Zuchtwert für das Gewicht.
+
+<!--    Verwenden Sie die unter Aufgabe 2 zugewiesenen Variablen für die Berechnungen. --
+  --    Zuerst muss die Standardabweichung der geschätzten Zuchtwerte berechnet werden. --
+  --    Damit sind die obere und die untere Grenze des Vertrauensintervalls bestimmt.   --
+  -->
+  

@@ -1,0 +1,146 @@
+---
+title: Züchtungslehre - Lösung 3
+author: Peter von Rohr
+date: 2016-10-21
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis')
+```
+
+```{r ParameterAssignment, echo=FALSE}
+nHomDiff <- 15
+p <- 0.2
+q <- 1-p
+a <- nHomDiff/2
+d <- -1.5
+alpha <- a + (q-p)*d
+```
+
+## Aufgabe 1: Zuchtwert
+Wir betrachten ein Merkmal, welches von einem Locus $G$ mit zwei Allelen beeinflusst wird. Die Frequenz des positiven Allels beträgt $`r p`$. Wir nehmen an, dass für die Genotypfrequenzen das Hardy-Weinberg-Gleichgewicht gilt. Der Unterschied zwischen den homozygoten Genotypen beträgt $`r nHomDiff`$. Der heterozygote Genotyp hat einen genotypischen Wert von $`r d`$. 
+
+a) Berechnen Sie die Zuchtwerte und die Dominanzabweichungen für die drei Genotypen.
+b) Aufgrund der Selektion auf das positive Allele hat sich nach einer gewissen Zeit die Frequenz des positiven Allels auf $0.35$ erhöht, wie verändert diese Erhöhung die Zuchtwerte der drei Genotypen?
+
+__Hinweis__: Schauen Sie sich die Tabelle auf Seite 8 unten in den Unterlagen an.
+
+__Lösung__
+
+Gemäss der Übersichtstabelle in den Unterlagen hängen die Zuchtwerte alle vom Term $\alpha$ ab. Deshalb berechnen wir diesen als Vorbereitung. Es gilt
+
+$$\alpha = a + (q-p)d$$
+
+Aus der Aufgabenstellung geht hervor, dass $a = `r a`$, $p = `r p`$, $q = 1-p = `r q`$ und $d = `r d`$. Somit ist 
+
+$$\alpha = `r a` + (`r q` - `r p`)*(`r d`) = `r alpha`$$
+
+
+a) Die Übersichtstabelle aus den Unterlagen sieht dann wie folgt aus.
+
+\begin{center}
+  {\renewcommand{\arraystretch}{1.7}
+   \renewcommand{\tabcolsep}{0.2cm}
+   \begin{tabular}{|c|c|c|c|}
+   \hline
+   Genotyp  &  genotypischer Wert  &  Zuchtwert     &  Dominanzabweichung\\
+   $G_iG_j$ &  $V_{ij}$            &  $ZW_{ij}$     &  $D_{ij}$           \\
+   \hline
+   $G_1G_1$ &  $a = `r a`$         &  $2q\alpha = `r 2*q*alpha`$        &  $-2q^2d = `r -2*q^2*d`$   \\
+   \hline
+   $G_1G_2$ &  $d = `r d`$         &  $(q-p)\alpha = `r (q-p) * alpha`$ & $2pqd = `r 2*p*q*d`$   \\
+   \hline
+   $G_2G_2$ &  $-a = `r -a`$       &  $-2p\alpha = `r -2*p*alpha`$       & $-2p^2d = `r -2*p^2*d`$    \\
+   \hline
+   \end{tabular}}
+\end{center}
+
+
+```{r ChangedAllelFreq, echo=FALSE}
+p <- 0.35
+q <- 1-p
+alpha <- a + (q-p)*d
+```
+
+b) Aufgrund der Selektion ändern sich die Allelfrequenzen zu $p = `r p`$ und $q = `r q`$. Auch $\alpha$ ändert sich zu $\alpha = `r alpha`$. Dies hat folgende Auswirkungen auf die Werte in der Übersichtstabelle aus den Unterlagen.
+
+\begin{center}
+  {\renewcommand{\arraystretch}{1.7}
+   \renewcommand{\tabcolsep}{0.2cm}
+   \begin{tabular}{|c|c|c|c|}
+   \hline
+   Genotyp  &  genotypischer Wert  &  Zuchtwert     &  Dominanzabweichung\\
+   $G_iG_j$ &  $V_{ij}$            &  $ZW_{ij}$     &  $D_{ij}$           \\
+   \hline
+   $G_1G_1$ &  $a = `r a`$         &  $2q\alpha = `r 2*q*alpha`$        &  $-2q^2d = `r -2*q^2*d`$   \\
+   \hline
+   $G_1G_2$ &  $d = `r d`$         &  $(q-p)\alpha = `r (q-p) * alpha`$ & $2pqd = `r 2*p*q*d`$   \\
+   \hline
+   $G_2G_2$ &  $-a = `r -a`$       &  $-2p\alpha = `r -2*p*alpha`$       & $-2p^2d = `r -2*p^2*d`$    \\
+   \hline
+   \end{tabular}}
+\end{center}
+
+Da die die Differenz der Allelefrequenzen kleiner ist, sinken die Zuchtwerte für alle drei Genotypen, obwohl sich $\alpha$ in unserem Beispiel vergrössert hat.
+
+
+## Aufgabe 2: Allelsubstitution
+Was bedeutet Allelsubstitution und wie gross ist sie für die in den Aufgaben 1a und 1b gegebenen Zahlen?
+
+__Lösung__
+
+Allelesubstitution tritt auf, wenn bei einem Gentyp ein negatives Allel durch ein positives ersetzt wird. Dieser Vorgang kommt durch die Selektion auf die positiven Allele zustande. Die Allelsubstitution entspricht der Differenz der Zuchtwerten von zwei Genotypen, welche sich je durch ein positves Allel unterscheiden. Die Allelsubstitution ist konstant und ist immer gleich $\alpha$.
+
+
+## Aufgabe 3: Einlesen von Daten in R
+Auf der Webseite der Vorlesung ist eine Datei im csv-Format unter 
+
+`https://charlotte-ngs.github.io/LBGHS2017/ex/w4/iris.csv` abgelegt. Lesen Sie dieses Datei mit dem Befehl `read.csv2` ein und testen Sie die Auswirkung, ob Sie beim Einlesen die Option `stringsAsFactors=FALSE` angeben oder nicht.
+
+__Hinweis__: Sie können die csv-Datei zuerst herunterladen und auf Ihrem Rechner speichern und dann vom lokalen Dateisystem einlesen. Sie können aber auch den oben angegebenen URL direkt in der Funktion `read.csv2` verwenden. Mehr Informationen dazu gibt es unter `?read.csv2`.
+
+
+__Lösung__
+
+```{r SaveIrisData, echo=FALSE}
+bOnline <- FALSE
+sDataFn <- "iris.csv"
+if (!bOnline & !file.exists(sDataFn))
+  write.csv2(iris, file = sDataFn, row.names = FALSE)
+```
+
+* Einlesen direkt mit dem URL:
+
+```{r ReadIrisDataOnline, eval=bOnline, echo=bOnline, results='markup'}
+dfIris1 <- read.csv2(file = "https://charlotte-ngs.github.io/LBGHS2017/ex/w4/iris.csv")
+str(dfIris1)
+dfIris2 <- read.csv2(file = "https://charlotte-ngs.github.io/LBGHS2017/ex/w4/iris.csv", 
+                     stringsAsFactors = FALSE)
+str(dfIris2)
+```
+
+* Einlesen vom lokalen Rechner
+
+```{r ReadIrisDataOffline, echo=TRUE, results='markup'}
+dfIris1 <- read.csv2(file = "iris.csv")
+str(dfIris1)
+dfIris2 <- read.csv2(file = "iris.csv", stringsAsFactors = FALSE)
+str(dfIris2)
+```
+
+
+## Zusatzaufgabe: Plot in R
+Stellen Sie die Werte in den Kolonnen `Sepal.Length` und `Petal.Length` des Datensatzes aus der Datei `iris.csv` in einem Diagramm dar. Der Plot sollte ungefähr wie folgt aussehen:
+
+```{r IrisPlot, echo=FALSE}
+bIsSolution <- TRUE
+if(!bIsSolution)
+  plot(dfIris2$Sepal.Length, dfIris2$Petal.Length)
+```
+
+__Lösung__:
+
+```{r IrisPlotSolution, echo=bIsSolution}
+plot(dfIris2$Sepal.Length, dfIris2$Petal.Length)
+```

@@ -40,6 +40,11 @@ Fragen können jederzeit während der Vorlesung und während der Übungsstunde o
 
 --------
 
+```{r TablesSetup, echo=FALSE, results='hide'}
+### # header names of tables
+vecTableHeaders <- c("Woche", "Datum", "Thema")
+```
+
 ## Vorlesungsprogramm
 ```{r CourseProgram, echo=FALSE, results='asis'}
 # define course start date
@@ -66,8 +71,9 @@ Thema[which(Datum == format(as.Date("2017/12/08"), "%d.%m"))] <- "Genom-weite As
 Thema[which(Datum == format(as.Date("2017/12/15"), "%d.%m"))] <- "Reserve, Fragen"
 Thema[which(Datum == format(as.Date("2017/12/22"), "%d.%m"))] <- "Prüfung"
 
-dfSlideTable <- data.frame(Woche, Datum, Thema, stringsAsFactors = FALSE)
-knitr::kable(dfSlideTable)
+dfCnTable <- data.frame(Woche, Datum, Thema, stringsAsFactors = FALSE)
+colnames(dfCnTable) <- vecTableHeaders
+knitr::kable(dfCnTable)
 ```
 
 --------
@@ -93,39 +99,94 @@ Thema[nSubjHoliday] <- "keine Vorlesung"
 # exam
 Thema[length(Thema)] <- "Prüfung"
 # subjects per week
+### # w1
 Thema[which(Datum == format(as.Date("2017/09/22"), "%d.%m"))] <- "[Einführung in Lineare Algebra und R](https://charlotte-ngs.github.io/LBGHS2017/cn/w1/intro.pdf)"
+### # w2
 Thema[which(Datum == format(as.Date("2017/09/29"), "%d.%m"))] <- "[Repetition Quantitative Genetik](https://charlotte-ngs.github.io/LBGHS2017/cn/w2/rep_qg.pdf)"
+### # w3
+Thema[which(Datum == format(as.Date("2017/10/06"), "%d.%m"))] <- "[Tierzucht und Selektionsindex](https://charlotte-ngs.github.io/LBGHS2017/cn/w3/sel_index.pdf)"
+### # w4
+Thema[which(Datum == format(as.Date("2017/10/13"), "%d.%m"))] <- "[Verwandtschaft und Inzucht](https://charlotte-ngs.github.io/LBGHS2017/cn/w4/rel_inb.pdf)"
+### # w5
+Thema[which(Datum == format(as.Date("2017/10/20"), "%d.%m"))] <- "[Inverse Verwandtschaftsmatrix](https://charlotte-ngs.github.io/LBGHS2017/cn/w5/inverse_addrelmat.pdf)"
+### # w6
+Thema[which(Datum == format(as.Date("2017/10/27"), "%d.%m"))] <- "[Berechnung der Inzucht](https://charlotte-ngs.github.io/LBGHS2017/cn/w6/07_inbreeding.pdf)"
 
-dfSlideTable <- data.frame(Woche, Datum, Thema, stringsAsFactors = FALSE)
-knitr::kable(dfSlideTable)
+dfCnTable <- data.frame(Woche, Datum, Thema, stringsAsFactors = FALSE)
+colnames(dfCnTable) <- vecTableHeaders
+knitr::kable(dfCnTable)
 ```
 
 
 ### Folien
+```{r SlidesTable, echo=FALSE, results='asis'}
+### # define vector for subjects
+vecSlThema = vector(mode = "character", length = nNrSemesterWeeks)
+# set subject for special dates
+# holiday
+vecSlThema[nSubjHoliday] <- "keine Vorlesung"
+# exam
+vecSlThema[length(Thema)] <- "Prüfung"
+### # assign slides
+### # w1
+vecSlThema[which(Datum == format(as.Date("2017/09/22"), "%d.%m"))] <- "[Einführung](https://charlotte-ngs.github.io/LBGHS2017/sl/w1/lbg_hs_2017_slides_einfuehrung.pdf)"
+### # w3
+vecSlThema[which(Datum == format(as.Date("2017/10/06"), "%d.%m"))] <- "[Repetition](https://charlotte-ngs.github.io/LBGHS2017/sl/w3/lbg_hs_2017_w3_slides_qg.pdf)"
+### # w4
+vecSlThema[which(Datum == format(as.Date("2017/10/13"), "%d.%m"))] <- "[Tierzucht](https://charlotte-ngs.github.io/LBGHS2017/sl/w4/lbg_hs_2017_w4_slides_index.pdf)"
+### # w5
+vecSlThema[which(Datum == format(as.Date("2017/10/20"), "%d.%m"))] <- "[Verwandtschaft und Inzucht](https://charlotte-ngs.github.io/LBGHS2017/sl/w5/lbg_hs_2017_w5_slides_rel_inb.pdf)"
+### # w6
+vecSlThema[which(Datum == format(as.Date("2017/10/27"), "%d.%m"))] <- "[Inverse Verwandtschaftsmatrix](https://charlotte-ngs.github.io/LBGHS2017/sl/w6/lbg_hs_2017_w6_slides_inverse_addrelmat.pdf)"
 
+### # construct the table
+dfSlTable <- data.frame(Woche, Datum, vecSlThema, stringsAsFactors = FALSE)
+colnames(dfSlTable) <- vecTableHeaders
+knitr::kable(dfSlTable)
+```
 
 
 ### Übungen
 ```{r ExerciseTable, echo=FALSE, results='asis'}
-dfExTable <- dfSlideTable
-dfExTable$Thema[which(Datum == format(as.Date("2017/09/22"), "%d.%m"))] <- "keine Übung"
-# dfExTable$Thema[which(Datum == format(as.Date("2016/09/30"), "%d.%m"))] <- "[Lineare Algebra](https://charlotte-ngs.github.io/LBGHS2016/w2/zl_hs_2016_ex1_w2.pdf)"
-dfExTable$Thema[which(Datum == format(as.Date("2017/09/29"), "%d.%m"))] <- "[Lineare Algebra](https://charlotte-ngs.github.io/LBGHS2017/ex/w2/lbg_hs_2017_ex1_w2.pdf)"
-dfExTable$Thema[which(Datum == format(as.Date("2017/10/06"), "%d.%m"))] <- "[Repetition Quantitative Genetik](https://charlotte-ngs.github.io/LBGHS2017/ex/w3/lbg_hs_2017_w3_ex2.pdf)"
+### # define vector for subjects
+vecExThema = vector(mode = "character", length = nNrSemesterWeeks)
+# set subject for special dates
+# holiday
+vecExThema[nSubjHoliday] <- "keine Vorlesung"
+# exam
+vecExThema[length(Thema)] <- "Prüfung"
 
+dfExTable <- data.frame(Woche, Datum, vecExThema, stringsAsFactors = FALSE)
+dfExTable$vecExThema[which(Datum == format(as.Date("2017/09/22"), "%d.%m"))] <- "keine Übung"
+# w2
+dfExTable$vecExThema[which(Datum == format(as.Date("2017/09/29"), "%d.%m"))] <- "[Lineare Algebra](https://charlotte-ngs.github.io/LBGHS2017/ex/w2/lbg_hs_2017_ex1_w2.pdf)"
+# w3
+dfExTable$vecExThema[which(Datum == format(as.Date("2017/10/06"), "%d.%m"))] <- "[Matrizen in R und Quantitative Genetik](https://charlotte-ngs.github.io/LBGHS2017/ex/w3/lbg_hs_2017_w3_ex2.pdf)"
+# w4
+dfExTable$vecExThema[which(Datum == format(as.Date("2017/10/13"), "%d.%m"))] <- "[Zuchtwerte](https://charlotte-ngs.github.io/LBGHS2017/ex/w4/lbg_hs_2017_w4_ex3.pdf)"
+# w5
+dfExTable$vecExThema[which(Datum == format(as.Date("2017/10/20"), "%d.%m"))] <- "[Geschätzte Zuchtwerte und Bestimmtheitsmass](https://charlotte-ngs.github.io/LBGHS2017/ex/w5/lbg_hs_2017_w5_ex4.pdf)"
+# w6
+dfExTable$vecExThema[which(Datum == format(as.Date("2017/10/27"), "%d.%m"))] <- "[Pedigree und Verwandtschaft](https://charlotte-ngs.github.io/LBGHS2017/ex/w6/lbg_hs_2017_w6_ex5.pdf)"
 
-
+### # generate table output
+colnames(dfExTable) <- vecTableHeaders
 knitr::kable(dfExTable)
 ```
 
 
 ### Lösungen
 ```{r SolutionTable, echo=FALSE, results='asis'}
-dfSolTable <- dfSlideTable
-dfSolTable$Thema[which(Datum == format(as.Date("2017/09/22"), "%d.%m"))] <- ""
-dfSolTable$Thema[which(Datum == format(as.Date("2017/09/29"), "%d.%m"))] <- ""
-# dfSolTable$Thema[which(Datum == format(as.Date("2016/10/07"), "%d.%m"))] <- "[Lineare Algebra](https://charlotte-ngs.github.io/LBGHS2016/w2/zl_hs_2016_sol1_w2.pdf)"
-
+### # define vector for subjects
+vecSolThema = vector(mode = "character", length = nNrSemesterWeeks)
+### # construct the table
+dfSolTable <- data.frame(Woche, Datum, vecSolThema, stringsAsFactors = FALSE)
+# w2
+dfSolTable$vecSolThema[which(Datum == format(as.Date("2017/10/06"), "%d.%m"))] <- "[Lineare Algebra](https://charlotte-ngs.github.io/LBGHS2017/sol/w2/lbg_hs_2017_w2_sol1.pdf)"
+# w3
+dfSolTable$vecSolThema[which(Datum == format(as.Date("2017/10/13"), "%d.%m"))] <- "[Matrizen in R und Quantitative Genetik](https://charlotte-ngs.github.io/LBGHS2017/sol/w3/lbg_hs_2017_w3_sol2.pdf)"
+### # generate table output
+colnames(dfSolTable) <- vecTableHeaders
 knitr::kable(dfSolTable)
 ```
 

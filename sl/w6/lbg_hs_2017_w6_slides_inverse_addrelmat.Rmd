@@ -1,0 +1,163 @@
+---
+title: Züchtungslehre - Inverse Verwandtschaftsmatrix
+author: Peter von Rohr
+date: 2017-10-27
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Verwandtschaftsmatrix
+
+- Wichtig für BLUP Zuchtwertschätzung, da Covarianz bestimmt durch Verwandtschaft
+- Tiere ohne phänotypische Leistungen bekommen über Covarianz auch geschätzte Zuchtwerte
+- Covarianz-Matrix der Zuchtwerte $a$ gegeben durch
+
+$$var(a) = A * \sigma_a^2$$
+
+wobei: $a$  - Vektor der Zuchtwerte, $A$  - Verwandtschaftsmatrix, $\sigma_a^2$  - genetisch additive Varianz
+
+
+## Graphische Darstellung der Verwandtschaftsmatrix
+
+```{r ExamplePedigree, results='hide', fig.width=4}
+nNrAni <- 10
+suppressPackageStartupMessages(library(pedigreemm))
+pedEx1 <- pedigree(sire = as.integer(c(NA,NA,NA,NA,1,3,3,6,6,8)), 
+                   dam  = as.integer(c(NA,NA,NA,NA,2,2,4,5,7,9)), 
+                   label = as.character(1:nNrAni))
+### # show the pedigree
+#print(pedEx1)
+### # compute relationship matrix
+matApedEx1 <- as.matrix(getA(pedEx1))
+library(lattice)
+new.palette=colorRampPalette(c("black","red","yellow","white"),space="rgb")
+levelplot(matApedEx1[1:ncol(matApedEx1),ncol(matApedEx1):1],col.regions=new.palette(20))
+```
+
+
+## Zerlegung der Verwandtschaftsmatrix
+
+\begin{equation}
+A = L * D * L^T \nonumber
+\label{eq:RelMatFact}
+\end{equation}
+
+wobei $L$ eine linke untere Dreiecksmatrix ist und $D$ einer Diagonalmatrix entspricht. Aufgrund dieser Zerlegung lässt sich die Inverse $A^{-1}$ der Verwandtschaftsmatrix $A$ sehr einfach berechnen. 
+
+- Grund für Zerlegung: 
+    + Lösungen von BLUP-Zuchtwertschätzung brauchen Inverse $A^{-1}$
+    + Einfachere Invertierung der Faktoren als direkt
+
+
+## Zerlegung der der Zuchtwerte
+
+- Zerlegung des Zuchtwertes $a_i$ von Tier $i$ mit Eltern $s$ und $d$
+
+\begin{equation}
+a_i = {1\over 2}\ a_s + {1\over 2}\ a_d + m_i\nonumber
+\label{eq:BvAniDecomp}
+\end{equation}
+
+wobei $a_s$ und $a_d$ Zuchtwerte der Eltern $s$ und $d$ und $m_i$ "Mendelian Sampling"-Effekt
+
+- In Matrix-Vektor-Schreibweise
+
+$$a = P * a + m$$
+
+
+## Rekursive Zerlegung bis Gründertiere
+
+- Gründertiere $=$ Tiere ohne bekannte Eltern
+- Zerlegung der Eltern-Zuchtwerte
+
+$$a_s = {1\over 2}\ a_{ss} + {1\over 2}\ a_{sd} + m_s$$
+
+wobei $a_{ss}$ und $a_{sd}$ Zuchtwerte der Eltern von $s$ sind. 
+
+- Analog kann der Zuchtwert für $a_d$ zerlegt werden. 
+
+$$a_d = {1\over 2}\ a_{ds} + {1\over 2}\ a_{dd} + m_d$$
+
+- Einsetzen in Zerlegung von $a_i$
+
+$$a_i = {1\over 4}\ a_{ss} + {1\over 4}\ a_{sd} + {1\over 4}\ a_{ds} + {1\over 4}\ a_{dd}
+      + {1\over 2}\ m_s + {1\over 2}\ m_d + m_i$$
+      
+      
+## Rekursive Zerlegung Endergebnis
+
+$$a = L * m$$
+
+wobei $L$ eine rechte untere Dreiecksmatrix mit Einsen auf der Diagonalen. 
+
+- Die Offdiagonalelemente zeigen für jedes Tier den Pfad zu den verwandten Gründertieren der Population
+- Tier $i$ Nachkomme von $s$ und $d$, Offdiagonalelemente der $i$-ten Zeile als Mittelwert zwischen Zeilen $s$ und $d$ berechnen.
+
+
+## Zerlegung der Varianz der Zuchtwerte
+- Zerlegung der Varianz $var(a_i)$ des Zuchtwertes $a_i$
+
+$$var(a_i) = {1\over 4}\ var(a_s) + {1\over 4}\ var(a_d) + {1\over 2}\ cov(a_s,a_d) + var(m_i)$$
+
+wobei
+
+\begin{eqnarray}
+var(a_i) &=& (1+F_i) \sigma_a^2 \nonumber\\
+var(a_s) &=& (1+F_s) \sigma_a^2 \nonumber\\
+var(a_d) &=& (1+F_d) \sigma_a^2 \nonumber\\
+cov(a_s,a_d) &=& a_{sd} \sigma_a^2 = 2F_i \sigma_a^2 \nonumber
+\label{eq:VarAiComponent}
+\end{eqnarray}
+
+
+## Varianz der Mendelian Sampling Effekte
+
+- Beide Eltern bekannt
+
+$$var(m_i) = \left[ {1\over 2}\ - {1\over 4}\ (F_s + F_d)\right] \sigma_a^2$$
+
+- Ein Elternteil bekannt
+
+$$var(m_i) = \left[{3\over 4} -  {1\over 4}\ F_d\right] \sigma_a^2$$
+
+- unbekannte Eltern
+
+$$var(m_i) = \sigma_a^2$$
+
+
+## Covarianz-Matrix der Zuchtwerte
+
+- Covarianz-Matrix $var(a)$ der Zuchtwerte mit Gleichung $a = L * m$:
+
+$$var(a) = var(L*m) = L * var(m) * L^T$$
+
+wobei $var(m)$ die Covarianz-Matrix der $m$-Effekte ist
+
+- Da $m_i$ unabhängig voneinander ist $var(m)$ eine Diagonalmatrix
+- Alle $var(m_i)$ (siehe vorherige Folie) von $\sigma_a^2$ abhängig
+
+$$var(m) = D * \sigma_a^2$$ 
+
+$$var(a) = L * D * L^T * \sigma_a^2 = A * \sigma_a^2$$
+
+$$A = L * D * L^T$$
+
+
+## Inverse von $A$
+
+- Mit Matrix Algebra
+
+$$A^{-1} = (L * D * L^T)^{-1} = (L^{-1})^T * D^{-1} * L^{-1}$$
+
+- $D^{-1}$: Diagonalmatrix mit Elementen $1/var(m_i)$
+
+- $L^{-1}$: $a = L * m$ und $a = P * a + m$ beide nach $m$ auflösen und gleichsetzen
+
+$$m = L^{-1} * a$$
+
+$$m = (I-P) * a$$
+
+$$L^{-1} = I-P$$

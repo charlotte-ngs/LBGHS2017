@@ -32,8 +32,8 @@ $$Var(y) = Var(g) + Var(e)$$
 
 Das Konzept der Modellierung der phänotypischen Leistung mittels genetischem Anteil und umweltbedingtem Restanteil kann mit folgendem Schema veranschaulicht werden.
 
-```{r PhenotypeGenotypSchema, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, fig.align='center', echo=FALSE, results='asis'}
-knitr::include_graphics(path = "PhenotypeGenotypSchema.pdf")
+```{r PhenotypeGenotypSchema, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, odg.out.format=c("pdf","png"), fig.align='center', echo=FALSE, results='asis'}
+knitr::include_graphics(path = "png/PhenotypeGenotypSchema.png")
 ```
 
 Aus diesem einfachen Schema lassen sich sehr einfach die Frequenzen $f(G_1G_1)$, $f(G_1G_2)$ und $f(G_2G_2)$ der Genotypen $G_1G_1$, $G_1G_2$ und $G_2G_2$ ableiten. In der gezeigten Population befinden sich vier Individuen mit dem Genotyp $G_1G_1$, und je drei Individuen mit den Genotypen $G_1G_2$ und $G_2G_2$. Somit sind die Frequenzen
@@ -57,8 +57,8 @@ Der genotypische Wert $V_{ij}$ für einen bestimmten Genotypen $G_iG_j$ ist der 
 
 Die Skala, auf welcher wir die genotypischen Werte $V_{ij}$ messen wird der Einfachheit halber so gelegt, dass der Nullpunkt zwischen den beiden homozygoten Genotypen $G_2G_2$ und $G_1G_1$ liegt. Das nachfolgende Diagramm zeigt die genotypischen Werte der drei Genotypen.  
 
-```{r GenotypischerWert, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, fig.align='center', echo=FALSE, results='asis'}
-knitr::include_graphics(path = "GenotypischerWert.pdf")
+```{r GenotypischerWert, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, odg.out.format=c("pdf","png"), fig.align='center', echo=FALSE, results='asis'}
+knitr::include_graphics(path = "png/GenotypischerWert.png")
 ```
 
 Aus dem oben gezeigten Diagramm erkennen wir, dass $G_1$ das vorteilhafte Allel ist. Das heisst mit jedem $G_1$ steigt der genotypische Wert. Die folgende Tabelle fasst die genotypischen Werte für die drei Genotypen zusammen.

@@ -6,15 +6,15 @@ Dieses Dokument basiert auf einigen der oben genannten Quellen und versucht die 
 ## Voraussetzung für die Verwendung von R
 R muss zuerst heruntergeladen und dann installiert werden. Unter den sogennannten `r r6objTableAbbrev$add_abbrev(psAbbrev = "CRAN", psMeaning = "Comprehensive R Archive Network")`-Mirror Webseiten ist R als ausführbares Programm für die Betriebssystem `Windows`, `Mac OSX` und `Linux` erhältlich.
 
-```{r ScreenShotCRAN, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, png.path="png", fig.align='center', echo=FALSE, results='asis'}
-knitr::include_graphics(path = "ScreenShotCRAN.pdf")
+```{r ScreenShotCRAN, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, odg.out.format=c("pdf","png"), png.path="png", fig.align='center', echo=FALSE, results='asis'}
+knitr::include_graphics(path = "png/ScreenShotCRAN.png")
 ```
 
 
 Zusätzlich zu R empfielt es sich, die Entwicklungsumgebung RStudio (https://www.rstudio.com/) zu verwenden.
 
-```{r ScreenShotRstudio, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, fig.align='center', echo=FALSE, results='asis'}
-knitr::include_graphics(path = "ScreenShotRstudio.pdf")
+```{r ScreenShotRstudio, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, odg.out.format=c("pdf","png"), fig.align='center', echo=FALSE, results='asis'}
+knitr::include_graphics(path = "png/ScreenShotRstudio.png")
 ```
 
 ## Interaktiver Modus
@@ -104,14 +104,14 @@ Die Begriffe `Variablen` und `Objekte` werden hier als Synonyme verwendet. Das R
 knitr::opts_chunk$set(echo = FALSE, results = 'asis')
 ```
 
-```{r vonNeumannComputerArch, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, fig.align='center', echo=FALSE, results='asis'}
-knitr::include_graphics(path = "vonNeumannComputerArch.pdf")
+```{r vonNeumannComputerArch, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, odg.out.format=c("pdf","png"), fig.align='center', echo=FALSE, results='asis'}
+knitr::include_graphics(path = "png/vonNeumannComputerArch.png")
 ```
 
 Schauen wir uns den Arbeitsspeicher etwas genauer an, dann können wir uns den als eine Art Setzkasten, in dem man verschiedene Objekte ablegen kann, vorstellen.
 
-```{r Arbeitsspeicher1, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, fig.align='center', echo=FALSE, results='asis', out.width="5cm"}
-knitr::include_graphics(path = "Arbeitsspeicher1.pdf")
+```{r Arbeitsspeicher1, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, odg.out.format=c("pdf","png"), fig.align='center', echo=FALSE, results='asis', out.width="5cm"}
+knitr::include_graphics(path = "png/Arbeitsspeicher1.png")
 ```
 
 Wenn wir in der Console von Rstudio als Beispiel der Variablen `n` den Wert $5$ zuweisen, dann wird das mit folgender Anweisung gemacht
@@ -122,8 +122,8 @@ n <- 5
 
 Das folgende Diagramm zeigt, wie sich durch diese Anweisung der Arbeitsspeicher verändert.
 
-```{r Arbeitsspeicher2, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, fig.align='center', echo=FALSE, results='asis', out.width="5cm"}
-knitr::include_graphics(path = "Arbeitsspeicher2.pdf")
+```{r Arbeitsspeicher2, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, odg.out.format=c("pdf","png"), fig.align='center', echo=FALSE, results='asis', out.width="5cm"}
+knitr::include_graphics(path = "png/Arbeitsspeicher2.png")
 ```
 
 Berechnung und Zuweisung zu Variablen können kombiniert werden. 
@@ -135,8 +135,8 @@ summeq <- 15^2 + 9^2 + 8^2 + 34^2 + 76^2
 
 Die obige Berechnung und Zuweisung ist im nachfolgenden Diagramm dargestellt.
 
-```{r Arbeitsspeicher3, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, fig.align='center', echo=FALSE, results='asis', out.width="5cm"}
-knitr::include_graphics(path = "Arbeitsspeicher3.pdf")
+```{r Arbeitsspeicher3, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, odg.out.format=c("pdf","png"), fig.align='center', echo=FALSE, results='asis', out.width="5cm"}
+knitr::include_graphics(path = "png/Arbeitsspeicher3.png")
 ```
 
 Der Zugriff auf die Werte, welche unter einer Variablen abgelegt sind, erfolgt durch die Eingabe des Variablennamens an der Console.
@@ -146,8 +146,8 @@ n
 ```
 
 
-```{r ArbeitsspeicherZugriff, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, fig.align='center', echo=FALSE, results='asis', out.width="5cm"}
-knitr::include_graphics(path = "ArbeitsspeicherZugriff.pdf")
+```{r ArbeitsspeicherZugriff, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, odg.out.format=c("pdf","png"), fig.align='center', echo=FALSE, results='asis', out.width="5cm"}
+knitr::include_graphics(path = "png/ArbeitsspeicherZugriff.png")
 ```
 
 Bezüglich der Namengebung von Variablen müssen einige Regeln eingehalten werden. Variablennamen können Buchstaben, Zahlen und Zeichen wie "-"", "_" oder "." enthalten. Sie sollen aber nicht mit einer Zahl beginnen. Es wird empfohlen Namen von schon existierenden Funktionen nicht als Variablen zu verwenden. Allgemeine Hinweise zu Style, Namen und Notationen sind unter http://r-pkgs.had.co.nz/style.html erhältlich.

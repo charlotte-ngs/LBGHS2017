@@ -1,0 +1,214 @@
+# Verwandtschaft und Inzucht
+
+## Einleitung
+Bei der Selektion von Eltern der kommenden Generation werden Tiere mit positiven Allelen gemäss unserem Zuchtziel ausgewählt. Dadurch sind diese Tiere genetisch untereinander ähnlicher als eine zufällige Stichprobe aus der gesamten Population. Genetische Ähnlichkeit bedeutet hier, dass die Anzahl positiver Allele in den selektierten Inidividuen grösser ist im Vergleich zur zufälligen Stichprobe aus der gesamten Population.
+
+```{r ibd_ibs, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, odg.out.format=c("pdf","png"), fig.align='center', echo=FALSE, results='asis'}
+knitr::include_graphics(path = "png/ibd_ibs.png")
+```
+
+
+## Ähnlichkeit
+Wir unterscheiden zwei Arten der Ähnlichkeit. 
+
+1. Ähnlichkeit aufgrund gemeinsamer Abstammung: __identity by descent__ (IBD)
+2. Zustandsähnlichkeit: __identity by state__ (IBS)
+
+Das oben gezeigte Diagramm soll den Unterschied zwischen den beiden Ähnlichkeitsarten veranschaulichen.
+
+Diese Abbildung entspricht einer graphischen Darstellung eines Stammbaums (Pedigree). Die ovalen Symbole stellen die weiblichen Tiere dar und die Rechtecke stehen für die männlichen Tiere. Die horizontalen grauen Linien verbinden ein weibliches und ein männliches Tier zu einem Elternpaar. Die zu den horizontalen Linien senkrecht stehenden Linien führen zum jeweiligen Nachkommen der entsprechenden Elternpaarung. 
+
+Die Bezeichnungen in den Knoten stehen für die Genotypen der Tiere an einem bestimmten Locus. Die roten Pfeile zeigen den Pfad für zwei $A_1$-Allele, welche Kopien des gleichen Allels eines gemeinsamen Ahnen sind. Diese Allele werden somit als __identical by descent__ (IBD) bezeichnet. Die grünen Pfeile zeigen den Pfad von zwei zustandsgleichen Allelen (IBS) diese Allele sind nicht Kopien eines Allels aus einem gemeinsamen Vorfahren.
+
+
+## Verwandtschaft
+__Definition__: Zwei Tiere $x$ und $y$ sind miteinander verwandt, falls die Wahrscheinlichkeit, dass sie an einem beliebigen Locus herkunftsgleiche Allele (IBD) haben, grösser $0$ ist. 
+
+Als Mass für die Verwandtschaft wird der sogenannte __Verwandtschaftsgrad__ $a_{xy}$ verwendet. Der Verwandtschaftsgrad entspricht der mittleren Wahrscheinlichkeit über alle Loci, dass diese IBD sind. Für ein gegebenes Pedigree und zwei Tiere $x$ und $y$ wird der Verwandtschaftsgrad $a_{xy}$ berechnet als
+
+\begin{equation}
+a_{x,y} = \sum_{i=1}^P\left({1\over 2}\right)^{t_1^{(i)}+t_2^{(i)}}(1+F_{Z_i})
+\label{eq:RelationshipCoefficient}
+\end{equation}
+
+wobei $i$ über alle möglichen Verbindungen im Pedigree zwischen den Tieren $x$ und $y$ läuft und $Z_i$ der gemeinsame Ahne von $x$ und $y$ auf der Verbindung $i$ darstellt. Für die Verbindung $i$ wird die Anzahl Generationen zwischen $x$ und dem gemeinsamen Ahnen $Z_i$ mit $t_1^{(i)}$ bezeichnet. Analog dazu steht $t_2^{(i)}$ für die Anzahl Generationen zwischen $y$ und $Z_i$. Aufgrund der Definition von $a_{x,y}$ erkennen wir eine Symmetrieeigenschaft des Verwandtschaftsgrades. Das bedeutet, dass $a_{x,y} = a_{y,x}$
+
+```{r ComputeRelationshipCoeff, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, odg.out.format=c("pdf","png"), fig.align='center', echo=FALSE, results='asis', out.width="6cm"}
+knitr::include_graphics(path = "png/ComputeRelationshipCoeff.png")
+```
+
+Der Term $F_{Z_i}$ steht für den Inzuchtgrad des gemeinsamen Ahnen $Z_i$. Inzucht wird im nächsten Abschnitt besprochen. 
+
+
+## Inzucht
+Ein Tier $x$ ist ingezüchtet, falls seine Eltern $m(x)$ und $v(x)$ miteinander verwandt sind. Inzucht beschreibt somit, ob ein Tier an einem Locus herkunftsgleiche Allele (IBD) hat. Der Inzuchtkoeffizient $F_x$ eines Tieres $x$ ist definiert als der halbe Verwandtschaftskoeffizient der Eltern von $x$. 
+
+\begin{equation}
+F_x = {1\over 2}a_{m(x),v(x)} = {1\over 2}\sum_{i=1}^P\left({1\over 2}\right)^{t_1^{(i)}+t_2^{(i)}}(1+F_{Z_i})
+      = \sum_{i=1}^P\left({1\over 2}\right)^{t_1^{(i)}+t_2^{(i)}+1}(1+F_{Z_i})
+\label{eq:InbreedingCoefficient}
+\end{equation}
+
+
+## Matrixmethode
+Zur Berechnung der Verwandtschaftsgrade und der Inzuchtgrade für eine ganze Population sind die in (\ref{eq:RelationshipCoefficient}) und (\ref{eq:InbreedingCoefficient}) gezeigten Formeln nicht geeignet. Da die Verwandtschaftsgrade und die Inzuchtkoeffizienten für ein bestimmtes Tier in der Population immer von den jeweiligen Werten der Eltern abhängen, ist eine rekursive Berechnung viel einfacher. Dieser rekursive Ansatz heisst __Matrixmethode__. Dabei werden die Verwandtschaftsgrade und die Inzuchtkoeffizienten mit folgendn Schritten bestimmt.
+
+1. Die Tiere werden dem Alter nach von links nach rechts (und von oben nach unten) in einer symmetrischen Matrix angeordnet. Als erstes Tier wird das unbekannte Tier `NA` eingetragen.
+2. Oberhalb jedes Tieres werden seine Eltern eingetragen
+3. Die erste Zeile und die erste Kolonnen werden mit lauter Nullen aufgefüllt.
+4. Als Diagonalelement für Tier $x$ tragen wir $1+F_x$ ein
+5. Die Offdiagonalelemente auf der Zeile für Tier $x$ werden mit den Verwandtschaftsgraden $a_{x,y}$ zwischen Tier $x$ und Tier $y$  aufgefüllt. Dabei gilt, dass 
+
+\begin{equation}
+a_{xy} = {1\over 2}(a_{x,m(y)} + a_{x,v(y)})
+\label{eq:RelCoeffRecursive}
+\end{equation}
+
+6. Damit die Matrix symmetrisch wird, werden die berechneten Werte aus der Zeile für Tier $x$ in die Kolonnen für Tier $x$ übertragen.
+
+
+### Beispiel für Matrixmethode
+Gegeben sei das folgende Pedigree.
+
+
+```{r MatMethPedigree, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, odg.out.format=c("pdf","png"), fig.align='center', echo=FALSE, results='asis', out.width="6cm"}
+knitr::include_graphics(path = "png/MatMethPedigree.png")
+```
+
+Alternative zur graphischen Darstellung kann ein Pedigree auch als Liste mit drei Kolonnen gegeben sein. In den drei Kolonnen werden die Tiere, die Väter (sire) und die Mütter (dam) aufgelistet. Für die Definition und die Bearbeitung von Pedigrees in R verwenden wir das R-package `pedigreemm`. Da wir dieses Package auch später noch verwenden werden, ist im nachfolgenden Code-Junk gezeigt, wie wir ein Pedigree mit `pedigreemm` aufstellen. Nach dem Laden des Package mit der `library()`-Funktion wird das Pedigree mit dem Aufruf der Funktion `pedigree()` definiert. Diese Funktion erwartet drei Vektoren als Argumente. Der Vektor `label` enthält die Tier-Ids als Zeichenketten (Strings). Die Vektoren `sire` und `dam` enthalten beide ganze Zahlen (Integer) und anhand dieser beiden Vektoren werden die Eltern für ein bestimmtes Tier definiert. 
+
+```{r ExamplePedigree, results='markup'}
+nNrAni <- 10
+suppressPackageStartupMessages(library(pedigreemm))
+pedEx1 <- pedigree(sire = as.integer(c(NA,NA,NA,NA,1,3,3,6,6,8)), 
+                   dam  = as.integer(c(NA,NA,NA,NA,2,2,4,5,7,9)), 
+                   label = as.character(1:nNrAni))
+```
+
+Für unser Bespielpedigree sieht die Listenform wie folgt aus:
+
+```{r ShowExamplePedigree, results='markup'}
+print(pedEx1)
+```
+
+Wir können die Verwandtschaftsmatrix für unser Pedigree direkt mit der Funktion `getA()` aufstellen.
+
+```{r GetAFromPed}
+matApedEx1 <- as.matrix(getA(pedEx1))
+```
+
+Wie die Verwandtschaftsmatrix für unser Beispielpedigree aussieht werden wir ganz am Schluss dieses Kapitels sehen.
+
+Unbekannte Eltern werden mit `<NA>` gekennzeichnet. Aufgrund des gegebenen Pedigrees können wir nun schrittweise die Verwandtschaftsmatrix aufstellen.
+
+### Schritt 1: Anordnung der Tiere sortiert nach Alter
+Bei der Sortierung nach Alter ist es wichtig, dass die Eltern vor den Nachkommen aufgelistet werden. Für unser Beispiel haben wir keine konkreten Altersangaben. Bei der Sortierung geht es auch nicht um die Auflistung nach dem absoluten Alter, sondern es ist einfach wichtig, dass Eltern vor Nachkommen erscheinen, sonst funktioniert die rekursive Berechnung der Verwandtschaftsgrade nicht. Innerhalb einer Generation spielt die Reihenfolge der Tiere keine Rolle.
+
+Im Beispiel wurden die Tiere schon nach dem Alter nummeriert, so dass die ältesten Tiere die tiefsten Nummern haben. Somit sieht das Resultat des ersten Schrittes wie folgt aus.
+
+```{r RelMatStep1, echo=FALSE}
+relMat <- matrix(data = "", nrow = nNrAni+2, ncol = nNrAni+2)
+relMat[1,] <- c(NA,"NA",as.character(1:nNrAni))
+relMat[,1] <- c(NA,"NA",as.character(1:nNrAni))
+relMat[2,2] <- "1"
+```
+
+```{r RelMatStep1Result, results='asis', echo=FALSE}
+cat("$$\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = relMat), collapse = "\n"))
+cat("\\right]\n")
+cat("$$\n")
+```
+
+
+### Schritt 2: Eintragen der Eltern
+Bekannte Eltern werden eine Zeile über den Tieren eingetragen
+
+```{r RelMatStep2, echo=FALSE}
+vecParentRow <- rmddochelper::sGetParentRow(pPed = pedEx1)
+relMat <- rbind(c(NA,NA,vecParentRow),relMat)
+```
+
+```{r RelMatStep2Result, results='asis', echo=FALSE}
+cat("$$\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = relMat), collapse = "\n"))
+cat("\\right]\n")
+cat("$$\n")
+```
+
+
+### Schritt 3: Initialisierung der ersten Zeile und ersten Kolonne
+Die Zeile und die Kolonnen, welche zum unbekannten Tier "NA" gehören, werden mit $0$ initialisiert.
+
+```{r RelMatStep3Init, echo=FALSE}
+relMat[3,3:(ncol(relMat))] <- 0
+relMat[4:nrow(relMat),2] <- 0
+relMat[3,2] <- "1"
+```
+
+```{r RelMatStep3Result, results='asis', echo=FALSE}
+cat("$$\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = relMat), collapse = "\n"))
+cat("\\right]\n")
+cat("$$\n")
+```
+
+
+### Schritt 4: Diagonale für Tier 1
+Auf der Diagonalen für Tier 1 wird $1+F_1$ eingetragen. $F_1$ steht für den Inzuchtkoeffizienten von Tier $1$. Dieser wird berechnet aus dem Verwandtschaftsgrad der Eltern. Da die Eltern von Tier $1$ unbekannt sind, wird $F_1=0$ gesetzt.
+
+```{r RelMatStep4Diag, echo=FALSE}
+relMat[4,3] <- matApedEx1[1,1]
+```
+
+```{r RelMatStep4Result, results='asis', echo=FALSE}
+cat("$$\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = relMat), collapse = "\n"))
+cat("\\right]\n")
+cat("$$\n")
+```
+
+### Schritt 5: Offdiagonale für Tier 1
+Auf der Offdiagonalen wird auf der Zeile für Tier 1 und in Kolonne $i$ der Verwandtschaftsgrad zwischen den Tieren $1$ und $i$ eingetragen. Dieser berechnen wir mit der rekursiven Formel aus Gleichung (\ref{eq:RelCoeffRecursive}).
+
+```{r RelMatStep5OffDiag, echo=FALSE}
+relMat[4,4:ncol(relMat)] <- matApedEx1[1,2:ncol(matApedEx1)]
+```
+
+```{r RelMatStep5Result, results='asis', echo=FALSE}
+cat("$$\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = relMat), collapse = "\n"))
+cat("\\right]\n")
+cat("$$\n")
+```
+
+
+### Schritt 6: Übertragen der Zeile von Tier 1 in die Kolonne für Tier 1
+Da die Verwandtschaftsmatrix symmetrisch sein muss, können wir die Zeile von Tier 1 in die entsprechende Kolonne übertragen
+
+```{r RelMatStep6OffDiag, echo=FALSE}
+relMat[5:nrow(relMat),3] <- matApedEx1[2:nrow(matApedEx1),1]
+```
+
+```{r RelMatStep6Result, results='asis', echo=FALSE}
+cat("$$\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = relMat), collapse = "\n"))
+cat("\\right]\n")
+cat("$$\n")
+```
+
+Die Schritte 4, 5 und 6 wiederholen wir bis die ganze Matrix aufgefüllt ist. Anschliessend streichen wir die ersten drei Zeilen
+und die ersten zwei Kolonnen. Das Resultat ist dann die Verwandtschaftsmatrix, welche mit $A$ bezeichnet wird.
+
+```{r RelMatFinalResult, results='asis', echo=FALSE}
+cat("$$A = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matApedEx1, pnDigits = 4), collapse = "\n"))
+cat("\\right]\n")
+cat("$$\n")
+```
+
+Die Diagonalelemente $a_{ii}$ der Matrix $A$ entsprechen den Werten $1 + F_i$, wobei $F_i$ der Inzuchtkoeffizient von Tier $i$ ist. Somit sind alle Tiere, die auf der Dianognalen von $A$ einen Wert $>1$ haben ingezüchtet. Die Offdiagonalelemente $a_{ij}$ für $i \ne j$ entsprechen dem Verwandtschaftsgrad zwischen Tier $i$ und $j$. 
+
+
+
+

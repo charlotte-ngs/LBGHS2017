@@ -1,0 +1,333 @@
+# Inverse Verwandtschaftsmatrix
+
+## Einleitung
+Die genetische Verwandtschaft zwischen Tieren ist sehr wichtig bei der Zuchtwertschätzung. Wie wir im Kapitel zur Verwandtschaft schon gesehen hatten, zeigen verwandte Tiere eine erhöhte Wahrscheinlichkeit Kopien des gleichen Ahnen-Allels zu tragen. Im Kapitel BLUP-Zuchtwertschätzung werden wir sehen, dass genetische Covarianzen zwischen Tieren als Informationsquellen verlangt werden. Die genetischen Covarianzen zwischen Tieren sind durch die Verwandtschaftsbeziehungen zwischen den Tieren bestimmt. Technisch gesehen wird die additiv genetische Verwandtschaftsmatrix $A$ und insbesondere ihre Inverse $A^{-1}$ eine wichtige Rolle spielen bei der BLUP-Zuchtwertschätzung.
+
+
+## Verwandtschaftsmatrix
+Im Kapitel "Verwandtschaft und Inzucht" wurde bereits besprochen, wie die Verwandtschaftsgrade zwischen Tieren und die Inzuchtkoeffizienten von Tieren berechnet werden. Wir haben auch einen rekursiven Algorithmus angeschaut, welcher es uns erlaubt die ganze Verwandtschaftsmatrix aufzustellen. Die Verwandtschaftsmatrix enthält sehr viel Informationen über die Struktur einer Population. Als Nebenprodukt erhalten wir auch die Inzuchtkoeffizienten aller Tiere in unserer Population. Es gibt auch spannende Möglichkeiten die Verwandtschaftsmatrix graphisch darzustellen. Eine Möglichkeit ist die sogenannten Heatmap. Als Beispiel können wir die Verwandtschaftsmatrix aus dem Kapitel "Verwandtschaft und Inzucht", wie folgt in eine Heatmap verwandeln. Das Pedigree in Listenformat ist nachfolgend gezeigt.
+
+```{r 06_ExamplePedigree, results='markup'}
+nNrAni <- 10
+suppressPackageStartupMessages(library(pedigreemm))
+pedEx1 <- pedigree(sire = as.integer(c(NA,NA,NA,NA,1,3,3,6,6,8)), 
+                   dam  = as.integer(c(NA,NA,NA,NA,2,2,4,5,7,9)), 
+                   label = as.character(1:nNrAni))
+### # show the pedigree
+print(pedEx1)
+### # compute relationship matrix
+matApedEx1 <- as.matrix(getA(pedEx1))
+```
+
+Anhand der Verwandtschaftsmatrix $A$ 
+
+```{r 06_RelMatFinalResult, echo=FALSE, results='asis'}
+cat("$$A = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matApedEx1, pnDigits = 4), collapse = "\n"))
+cat("\\right]\n")
+cat("$$\n")
+```
+
+lässt sich dann die folgende Heatmap erzeugen. Die nachfolgenden R-Statements zeigen gleich, wie eine Heatmap in R erzeugt wird, vorausgesetzt, dass das Pedigree in einer Matrix mit Namen `matApedEx1` gespeichert ist.
+
+```{r PedHeadMap, echo=TRUE, fig.width=4}
+library(lattice)
+new.palette=colorRampPalette(c("black","red","yellow","white"),space="rgb")
+levelplot(matApedEx1[1:ncol(matApedEx1),ncol(matApedEx1):1],col.regions=new.palette(20))
+```
+
+
+## Zerlegung der Verwandtschaftsmatrix
+Die Verwandtschaftsmatrix $A$ kann in ein Produkt von drei Faktoren zerlegt werden. Diese Zerlegung lautet 
+
+\begin{equation}
+A = LDL^T
+\label{eq:RelMatFact}
+\end{equation}
+
+wobei $L$ eine linke untere Dreiecksmatrix ist und $D$ einer Diagonalmatrix entspricht. Aufgrund dieser Zerlegung lässt sich die Inverse $A^{-1}$ der Verwandtschaftsmatrix $A$ sehr einfach berechnen. 
+
+### Herleitung der Zerlegung von $A$
+Die Herleitung der Zerlegung in (\ref{eq:RelMatFact}) basiert auf der Tatsache, dass die Varianz der Zuchtwerte dem Produkt aus Verwandtschaftsmatrix $A$ und genetisch-additiver Varianz $\sigma_a^2$ entspricht. In Matrix-Vektor-Schreibweise heisst das
+
+\begin{equation}
+var(a) = A * \sigma_a^2
+\label{eq:BvCoVarMat}
+\end{equation}
+
+wobei $a$ der Vektor mit den Zuchtwerten aller Tiere in der Population darstellt und $A$ der Verwandtschaftsmatrix entspricht.
+
+Der Zuchtwert $a_i$ eines Tieres $i$ mit Mutter $d$ und Vater $s$ lässt sich zerlegen als
+
+\begin{equation}
+a_i = {1\over 2}\ a_s + {1\over 2}\ a_d + m_i
+\label{eq:BvAniDecomp}
+\end{equation}
+
+wobei $a_s$ und $a_d$ die Zuchtwerte der Eltern $s$ und $d$ von Tier $i$ ist und $m_i$ dem "Mendelian Sampling"-Effekt entspricht. Mendelian Sampling-Effekte entstehen durch die zufällige Auswahl der Elternallele für die Nachkommen. Durch diesen zufälligen Auswahlprozess können bei Geschwistern eine Häufung von Allelen mit positiver (oder negativer) Wirkung auftreten. Somit haben Vollgeschwister nicht den gleichen Zuchtwert. Diese Variation der Zuchtwerte unter Vollgeschwister wird mit den $m_i$-Effekten modelliert.
+
+In Matrix-Vektor-Schreibweise können wir die Zerlegung in (\ref{eq:BvAniDecomp}) für die gesamte Population schreiben als 
+
+\begin{equation}
+a = P * a + m
+\label{eq:BvAniDecompMat}
+\end{equation}
+
+### Ein Beispiel
+Zur Veranschaulichung verwenden wir das folgende Beispiel. Gegeben sei das folgende Pedigree
+
+```{r PedEx1, results='markup'}
+nNrAni <- 6
+pedEx2 <- pedigree(sire = c(NA,NA,1,1,4,5),
+                   dam = c(NA,NA,2,NA,3,2),
+                   label = as.character(1:nNrAni))
+print(pedEx2)
+```
+
+Die Zerlegung (\ref{eq:BvAniDecomp}) für Tier $3$ mit bekannten Eltern $1$ und $2$ lautet
+
+$$a_3 = {1\over 2}\ a_1 + {1\over 2}\ a_2 + m_3$$
+
+Analog dazu für Tier $4$ mit bekanntem Vater $1$ und unbekannter Mutter
+
+$$a_4 = {1\over 2}\ a_1 + m_4$$
+
+Für Tiere mit unbekannten Eltern, wie $1$ oder $2$ ist der Zuchtwert einfach dem $m_i$ Effekt. Somit ist
+
+$$a_1 = m_1$$ und $$a_2 = m_2$$
+
+Fassen wir die Zerlegungen aller Tiere zusammen, so resultiert
+
+
+```{r ZwZerlMat, results='asis', echo=FALSE}
+matP <- matrix(data = c(0,0,0,0,0,0,
+                        0,0,0,0,0,0,
+                        0.5,0.5,0,0,0,0,
+                        0.5,0,0,0,0,0,
+                        0,0,0.5,0.5,0,0,
+                        0,0.5,0,0,0.5,0), ncol = nNrAni, byrow = TRUE)
+cat("$$\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(as.matrix(rmddochelper::vecGetVecElem("a", nNrAni), ncol=1)), collapse = "\n"))
+cat("\\right]\n")
+cat(" = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(matP), collapse = "\n"))
+cat("\\right]\n")
+cat(" * ")
+cat("\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(as.matrix(rmddochelper::vecGetVecElem("a", nNrAni), ncol=1)), collapse = "\n"))
+cat("\\right]\n")
+cat(" + ")
+cat("\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(as.matrix(rmddochelper::vecGetVecElem("m", nNrAni), ncol=1)), collapse = "\n"))
+cat("\\right]\n")
+cat("$$\n")
+```
+
+### Rekursive Zerlegung aller Zuchtwerte
+In der Zerlegung des Zuchtwertes $a_i$ für Tier $i$ in (\ref{eq:BvAniDecomp}) kommen die Zuchtwerte $a_s$ und $a_d$ der Eltern $s$ und $d$ vor. Diese können analog zu $a_i$ zerlegt werden in 
+
+$$a_s = {1\over 2}\ a_{ss} + {1\over 2}\ a_{sd} + m_s$$
+
+wobei $a_{ss}$ und $a_{sd}$ die Zuchtwerte der Eltern von $s$ sind. Analog kann der Zuchtwert für $a_d$ zerlegt werden. 
+
+$$a_d = {1\over 2}\ a_{ds} + {1\over 2}\ a_{dd} + m_d$$
+
+Setzen wir diese Zerlegungen in (\ref{eq:BvAniDecomp}) ein, so erhalten wir eine neue Zerlegung des Zuchtwertes $a_i$ in die Zuchtwerte der Grosseltern und in die entsprechenden $m$-Effekte. 
+
+\begin{eqnarray}
+a_i &=& {1\over 2}\left( {1\over 2}\ a_{ss} + {1\over 2}\ a_{sd} + m_s\right) 
+      + {1\over 2}\left( {1\over 2}\ a_{ds} + {1\over 2}\ a_{dd} + m_d\right) + m_i\nonumber\\
+    &=& {1\over 4}\ a_{ss} + {1\over 4}\ a_{sd} + {1\over 4}\ a_{ds} + {1\over 4}\ a_{dd}
+      + {1\over 2}\ m_s + {1\over 2}\ m_d + m_i
+\end{eqnarray}
+
+Diese rekursive Zerlegung der Zuchtwerte lässt sich fortführen bis wir bei Ahnen sind von $i$, welche keine bekannten Eltern mehr haben. Somit haben wir die Zuchtwerte zu Linearkombinationen der $m$-Effekte zerlegt. In Matrix-Vektor-Schreibweise sieht diese Zerlegung wie folgt aus.
+
+\begin{equation}
+a = L * m
+\label{eq:BvLmDecomp}
+\end{equation}
+
+wobei $L$ eine rechte untere Dreiecksmatrix ist mit lauter Einsen auf der Diagonalen. Die Offdiagonalelemente zeigen für jedes Tier den Pfad zu den verwandten Foundertieren der Population, wobei Tiere ohne Eltern als Foundertiere bezeichnet werden. Ist Tier $i$ ein Nachkomme von $s$ und $d$, so lassen sich die Offdiagonalelemente der $i$-ten Zeile als Mittelwert zwischen den Zeilen $s$ und $d$ berechnen.
+
+Für unser Beispiel sieht die Zerlegung in (\ref{eq:BvLmDecomp}) wie folgt aus.
+
+```{r BvLmDecomp, results='asis', echo=FALSE}
+matL <- matrix(data = c(1,0,0,0,0,0,
+                                        0,1,0,0,0,0,
+                                        0.5,0.5,1,0,0,0,
+                                        0.5,0,0,1,0,0,
+                                        0.5,0.25,0.5,0.5,1,0,
+                                        0.25,0.625,0.25,0.25,0.5,1), ncol = nNrAni, byrow = TRUE)
+cat("$$\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(as.matrix(rmddochelper::vecGetVecElem("a", nNrAni), ncol=1)), collapse = "\n"))
+cat("\\right]\n")
+cat(" = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(matL), collapse = "\n"))
+cat("\\right]\n")
+cat(" * ")
+cat("\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(as.matrix(rmddochelper::vecGetVecElem("m", nNrAni), ncol=1)), collapse = "\n"))
+cat("\\right]\n")
+cat("$$\n")
+```
+
+## Varianzen der Zuchtwerte
+Kehren wir zurück zur Zerlegung des Zuchtwerts $a_i$ aus (\ref{eq:BvAniDecomp}) und berechnen daraus die Varianz $var(a_i)$ so folgt
+
+\begin{equation}
+var(a_i) = var({1\over 2}\ a_s + {1\over 2}\ a_d + m_i) 
+         = {1\over 4}\ var(a_s) + {1\over 4}\ var(a_d) + {1\over 2}\ cov(a_s,a_d) + var(m_i)
+\label{eq:VarAiDecomp}
+\end{equation}
+
+wobei aufgrund der Elemente aus der Verwandtschaftsmatrix $A$: 
+
+\begin{eqnarray}
+var(a_i) &=& (1+F_i) \sigma_a^2 \nonumber\\
+var(a_s) &=& (1+F_s) \sigma_a^2 \nonumber\\
+var(a_d) &=& (1+F_d) \sigma_a^2 \nonumber\\
+cov(a_s,a_d) &=& a_{sd} \sigma_a^2 = 2F_i \sigma_a^2
+\label{eq:VarAiComponent}
+\end{eqnarray}
+
+In (\ref{eq:VarAiDecomp}) wurde auch verwendet, dass keine Covarianzen zwischen den Zuchtwerten und den $m$-Effekten bestehen. Setzen wir die Beziehungen aus (\ref{eq:VarAiComponent}) in (\ref{eq:VarAiDecomp}) ein und lösen nach $var(m_i)$, dann folgt
+
+\begin{eqnarray}
+var(m_i) &=& var(a_i) - \left[ {1\over 4}\ var(a_s) + {1\over 4}\ var(a_d) + {1\over 2}\ cov(a_s,a_d)\right] \nonumber \\
+         &=& (1+F_i) \sigma_a^2 - {1\over 4}\ (1+F_s) \sigma_a^2 - {1\over 4}\ (1+F_d) \sigma_a^2 - {1\over 2}\ 2F_i \sigma_a^2 \nonumber \\
+         &=& \left[ {1\over 2}\ - {1\over 4}\ (F_s + F_d)\right] \sigma_a^2
+\label{eq:VarMi}
+\end{eqnarray}
+
+Ist ein Elternteil von $i$ unbekannt, dann lautet die Zerlegung des Zuchtwerts $a_i$
+
+$$a_i = {1\over 2}\ a_d + m_i$$
+
+und daraus abgeleitet ist 
+
+\begin{equation}
+var(m_i) = \left[1 -  {1\over 4}\ (1+F_d)\right] \sigma_a^2 = \left[{3\over 4} -  {1\over 4}\ F_d\right] \sigma_a^2
+\label{eq:VarMiOneParentUnknown}
+\end{equation}
+
+Sind beide Eltern unbekannt, dann ist
+
+$$a_i = m_i$$ und 
+
+\begin{equation}
+var(m_i) = \sigma_a^2
+\label{eq:VarMiBothParentsUnknown}
+\end{equation}
+
+
+Die Berechnungen der Varianzen der $m$-Effekte war eine Vorbereitung für die Berechnung der Varianz der Zuchtwerte. In Matrix-Vektor-Schreibeweise hatten wir die Zuchtwerte nach (\ref{eq:BvLmDecomp}) in Linearkombinationen der $m$-Effekte zerlegt. Berechnen wir aufgrund von (\ref{eq:BvLmDecomp}) die Covarianz-Matrix des Vektors $a$ der Zuchtwerte so folgt
+
+\begin{equation}
+var(a) = var(L*m) = L * var(m) * L^T
+\label{eq:VarAFromVarM}
+\end{equation}
+
+wobei $var(m)$ eine Diagonalmatrix mit den Elementen $var(m_i)$ ist. Die Elemente $var(m_i)$ werden aufgrund von (\ref{eq:VarMi}), (\ref{eq:VarMiOneParentUnknown}) oder (\ref{eq:VarMiBothParentsUnknown}) berechnet, je nachdem ob $i$ zwei bekannte Eltern, einen bekannten Elternteil oder unbekannte Eltern hat. Die Covarianzmatrix $var(m)$ ist diagonal, da die $m$-Effekte unabhängig sind von einander. Somit treten zwischen $m_i$ und $m_j$ für $i\ne j$ keine Covarianzen auf. Da in allen Elementen $var(m_i)$ die genetisch additive Varianz $\sigma_a^2$ vorkommt, können wir diese als sklaren Faktor ausklammern. Somit gilt
+
+$$var(m) = D * \sigma_a^2$$
+
+Setzen wir das in (\ref{eq:VarAFromVarM}) so folgt
+
+\begin{equation}
+var(a) = L * var(m) * L^T = L * D * L^T \sigma_a^2
+\label{eq:VarAAsLdl}
+\end{equation}
+
+Da wir von Gleichung (\ref{eq:BvCoVarMat}) wissen, dass die Varianz $var(a)$ der Zuchtwerte gleich der Verwandtschaftsmatrix $A$ mal die genetisch additive Varianz $\sigma_a^2$ ist, können wir das in (\ref{eq:VarAAsLdl}) einsetzen. Dies führt zur sogenannten __LDL__-Zerlegung der Verwandtschaftsmatrix $A$. 
+
+\begin{equation}
+var(a) = A * \sigma_a^2 = L * D * L^T \sigma_a^2
+\label{eq:VarAAsLdlResult}
+\end{equation}
+
+Aus (\ref{eq:VarAAsLdlResult}) folgt 
+
+$$A = L * D * L^T$$
+
+was wir schon am Anfang diese Kapitels in (\ref{eq:RelMatFact}) postuliert hatten.
+
+
+## Inverse von $A$
+Der Grund, weshalb wir die Verwandtschaftsmatrix $A$ zerlegt hatten ist, dass die Berechnung der Inversen $A^{-1}$ so einfacher ist, als über die explizite Inversion von $A$ direkt. Aufgrund der Zerlegung von $A$ in (\ref{eq:RelMatFact}) erhalten wir für die Inverse $A^{-1}$
+
+\begin{equation}
+A^{-1} = (L * D * L^T)^{-1} = (L^T)^{-1} * D^{-1} * L^{-1} = (L^{-1})^T * D^{-1} * L^{-1}
+\label{eq:RelMatFactInv}
+\end{equation}
+
+Die Matrix $D$ ist eine Diagonalmatrix und somit einfach zu invertieren. Die Inverse $D^{-1}$ ist wieder eine Diagonalmatrix mit Elementen $1/var(m_i)$. Die Matrix $L^{-1}$ können wir durch das Gleichsetzen von den Gleichungen (\ref{eq:BvAniDecompMat}) und (\ref{eq:BvLmDecomp}). 
+
+\begin{eqnarray}
+a &=& P * a + m \nonumber\\
+a &=& L * m
+\label{eq:CompLinv}
+\end{eqnarray}
+
+Lösen wir die beiden Gleichungen in (\ref{eq:CompLinv}) nach $m$ auf, dann erhalten wir 
+
+\begin{eqnarray}
+m &=& a - P * a = (I - P) * a \nonumber\\
+m &=& L^{-1} * a
+\label{eq:CompMVector}
+\end{eqnarray}
+
+wobei $I$ die Einheitsmatrix ist und $P$ entspricht der Matrix, welche in Zerlegung (\ref{eq:BvAniDecompMat}) die Nachkommen- und die Eltern-Zuchtwerte miteinander verknüpft. Da in (\ref{eq:CompMVector}) beide Gleichungen einen Ausdruck für den Vektor $m$ enthalten, können wir die Gleichungen gleichsetzen und somit die Matrix $L^{-1}$ bestimmen als
+
+$$L^{-1} = I - P$$.
+
+### Unser Beispiel
+Für unser Beispiel ist die Matrix $D$ gegeben als
+
+```{r MatDExPed, results='asis', echo=FALSE}
+matDEx2 <- diag(Dmat(pedEx2))
+cat("$$D = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(matDEx2,pnDigits = 5), collapse = "\n"))
+cat("\\right]\n")
+cat("$$\n")
+```
+
+Die Inverse $D^{-1}$ ist 
+
+```{r MatDInvExPed, results='asis', echo=FALSE}
+matDInvEx2 <- solve(matDEx2)
+cat("$$D^{-1} = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(matDInvEx2,pnDigits = 5), collapse = "\n"))
+cat("\\right]\n")
+cat("$$\n")
+```
+
+Die Matrix $P$ zur Berechnung von $L^{-1}$ hatten wir aufgestellt als
+
+```{r MatPExPed, results='asis', echo=FALSE}
+cat("$$P = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(matP), collapse = "\n"))
+cat("\\right]\n")
+cat("$$\n")
+```
+
+Somit ist $L^{-1}$
+
+```{r MatLinvExPed, results='asis', echo=FALSE}
+matLInvEx2 <- diag(1, nrow=nNrAni) - matP 
+cat("$$L^{-1} = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(matLInvEx2,pnDigits = 5), collapse = "\n"))
+cat("\\right]\n")
+cat("$$\n")
+```
+
+Somit haben die Faktoren von $A^{-1}$ und können diese direkt aufstellen als
+
+```{r MatAinvExPed, results='asis', echo=FALSE}
+matAInvEx2 <- t(matLInvEx2) %*% matDInvEx2 %*% matLInvEx2
+cat("$$A^{-1} = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(matAInvEx2,pnDigits = 5), collapse = "\n"))
+cat("\\right]\n")
+cat("$$\n")
+```
+

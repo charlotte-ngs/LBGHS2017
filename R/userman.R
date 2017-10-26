@@ -88,14 +88,17 @@ get_user_passwd2 <- function(pvecusers, pvecalpha = c(as.character(0:9), letters
 #' Get username and password as data.frame
 #' 
 #' @examples 
-#' sUserFile <- file.path("data","BelegungenLerneinheit_751630500L_Herbstsemester_2017.txt")
+#' sBelegungFilename <- "20171013_BelegungenLerneinheit_751630500L_Herbstsemester_2017.txt"
+#' sUserFile <- file.path("data",sBelegungFilename)
 #' sEmailColHeader <- "E.Mail"
 #' dfusers_passwd <- get_df_user_passwd(psuser_file = sUserFile, psemail_col_header = sEmailColHeader)
 get_df_user_passwd <- function(psuser_file, 
                                psemail_col_header, 
                                pvecalpha = c(as.character(0:9), letters, LETTERS), 
                                pnpwd_len = 8) {
-  vec_users <- get_user_names(psuser_file = psuser_file, psemail_col_header = psemail_col_header)
+  dfusers <- read.delim2(file = psuser_file, stringsAsFactors = FALSE)
+ # vec_users <- get_user_names(psuser_file = psuser_file, psemail_col_header = psemail_col_header)
+  vec_users <- get_user_names(pdfusers=dfusers, psemail_col_header = psemail_col_header)
   luser_passwd <- get_user_passwd2(pvecusers = vec_users,
                                    pvecalpha = pvecalpha,
                                    pnpwd_len = pnpwd_len)
@@ -117,8 +120,10 @@ get_df_user_passwd <- function(psuser_file,
 #' @param pdfstudent_db dataframe with student information
 #'
 #' @examples  
+#' Given, we have a dataframe with information about users, store it in a file
 #' sdata_dir <- "data"
-#' sfinal_userpasswd_file <- "lbghs2017_student_db.csv"
+#' sfinal_userpasswd_file <- paste(format(Sys.time(), "%Y%m%d%H%M%S"), "lbghs2017_student_db.csv", sep = "_")
+#' write.csv2(dfusers_passwd, file = file.path(sdata_dir,sfinal_userpasswd_file), row.names = FALSE, quote = FALSE)
 #' dfstudent_db <- read.csv2(file = file.path(sdata_dir, sfinal_userpasswd_file), stringsAsFactors = FALSE)
 #' passwd_templ_file <- "passwd_email_templ.txt"
 #' generate_user_email(pstempl_file  = file.path(sdata_dir, passwd_templ_file),
@@ -134,7 +139,7 @@ generate_user_email <- function(pstempl_file = NULL,
     if (is.null(pstempl_file))
       stop("ERROR: generate_user_email either needs a template file or template vector")
     conemail_templ_file <- file(pstempl_file)
-    vec_templ_text <- readLines(con = conemail_temp)
+    vec_templ_text <- readLines(con = conemail_templ_file)
     close(conemail_templ_file)
   } else {
     vec_templ_text <- pvec_templ_text
@@ -156,7 +161,10 @@ generate_user_email <- function(pstempl_file = NULL,
                               fixed = TRUE)
     }
     cat(paste0(vecemail_result, collapse = "\n"), 
-        file = file.path(psdata_dir,pdfstudent_db[nstudent_db_row_idx, "Username"]))
+        file = file.path(psdata_dir, 
+                         paste(format(Sys.time(), "%Y%m%d%H%M%S"), 
+                               pdfstudent_db[nstudent_db_row_idx, "Username"],
+                               sep = "_")))
     
   }
   return(invisible(TRUE))
@@ -212,5 +220,73 @@ sudo chown -R ${student}:${student} .
 sudo mv ${PROJDIR}.${student} ${CURWD}/${PROJDIR}.${student}
 cd ${CURWD}
 sudo chown -R ${ADMIN}:${ADMIN} ${PROJDIR}.${student}
+sleep 2
+done'
+
+clone_bash_cmd <- 'PROJDIR=LBGHS2017
+ADMIN=`whoami`
+CURWD=/home/${ADMIN}
+echo " * Project dir: $PROJDIR"
+echo " * Current working dir: $CURWD"
+for student in "ulmanns"
+do 
+echo $student
+cd /home/${student}
+sudo git clone -b r4tea-platform https://github.com/charlotte-ngs/LBGHS2017.git
+sudo chown -R ${student}:${student} .
+cd ${CURWD}
+sleep 2
+done'
+
+
+test_pull_bash_cmd <- 'COPATH=ex/w2/lbg_hs_2017_w2_sol1.Rmd
+COPATH=ex/w5/lbg_hs_2017_w5_ans4.Rmd
+PROJDIR=LBGHS2017
+ADMIN=`whoami`
+CURWD=/home/${ADMIN}
+echo " * Project dir: $PROJDIR"
+echo " * Current working dir: $CURWD"
+for student in "vrohrp"
+do 
+echo $student
+cd /home/${student}/${PROJDIR}
+#sudo git pull
+sudo git fetch
+sudo git checkout origin/r4tea-platform ${COPATH}
+sudo chown -R ${student}:${student} .
+cd ${CURWD}
+sleep 2
+done'
+
+pull_bash_cmd <- 'PROJDIR=LBGHS2017
+ADMIN=`whoami`
+CURWD=/home/${ADMIN}
+echo " * Project dir: $PROJDIR"
+echo " * Current working dir: $CURWD"
+for student in "vrohrp" "ernstt" "martinfe" "dpisoni" "weberan" "wysss" "ulmanns"
+do 
+echo $student
+cd /home/${student}/${PROJDIR}
+sudo git pull
+sudo chown -R ${student}:${student} .
+cd ${CURWD}
+sleep 2
+done'
+
+fetch_bash_cmd <- 'COPATH=ex/w5/lbg_hs_2017_w5_ans4.Rmd
+COPATH=ex/w2/lbg_hs_2017_w2_sol1.Rmd
+PROJDIR=LBGHS2017
+ADMIN=`whoami`
+CURWD=/home/${ADMIN}
+echo " * Project dir: $PROJDIR"
+echo " * Current working dir: $CURWD"
+for student in "vrohrp" "ernstt" "martinfe" "dpisoni" "weberan" "wysss" "ulmanns"
+do 
+echo $student
+cd /home/${student}/${PROJDIR}
+sudo git fetch
+sudo git checkout origin/r4tea-platform ${COPATH}
+sudo chown -R ${student}:${student} .
+cd ${CURWD}
 sleep 2
 done'

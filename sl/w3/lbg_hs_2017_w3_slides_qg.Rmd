@@ -1,0 +1,322 @@
+---
+title: "Züchtungslehre - Quantitative Genetik"
+author: "Peter von Rohr"
+date: "06 Oktober 2017"
+output: 
+  beamer_presentation:
+    fig_caption: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis')
+knitr::knit_hooks$set(conv.odg = rmddochelper::odg.graphics.conv.hook)
+```
+
+## Gene und Genotypen
+
+```{r PhenotypeGenotypSchema, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, png.path="png", fig.align='center', echo=FALSE, results='asis', out.width="8cm"}
+knitr::include_graphics(path = "png/PhenotypeGenotypSchema.pdf")
+```
+
+
+## Frequenzen
+* Genotypen
+\begin{eqnarray}
+f(G_1G_1) &=& \frac{4}{10} = 0.4 \nonumber\\
+f(G_1G_2) &=& \frac{3}{10} = 0.3 \nonumber\\
+f(G_2G_2) &=& \frac{3}{10} = 0.3 \nonumber
+\end{eqnarray}
+
+* Allele
+
+\begin{eqnarray}
+f(G_1) &=& f(G_1G_1) + 1/2 f(G_1G_2) = 0.4 + 0.15 = 0.55 \nonumber\\
+f(G_2) &=& f(G_2G_2) + 1/2 f(G_1G_2) = 0.3 + 0.15 = 0.45 \nonumber
+\end{eqnarray}
+
+
+## Begriffe
+* __Phänotyp__: messbare oder beobachtbare Eigenschaft oder Leistung eines Tieres (Milchleistung, Zuwachs, Körpergrösse, usw)
+* __Genom__:  totale genetische Information eines Individuums
+* __Genort__: (auch __Locus__) definierte Position auf dem Genom
+* __Genotyp__: bestimmte Kombination von Genvarianten an einem Locus
+* __Allel__: mögliche Genvariante an einem Locus
+* __homozygot__: Allele an Locus sind gleich ($G_1G_1$)
+* __heterozygot__:  Allele an Locus sind verschieden ($G_1G_2$)
+
+
+## Genotypische Werte
+```{r GenotypischerWert, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, png.path="png", fig.align='center', echo=FALSE, results='asis', out.width="8cm"}
+knitr::include_graphics(path = "png/GenotypischerWert.pdf")
+```
+
+
+## Zusammenfassung Genotypische Werte
+\begin{center}
+   {\renewcommand{\arraystretch}{1.7}
+   \renewcommand{\tabcolsep}{0.2cm}
+   \begin{tabular}{|l|c|}
+  \hline
+  Genotyp  &  genotypischer Wert\\
+  \hline
+  $G_1G_1$  &  $V_{11} = a$\\
+  \hline
+  $G_1G_2$  &  $V_{12} = d$\\
+  \hline
+  $G_2G_2$  &  $V_{22} = -a$\\
+  \hline
+  \end{tabular}}
+  \end{center}
+  
+
+## Populationsmittel als Erwartungswert
+
+* Definition
+\begin{equation}
+\mu = E\left[V\right] = f(G_1G_1)*V_{11} + f(G_1G_2) * V_{12} + f(G_2G_2) * V_{22} \nonumber
+\label{eq:PopMean}
+\end{equation}
+
+* Frequenzen
+\begin{center}
+  \begin{tabular}{|l|c|}
+  \hline
+  Genotyp  &  Frequenzen\\
+  \hline
+  $G_1G_1$  &  $p*p = p^2$\\
+  \hline
+  $G_1G_2$  &  $p*q+q*p = 2pq$\\
+  \hline
+  $G_2G_2$  &  $q*q = q^2$\\
+  \hline
+  \end{tabular}
+\end{center}
+
+* Kombiniert
+  \begin{eqnarray}
+    \mu &=& p^2 * a + 2pq*d - q^2*a \nonumber \\
+        &=& (p^2 - q^2)a + 2pqd \nonumber \\
+        &=& (p+q)(p - q)a + 2pqd \nonumber \\
+        &=& (p - q)a + 2pqd \nonumber
+  \end{eqnarray}
+
+
+## Zuchtwert - Definition
+
+Der __Zuchtwert__ eines bestimmten Tieres $i$ ist definiert als die doppelte Abweichung des erwarteten Mittelwertes der Nachkommen von Tier $i$ vom Populationsmittel.
+
+
+## Zuchtwert - Herleitung
+* Mutter mit Genotyp $G_1G_1$
+* zufällige Anpaarung an Väter aus Population
+* Frequenzen der Nachkommen
+
+\begin{center}
+   {\renewcommand{\arraystretch}{1.7}
+   \renewcommand{\tabcolsep}{0.2cm}
+   \begin{tabular}{|c|c|c|}
+\hline
+& \multicolumn{2}{|c|}{Vater} \\
+\hline
+& $f(G_1) = p$       &  $f(G_2) = q$   \\
+\hline
+Mutter       &                    &                 \\
+\hline
+$f(G_1) = 1$ &  $f(G_1G_1) = p$   &  $f(G_1G_2) = q$\\
+\hline
+\end{tabular}}
+\end{center}
+
+
+## Zuchtwert - Berechnung
+
+\begin{eqnarray}
+ZW_{11} & = & 2*(\mu_{11} - \mu)  \nonumber\\
+          &=& 2\left(pa + qd - \left[(p - q)a + 2pqd \right] \right) \nonumber\\
+          &=& 2\left(pa + qd - (p - q)a - 2pqd \right) \nonumber\\
+          &=& 2\left(qd + qa - 2pqd\right) \nonumber \\
+          &=& 2\left(qa + qd(1 - 2p)\right) \nonumber \\
+          &=& 2q\left(a + d(1 - 2p)\right) \nonumber \\
+          &=& 2q\left(a + (q-p)d\right) \nonumber
+\label{eq:ZWGen11}
+\end{eqnarray}
+
+
+## Zuchtwert - Zusammenfassung
+
+ \begin{center}
+   {\renewcommand{\arraystretch}{1.7}
+   \renewcommand{\tabcolsep}{0.2cm}
+  \begin{tabular}{|c|c|}
+  \hline
+  Genotyp  &  Zuchtwert\\
+  \hline
+  $G_1G_1$  &  $2q\alpha$\\
+  \hline
+  $G_1G_2$  &  $(q-p)\alpha$\\
+  \hline
+  $G_2G_2$  &  $-2p\alpha$\\
+  \hline
+  \end{tabular}}
+  \end{center}
+
+wobei: $$\alpha = a + (q-p)d$$
+
+
+## Allelsubstitution
+
+  \begin{eqnarray}
+    ZW_{12} - ZW_{22} & = & (q-p)\alpha - \left( -2p\alpha \right)  \nonumber \\
+                      & = & (q-p)\alpha + 2p\alpha \nonumber \\
+                      & = & (q-p+2p)\alpha \nonumber \\
+                      & = & (q+p)\alpha \nonumber \\
+                      & = & \alpha \nonumber
+  \label{eq:AdditiveBv1}
+  \end{eqnarray}
+  
+    \begin{eqnarray}
+    ZW_{11} - ZW_{12} & = & 2q\alpha - (q-p)\alpha \nonumber \\
+                      & = & \left(2q - (q-p)\right)\alpha \nonumber\\
+                      & = & \alpha \nonumber
+  \label{eq:AdditiveBv2}
+  \end{eqnarray}
+  
+
+## Dominanzabweichung
+  \begin{eqnarray}
+  V_{11} - ZW_{11} & = & a - 2q \alpha \nonumber \\
+                   & = & a - 2q \left[ a + (q-p)d \right] \nonumber \\
+                   & = & a - 2qa -2q(q-p)d \nonumber \\
+                   & = & a(1-2q) - 2q^2d + 2pqd \nonumber \\
+                   & = & \left[(p - q)a + 2pqd\right] - 2q^2d \nonumber \\
+                   & = & \mu + D_{11}  \nonumber
+  \end{eqnarray}
+
+  \begin{eqnarray}
+  V_{12} - ZW_{12} & = & d - (q-p)\alpha \nonumber \\
+                   & = & d - (q-p)\left[ a + (q-p)d \right] \nonumber \\
+                   & = & \left[(p-q)a + 2pqd\right] + 2pqd \nonumber \\
+                   & = & \mu + D_{12}  \nonumber
+  \end{eqnarray}
+  
+
+## Dominanzabweichung II
+
+  \begin{eqnarray}
+  V_{22} - ZW_{22} & = & -a - (-2p\alpha) \\
+                   & = & -a + 2p\left[ a + (q-p)d \right] \nonumber \\
+                   & = & \left[(p-q)a + 2pqd\right] - 2p^2d \nonumber \\
+                   & = & \mu + D_{22} \nonumber
+  \end{eqnarray}
+
+$\rightarrow$ Allgemeine Zerlegung
+
+\begin{eqnarray}
+V_{ij} & = & \mu + ZW_{ij} + D_{ij} \nonumber
+\label{eq:ZerlegungGenoWert}
+\end{eqnarray}
+
+
+## Zusammenfassung
+
+\begin{center}
+  {\renewcommand{\arraystretch}{1.7}
+   \renewcommand{\tabcolsep}{0.2cm}
+   \begin{tabular}{|c|c|c|c|}
+   \hline
+   Genotyp  &  genotypischer Wert  &  Zuchtwert     &  Dominanzabweichung\\
+   $G_iG_j$ &  $V_{ij}$            &  $ZW_{ij}$     &  $D_{ij}$           \\
+   \hline
+   $G_1G_1$ &  $a$                 &  $2q\alpha$    &  $-2q^2d$          \\
+   \hline
+   $G_1G_2$ &  $d$                 &  $(q-p)\alpha$ & $2pqd$             \\
+   \hline
+   $G_2G_2$ &  $-a$                &  $-2p\alpha$   & $-2p^2d$           \\
+   \hline
+   \end{tabular}}
+\end{center}
+
+
+## Varianz
+* Allgemeine Definition der Varianz
+
+  \begin{eqnarray}
+  \sigma_G^2 = Var\left[V\right] &=&   (V_{11} - \mu)^2 * f(G_1G_1) \nonumber \\
+                                 & & +\  (V_{12} - \mu)^2 * f(G_1G_2) \nonumber \\
+                                 & & +\  (V_{22} - \mu)^2 * f(G_2G_2)\nonumber
+  \end{eqnarray}
+  
+* Frequenzen eingesetzt und $V_{ij} - \mu = ZW_{ij} + D_{ij}$  
+
+ \begin{eqnarray}
+  \sigma_G^2  &=&   (ZW_{11} + D_{11})^2 * p^2      \nonumber \\
+              & & +\  (ZW_{12} + D_{12})^2 * 2pq      \nonumber \\
+              & & +\  (ZW_{22} + D_{22})^2 * q^2 \nonumber
+  \end{eqnarray}
+
+
+## Varianz - Resultat
+
+* Herleitung in Anhang
+
+ \begin{eqnarray}
+  \sigma_G^2 &=& 2pq\alpha^2 + \left(2pqd \right)^2 \nonumber\\
+             &=& \sigma_A^2 + \sigma_D^2  \nonumber
+  \end{eqnarray}
+  
+wobei:
+
+* $\sigma_A^2$: genetisch additive Varianz
+* $\sigma_D^2$: Dominanzvarianz
+  
+
+## Erweiterung auf mehrere Genorte
+
+* Abhängigkeit zwischen Genorten: $f(A_1A_1B_1B_1) \ne f(A_1A_1) * f(B_1B_1)$
+* Interaktionen
+
+\begin{eqnarray}
+g + \mu & = & V_{ij}^{(A)} + V_{kl}^{(B)} + I_{ijkl}^{(A) \cdot (B)} \nonumber\\
+        & = & \mu^{(A)} + ZW_{ij}^{(A)} + D_{ij}^{(A)} + \mu^{(B)} + ZW_{kl}^{(B)} + D_{kl}^{(B)} + I_{ijkl}^{(A) \cdot (B)}  \nonumber
+\label{eq:ZerlegungGenMitInteraktion}  
+\end{eqnarray}
+
+
+## Polygenes Modell
+
+* unendlich viele Genorte
+* Modellierung des genotypischen Wertes als
+
+\begin{eqnarray}
+g & = & a + d + i \nonumber
+\label{eq:ZerlegungInfinitModel}  
+\end{eqnarray}
+
+* Zuchtwert als additiv genetischer Teil $a$: als normalverteilte Zufallsvariable
+* Dominanzabweichung $d$: häufig ignoriert
+* Epistasis $i$: häufig ignoriert
+
+
+## Phänotypische Beobachtung
+
+* Genotypische Werte nicht beobachtbar $\rightarrow$ Verwendung von phänotypischen Messungen
+* Modell
+
+\begin{eqnarray}
+y &=& \mu + g + e \nonumber
+\label{eq:ModPhenModel}
+\end{eqnarray}
+
+* Varianz
+
+\begin{eqnarray}
+Var\left[y \right] &=& \sigma_p^2\ =\ \sigma_g^2 + \sigma_e^2 + 2Cov\left[g,e \right] \nonumber
+\label{eq:VarPhen}
+\end{eqnarray}
+
+* Ohne Genotyp-Umwelt Interaktion
+
+\begin{eqnarray}
+Var\left[y \right] &=& \sigma_p^2\ =\ \sigma_g^2 + \sigma_e^2 \nonumber
+\label{eq:VarPhen}
+\end{eqnarray}
