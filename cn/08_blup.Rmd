@@ -1,0 +1,445 @@
+# BLUP von Zuchtwerten
+
+## Einführung
+Die in diesem Kapitel eingeführten und besprochenen Verfahren werden in der __traditionellen Zuchtwertschätzung__ verwendet. Unter traditionellen Zuchtwertschätzungen verstehen wir die Auswertungen, bei welchen Zuchtwerte aufgrund von phänotypischen Leistungen und  Pedigreeinformationen geschätzt werden. Im Gegensatz dazu steht die __genomische Selektion__ bei welcher Zuchtwerte aufgrund von genomischen Informationen ermittelt werden.
+
+Die Schätzung von Zuchtwerten mit der Regressionsmethode oder mit dem Selektionsindex verlangt, dass wir die phänotypischen Leistungen um bekannte Umwelteinflüsse korrigieren können. Diese Korrektur wurde jeweilen im Populationsmittel zusammengefasst. Im routinemässigen Betrieb, wo Zuchtwerte aufgrund von Daten aus dem Feld geschätzt werden sollen, sind die Umwelteinflüsse sehr verschieden und a priori nicht bekannt. Somit brauchen wir ein Verfahren, mit welchem wir gleichzeitig den Einfluss von verschiedenen Umweltfaktoren schätzen können und Zuchtwerte voraussagen können.
+
+
+## BLUP-Verfahren
+Das BLUP Verfahren ist für die traditionelle Zuchtwertschätzung die Methode der Wahl. BLUP wurde ab 1949 unter der Leitung von Charles Henderson entwickelt. Im Gegensatz zu anderen Methoden, wie dem Selektionsindex, erlaubt BLUP die simultane Schätzung von Umwelteffekten zusammen mit der Vorhersage der Zuchtwerte. 
+
+Die Abkürzung BLUP steht für __Best Linear Unbiased Prediction__ und beschreibt damit die Eigenschaften der geschätzten zufälligen Effekte in statistischen Modell. Was diese Eigenschaften genau bedeuten werden wir später noch genauer betrachten. Der Ausgangspunkt von BLUP ist ein sogenanntens __lineares gemischtes Modell__ (linear mixed model). Ein Beispiel für ein solches lineares gemischtes Modell ist in Gleichung (\ref{eq:LinearMixedModel}) gezeigt. Ein statistisches Modell, welches neben den fixen Effekten $b$ und den zufälligen Resteffekten $b$ zusätzlich noch weitere zufällige Effekte $u$ aufweist, wird als ein gemischtes Modell bezeichnet. 
+
+\pagebreak
+
+### Modell
+
+\begin{equation}
+y = Xb + Zu + e
+\label{eq:LinearMixedModel}
+\end{equation}
+
+\begin{tabular}{lll}
+mit & $y$:  & Vektor der Beobachtungswerte\\
+    & $b$:  & Vektor der fixen Effekte\\
+    & $u$:  & Vektor der zufälligen Effekte\\
+    & $e$:  & Vektor der zufälligen Resteffekte\\
+    & $X$:  & Inzidenzmatrix zur Verknüpfung der Beobachtungen mit den fixen Effekten\\
+    & $Z$:  & Inzidenzmatrix zur Verknüpfung der Beobachtungen mit den zufälligen Effekten
+\end{tabular}
+
+
+### Erwartungswerte und Varianzen
+Die Erwartungswerte und Varianzen der Zufallsvariablen im Modell (\ref{eq:LinearMixedModel}) sind definiert als
+
+\begin{equation}
+E\left[
+\begin{array}{c} 
+y\\
+u\\
+e
+\end{array}\right]
+= \left[
+\begin{array}{c} 
+Xb\\
+0\\
+0
+\end{array}\right]
+\label{eq:ExpValMme}
+\end{equation}
+
+Aufgrund der Definition der Erwartungswerte in (\ref{eq:ExpValMme}) können wir erkennen, dass die zufälligen Effekte $u$ und $e$ jeweilen einen Erwartungswert von $0$ haben und somit als Abweichung von einem allgemeinen Populationsmittel definiert sind. Dieses allgemeine Mittel entspricht dem Erwartungswert der phänotypischen Beobachtungen $y$ und ist gleich $Xb$. 
+
+\begin{equation}
+var\left[
+\begin{array}{c} 
+y\\
+u\\
+e
+\end{array}\right]
+= \left[
+\begin{array}{ccc} 
+ZGZ^T + R  &  ZG  &  R \\
+GZ^T       &  G   &  0 \\
+R          &  0   &  R
+\end{array}\right]
+\label{eq:CovMme}
+\end{equation}
+
+Die Covarianzmatrix der zufälligen Resteffekte $e$ wird mit $R$ bezeichnet und die der zufälligen Effekte $u$ wird mit $G$ bezeichnet. Die Covarianz $cov(u,e^T)$ zwischen den zufälligen Effekte $u$ und $e$ wird als $0$ angenommen. 
+
+Die fixen Effekte $b$ werden als fixe Faktorstufen bezeichnet und haben somit keine Varianz, d.h. dass $var(b) = 0$. Auch alle Covarianzen zwischen den zufälligen Effekten $u$ und $e$ und den fixen Effekten $b$ sind $0$. 
+
+Aus den bisher getroffenen Annahmen betreffend der Varianzen und Covarianzen können die anderen Elemente der Matrix in (\ref{eq:CovMme}) berechnet werden. Die Varianz $var(y)$ der phänotypischen Beobachtungen $y$ wird mit $V$ bezeichnet und berechnet sich als
+
+\begin{eqnarray}
+var(y) &=& var(Xb + Zu + e) \nonumber\\
+       &=& var(Zu) + var(e) \nonumber\\
+       &=& Z * var(u) * Z^T + var(e) \nonumber\\
+       &=& Z * G * Z^T + R = V \nonumber
+\end{eqnarray}
+
+Die Covarianz $cov(y,u^T)$ zwischen den phänotypischen Beobachtungen $y$ und den zufälligen Effekten $u$ ergibt sich als
+
+\begin{eqnarray}
+cov(y,u^T) &=& cov(Xb + Zu + e, u^T)      \nonumber\\
+           &=& cov(Zu, u^T) + cov(e, u^T) \nonumber\\
+           &=& Z * cov(u, u^T)            \nonumber\\
+           &=& Z * G                      \nonumber
+\end{eqnarray}
+
+
+## Eigenschaften der Schätzwerte 
+Wie schon erwähnt beschreibt die Abkürzung BLUP die Eigenschaften der Schätzwerte $\hat{u}$ der zufälligen Effekte $u$. Die Bedeutung dieser Eigenschaften wollen wir jetzt genauer analysieren.
+
+- __Linear__: fixe Effekte $Kb$ plus zufällige Effekte $Mu$ werden mit einer Linearkombination $By$ der Beobachtungswerte geschätzt.
+- __Unbiased__: die Schätzungen für die fixen Effekte plus die zufälligen Effekte sollen unverzerrt (unbiased) oder erwartungstreu sein. Somit ist $E\left[ Kb + Mu \right] = E\left[By \right]$. Daraus folgt aufgrund der Definitionen zum Modell (\ref{eq:LinearMixedModel}), dass $Kb = BXb$
+- __Best__: unter allen linearen unverzerrten Schätzern weist der BLUP-Schäter die kleinste Fehlervarianz auf. Das heisst $var(By - (Kb + Mu))$ ist minimal
+
+Aus den BLUP-Eigenschaften lassen sich die folgenden Schätzgleichungen ableiten.
+
+\begin{equation}
+\hat{b} = (X^TV^{-1}X)^- X^TV^{-1}y
+\label{eq:BlueBhat}
+\end{equation}
+
+\begin{equation}
+\hat{u} = GZ^TV^{-1}(y - X\hat{b})
+\label{eq:BlupUhat}
+\end{equation}
+
+\begin{tabular}{lll}
+mit & $\hat{b}$ & Lösungsvektor der fixen Effekte\\
+    & $\hat{u}$ & Lösungsvektor der zufälligen Effekte \\
+    & $()^-$    & verallgemeinerte Inverse
+\end{tabular}
+
+Zur Lösung der Gleichungen (\ref{eq:BlueBhat}) und (\ref{eq:BlupUhat}) wird die Inverse $V^{-1}$ der Covarianzmatrix aller phänotypischen Beobachtungen gebraucht. Da diese Matrix sehr gross ist, ist deren Berechnung schon bei kleinen Datenmengen praktisch nicht mehr durchführbar. Charles Henderson hat aber gezeigt, dass die folgenden sogenannten __Mixed Model Equations__ zu den gleichen Lösungen führt, wie die Gleichungen (\ref{eq:BlueBhat}) und (\ref{eq:BlupUhat}). 
+
+\begin{equation}
+\left[ 
+\begin{array}{cc}
+X^TR^{-1}X  &  X^TR^{-1}Z\\
+Z^TR^{-1}X  &  Z^TR^{-1}Z + G^{-1}
+\end{array}
+\right] 
+\left[
+\begin{array}{c}
+\hat{b}\\
+\hat{u}
+\end{array}
+\right] 
+= 
+\left[
+\begin{array}{c}
+X^TR^{-1}y\\
+Z^TR^{-1}y
+\end{array}
+\right]
+\label{eq:MixedModelEq}
+\end{equation}
+
+Da die Matrix $R$ im Gegensatz zu $V$ diagonal oder zumindest blockdiagonal ist, hat sie eine einfachere Struktur als $V$ und ist somit einfacher zu invertieren. Deshalb ist das Lösen des Gleichungssystems in (\ref{eq:MixedModelEq}) einfacher als das Lösen von 
+(\ref{eq:BlueBhat}) und (\ref{eq:BlupUhat}). 
+
+Sowohl bei den mixed model equations als auch bei den Gleichungen (\ref{eq:BlueBhat}) und (\ref{eq:BlupUhat}) werden bekannte Covarianzmatrizen und somit bekannte Varianzkomponenten für die zufälligen Effekte $u$ und $e$ vorausgesetzt. In der Praxis sind diese nicht bekannt und müssen aus Daten geschätzt werden. Dazu folgen mehr Informationen im Kapitel __Varianzkomponentenschätzung__.
+
+
+## Das Tiermodell
+Das gemischte Modell, welches als zufällige Effekte die Zuchtwerte $a$ der Tiere enthält, wird als __Tiermodell__ ("animal model") bezeichnet. Das Tiermodell ist eine Weiterentwicklung des Vatermodells ("sire model"), bei welchem die Vatereffekte $s$ als zufällige Effekte modelliert werden.
+
+Das einfache Tiermodell wird mit der folgenden Beschreibung charaterisiert.
+
+\begin{equation}
+y = Xb + Za + e
+\label{eq:SimpleAnimalModel}
+\end{equation}
+
+\begin{tabular}{lll}
+mit & $y$ & Vektor der phänotypischen Beobachtungen\\
+    & $b$ & Vektor der fixen Effekte \\
+    & $a$ & Vektor der zufälligen Effekte, welche den Zuchtwerten entsprechen\\
+    & $e$ & Vektor der zufälligen Resteffekte\\
+    & $X$ & Inzidenzmatrix der fixen Effekte\\
+    & $Z$ & Inzidenzmatrix der Zuchtwerte
+\end{tabular}
+
+Die Erwartungswerte sind analog wie beim Modell (\ref{eq:LinearMixedModel}) definiert, wenn der Vektor der zufälligen Effekte $u$ durch den Vektor der Zuchtwerte $a$ ersetzt wird. Bei der Betrachtung eines Merkmals sind die Covarianzmatrizen der zufälligen Effekte $a$ und $e$ gegeben als
+
+\begin{equation}
+Var(a) = G = A\ \sigma_a^2 \text{ und } G^{-1} = A^{-1} \sigma_a^{-2}
+\label{eq:VarAAnimalModel}
+\end{equation}
+
+\begin{equation}
+Var(e) = R = I\ \sigma_e^2 \text{ und } R^{-1} = I\ \sigma_e^{-2}
+\label{eq:VarEAnimalModel}
+\end{equation}
+
+\begin{tabular}{lll}
+wobei & $A$ & additiv genetische Verwandtschaftsmatrix\\
+      & $I$ & Einheitsmatrix \\
+      & $\sigma_a^2$ & additiv genetische Varianz\\
+      & $\sigma_e^2$ & Restvarianz
+\end{tabular}
+
+Stellen wir nun die Mischmodellgleichungen gemäss (\ref{eq:MixedModelEq}) für das Tiermodell auf, so folgt
+
+\begin{equation}
+\left[ 
+\begin{array}{cc}
+X^TR^{-1}X  &  X^TR^{-1}Z\\
+Z^TR^{-1}X  &  Z^TR^{-1}Z + G^{-1}
+\end{array}
+\right] 
+\left[
+\begin{array}{c}
+\hat{b}\\
+\hat{a}
+\end{array}
+\right] 
+= 
+\left[
+\begin{array}{c}
+X^TR^{-1}y\\
+Z^TR^{-1}y
+\end{array}
+\right]
+\label{eq:MmeAnimalModel}
+\end{equation}
+
+Setzen wir die Beziehungen aus (\ref{eq:VarAAnimalModel}) und (\ref{eq:VarEAnimalModel}) in die Mischmodellgleichungen des Tiermodells (\ref{eq:MmeAnimalModel}) ein und multiplizieren beide Seiten der Gleichung mit $\sigma_e^2$, so folgt
+
+\begin{equation}
+\left[ 
+\begin{array}{cc}
+X^TX  &  X^TZ\\
+Z^TX  &  Z^TZ + A^{-1}\ \alpha
+\end{array}
+\right] 
+\left[
+\begin{array}{c}
+\hat{b}\\
+\hat{a}
+\end{array}
+\right] 
+= 
+\left[
+\begin{array}{c}
+X^Ty\\
+Z^Ty
+\end{array}
+\right]
+\label{eq:MmeAnimalModelOneTrait}
+\end{equation}
+
+\begin{tabular}{lll}
+wobei & $\alpha$ & Verhältnis der Varianzen $\sigma_e^2/\sigma_a^2 = (1-h^2)/h^2$\\
+      & $h^2$    & Heritabilität
+\end{tabular}
+
+Das Gleichungssystem (\ref{eq:MmeAnimalModelOneTrait}) kann kürzer geschrieben werden als 
+
+$$M * \hat{s} = r$$
+
+\begin{tabular}{lll}
+wobei & $M$       & Koeffizientenmatrix heisst\\
+      & $\hat{s}$ & Lösungsvektor \\
+      & $r$       & Vektor der rechten Handseite
+\end{tabular}
+
+In (\ref{eq:MmeAnimalModelOneTrait}) werden phänotypischen Leistungen verwandter Tiere über die Verwandtschaftsmatrix $A$ miteinander verknüpft. Dadurch bekommen auch Tiere ohne phänotypischen Leistung im Beobachtungsvektor $y$ einen geschätzten Zuchtwert. Hier wird klar, dass BLUP uns erlaubt, dass die Anzahl der zu schätzenden oder vorauszusagender Parameter grösser sein kann, als die Anzahl Beobachtungen. Dies wäre unter einem einfachen Regressionsmodell nicht möglich. In der Statistik wird dieser Vorgang auch als __Regularisierung__ bezeichnet. Die Regularisierung ist auch bei der genomischen Selektion ein Thema. Dort werden wir noch andere Regularisierungsverfahren kennen lernen.
+
+
+## Ein Beispiel für das Tiermodell
+```{r WwgDataSetSetup, ref.label="WwgDataSet", echo=FALSE, results='hide'}
+```
+
+Gegeben sei der folgende Datensatz für das Merkmal Gewichtszuwachs (WWG in kg) vor dem Absetzen bei Kälber an. Das Ziel ist, dass wir für alle Tiere Zuchtwerte für das Merkmal (WWG) schätzen. Die Varianzkomponenten $\sigma_e^2$ und $\sigma_a^2$ sind bekannt und haben die Werte $\sigma_e^2 = `r sigmae2`$ und $\sigma_a^2 = `r sigmaa2`$. Somit ist das Varianzverhältnis $\alpha = `r sigmae2`/`r sigmaa2` = `r alpha`$
+
+```{r WwgDataSet, echo=FALSE, results='hide'}
+nNrAniInPed <- 8
+nIdxFirstAniWithData <- 4
+dfWwg <- data.frame(Kalb = c(nIdxFirstAniWithData:nNrAniInPed),
+                    Geschlecht = c("M","F","F","M","M"),
+                    Vater = c(1,3,1,4,3),
+                    Mutter = c(NA,2,2,5,6),
+                    WWG = c(4.5,2.9,3.9,3.5,5.0))
+sigmae2 <- 40
+sigmaa2 <- 20
+alpha <- sigmae2/sigmaa2
+```
+
+\vspace{2ex}
+\begin{center}
+```{r WwgDataSetShow, echo=FALSE}
+knitr::kable(dfWwg)
+```
+\end{center}
+
+Das Modell zur Beschreibung einer Beobachtung $y_{ij}$ lautet
+
+$$y_{ij} = b_i + a_j + e_{ij}$$
+
+\begin{tabular}{lll}
+wobei & $y_{ij}$ & beobachteter Wert für Merkmal WWG für Kalb $j$ mit Geschlecht $i$\\
+      & $b_i$    & fixer Effekt für Geschlecht $i$\\
+      & $a_j$    & Zuchtwert für Kalb $j$\\
+      & $e_{ij}$ & Resteffekt für Kalb $j$ mit Geschlecht $i$
+\end{tabular}
+
+Setzen wir die beobachteten Werte aus der Datentabelle ein, dann folgt
+
+\begin{eqnarray}
+4.5 &=& b_M + a_4 + e_{M4}\nonumber\\  
+2.9 &=& b_F + a_5 + e_{F5}\nonumber\\  
+3.9 &=& b_F + a_6 + e_{F6}\nonumber\\  
+3.5 &=& b_M + a_7 + e_{M7}\nonumber\\   
+5.0 &=& b_M + a_8 + e_{M8}\nonumber 
+\end{eqnarray}
+
+In Matrix-Vektor-Schreibweise haben wir dann das bekannte Gleichungssystem des Tiermodells
+
+\begin{equation}
+y = Xb + Za + e
+\label{ex:EqAniModEx}
+\end{equation}
+
+Die Vektoren und Matrizen in (\ref{ex:EqAniModEx}) sehen wie folgt aus
+
+```{r VecY, echo=FALSE}
+vecY <- dfWwg$WWG
+cat("$$y = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecY, ncol = 1)), collapse = "\n"))
+cat("\\right]$$")
+```
+
+$$b = \left[\begin{array}{c}\hat{b}_M\\ \hat{b}_F \end{array}\right]$$
+
+```{r VecA, echo=FALSE}
+vecA <- rmddochelper::vecGetVecElem(psBaseElement = "\\hat{a}", pnVecLen = nNrAniInPed)
+cat("$$a = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecA, ncol = 1)), collapse = "\n"))
+cat("\\right]$$")
+```
+
+$$e = \left[\begin{array}{c}e_{M4}\\ e_{F5}\\ e_{F6}\\ e_{M7}\\ e_{M8} \end{array}\right]$$
+
+Die Inzidenzmatrizen $X$ und $Z$ verknüpfen die Beobachtungen mit den jeweiligen Effekten. 
+
+```{r MatX, echo=FALSE}
+matX <- matrix(c(1,0,0,1,1,0,1,1,0,0), ncol = 2)
+cat("$$X = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matX, pnDigits = 0), collapse = "\n"))
+cat("\\right]$$")
+```
+
+```{r MatZ, echo=FALSE}
+nNrObs <- nrow(dfWwg)
+nNrFounder <- nNrAniInPed - nIdxFirstAniWithData - 1
+matZ <- cbind(matrix(0, nrow = nNrObs, ncol = nNrFounder),diag(1,nrow = nNrObs, ncol = nNrObs))
+cat("$$Z = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matZ, pnDigits = 0), collapse = "\n"))
+cat("\\right]$$")
+```
+
+### Aufstellen der Mischmodellgleichungen
+Nun haben wir alle Elemente, die es braucht um die Mischmodellgleichungen (\ref{eq:MmeAnimalModelOneTrait}) aufzustellen. Wir berechnen als erstes die Elemente der Koeffizientenmatrix $M$.
+
+```{r MatXtX, echo=FALSE}
+matXtX <- crossprod(matX)
+cat("$$X^TX = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matXtX, pnDigits = 0), collapse = "\n"))
+cat("\\right]$$")
+```
+
+```{r MatXtZ, echo=FALSE}
+matXtZ <- crossprod(matX,matZ)
+cat("$$X^TZ = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matXtZ, pnDigits = 0), collapse = "\n"))
+cat("\\right]$$")
+```
+
+```{r MatZtZ, echo=FALSE}
+matZtZ <- crossprod(matZ)
+cat("$$Z^TZ = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matZtZ, pnDigits = 0), collapse = "\n"))
+cat("\\right]$$")
+```
+
+Aufgrund der Verwandtschaftsbeziehungen, welche in den Daten gegeben ist, können wir das Pedigree aufbauen.
+
+```{r ShowPedEx1, echo=FALSE, results='markup'}
+suppressPackageStartupMessages(require(pedigreemm))
+vecSire <- c(rep(NA,nNrFounder),dfWwg$Vater)
+vecDam <-  c(rep(NA,nNrFounder),dfWwg$Mutter)
+pedEx1 <- pedigree(sire = vecSire, dam = vecDam, label = 1:nNrAniInPed)
+print(pedEx1)
+```
+
+Die Inverse Verwandtschaftsmatrix können wir aus dem Pedigree errechnen
+
+```{r MatAInv, echo=FALSE}
+matAInv <- as.matrix(getAInv(ped = pedEx1))
+cat("$$A^{-1} = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matAInv, pnDigits = 3), collapse = "\n"))
+cat("\\right]$$")
+```
+
+Das letzte Element der Koeffizientenmatrix $Z^TZ + A^{-1} * \alpha$ ist somit
+
+```{r MatZtZAInvAlpha, echo=FALSE}
+matZtZAInvAlpha <- matZtZ + matAInv * alpha
+cat("$$\\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matZtZAInvAlpha, pnDigits = 3), collapse = "\n"))
+cat("\\right]$$")
+```
+
+Zum Aufstellen der rechten Handseite brauchen wir die folgenden beiden Vektoren
+
+```{r VecXtY, echo=FALSE}
+vecXtY <- crossprod(matX,vecY)
+cat("$$X^Ty = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = vecXtY, pnDigits = 1), collapse = "\n"))
+cat("\\right]$$")
+```
+
+```{r VecZtY, echo=FALSE}
+vecZtY <- crossprod(matZ,vecY)
+cat("$$Z^Ty = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = vecZtY, pnDigits = 1), collapse = "\n"))
+cat("\\right]$$")
+```
+
+Das gesamte Gleichungssystem für unser Beispiel sieht wie folgt aus:
+
+```{r CompleteMme, echo=FALSE, warning=FALSE}
+matM <- cbind(rbind(matXtX, t(matXtZ)), rbind(matXtZ, matZtZAInvAlpha))
+vecSol <- c("\\hat{b}_M", "\\hat{b}_F", vecA)
+vecRhs <- rbind(vecXtY, vecZtY)
+cat("$$ \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matM, pnDigits = 1), collapse = "\n"))
+cat("\\right]\n")
+cat("\\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecSol)), collapse = "\n"))
+cat("\\right]\n")
+cat(" = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = vecRhs), collapse = "\n"))
+cat("\\right]$$")
+```
+
+Lösen wir nun das Gleichungssystem nach dem Lösungsvektor auf, dann erhalten wir Schätzwerte für die fixen Effekte $b$ und die Zuchtwerte $a$. Für unser einfaches Beispiel können wir die Lösung über eine explizite Inversion der Koeffizientenmatrix $M$ bekommen. Wir haben also 
+
+$$\hat{s} = M^{-1} * r$$
+
+Die Zahlenwerte für den Lösungsvektor bekommen wir
+
+```{r SolMme, echo=FALSE, warning=FALSE}
+vecNumSol <- solve(matM,vecRhs)
+# FIXME: xtable::xtable inside of rmddochelper::sConvertMatrixToLaTexArray produces a WARNING which might be the problem here
+cat("$$\\hat{s} = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecNumSol,ncol=1), pnDigits = 3), collapse = "\n"))
+cat("\\right]$$")
+```
+

@@ -1,0 +1,290 @@
+---
+title: Berechnung der Inzuchtkoeffizienten
+author: Peter von Rohr
+date: 2017-11-03
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis')
+```
+
+
+## Inverse von $A$
+
+- LDL-Zerlegung von $A$ führt zu 
+
+$$A^{-1} = L^{-1} * D^{-1} * (L^T)^{-1}$$
+
+- Matrix $D$ abhängig von Inzuchtkoeffizienten
+- Inzuchtkoeffizienten sind auf Diagonalen von $A$
+- Aufstellen der ganzen $A$???
+
+
+## Berechnung der Inzuchtkoeffizienten
+
+- Cholesky-Zerlegung von $A$
+- Pfadkoeffizienten aufgrund der Definition, alle Pfade über gemeinsame Ahnen (nicht weiter ausgeführt)
+
+
+## Cholesky-Zerlegung von $A$
+
+- Definition: Zerlegung von $A$ in
+
+$$A = R * R^T$$
+
+wobei $R$ linke untere Dreiecksmatrix
+
+- In R: Funktion `chol()` liefert transponierte von $R$
+
+
+## Kleines Beispiel
+
+```{r SmallExCholA}
+nAnzAni <- 3
+matA <- rmddochelper::matGetMatElem(psBaseElement = "a", pnNrRow = nAnzAni, pnNrCol = nAnzAni)
+matR <- rmddochelper::matLowerTri(psBaseElement = "r", pnNrRow = nAnzAni, pnNrCol = nAnzAni)
+cat("$$\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matA), collapse = "\n"))
+cat("\\right] \n")
+cat(" = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matR), collapse = "\n"))
+cat("\\right] \n")
+cat(" * \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = t(matR)), collapse = "\n"))
+cat("\\right] \n")
+cat("$$\n")
+```
+
+- Diagonalelemente
+\begin{eqnarray}
+  a_{11} &=& r_{11}^2 \nonumber\\
+  a_{22} &=& r_{21}^2 + r_{22}^2\nonumber\\
+  a_{33} &=& r_{31}^2 + r_{32}^2 + r_{33}^2\nonumber
+\label{MatADiag}
+\end{eqnarray}
+
+
+## Rekursive Berechnung von $R$
+
+- Gleichsetzen der LDL- und der Cholesky-Zerlegung
+
+$$A = R * R^T = L * D * L^T$$
+
+- Sei $R = L * S$ und setzen das ein, dann folgt
+
+$$A = L * D * L^T = L * S * (L * S)^T = L * S * S^T * L^T$$
+
+- Somit ist $D = S * S^T$
+
+wobei $S$ eine Diagonalmatrix mit $s_{ii} = \sqrt{d_{ii}}$
+
+
+## Kleines Beispiel
+$$
+```{r RlsDecompEx}
+matL <- rmddochelper::matLowerTri(psBaseElement = "l", pnNrRow = nAnzAni, pnNrCol = nAnzAni, pvecDiag = 1)
+matS <- rmddochelper::matDiag(psBaseElement = "s", pnNrRow = nAnzAni, pnNrCol = nAnzAni)
+cat("\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matR), collapse = "\n"))
+cat("\\right]  = \n")
+cat("\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matL), collapse = "\n"))
+cat("\\right]  * \n")
+cat("\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matS), collapse = "\n"))
+cat("\\right]\n")
+```
+$$
+
+- Diagonalelemente: $$r_{ii} = s_{ii} = \sqrt{d_{ii}}$$
+
+- Off-Diagonal: $$r_{ij} = l_{ij} * s_{jj} = {1\over 2}\ (r_{sj} + r_{dj})$$
+
+wobei $l_{ij} = {1\over 2}\ (l_{sj} + l_{dj})$
+
+
+## Unser Beipielpedigree
+
+```{r PedEx1, results='markup'}
+suppressPackageStartupMessages(library(pedigreemm))
+nNrAni <- 6
+pedEx1 <- pedigree(sire = c(NA,NA,1,1,4,5),
+                   dam = c(NA,NA,2,NA,3,2),
+                   label = as.character(1:nNrAni))
+print(pedEx1)
+```
+
+- Aufgabe: Berechne Diagonalelemente von $A$ 
+
+
+## Tier 1
+- Element $a_{11}$
+- keine bekannten Eltern
+- somit nicht ingezüchtet $\rightarrow F_1 = 0$ und 
+
+```{r StoreMatAMatR}
+matA <- as.matrix(getA(pedEx1))
+vecA <- as.vector(diag(matA))
+matR <- t(chol(matA))
+```
+
+$$a_{11} = 1 + F_1 = `r vecA[1]`$$
+
+- Da $a_{11} = r_{11}^2$ folgt $r_{11} = 1$
+
+
+## Tier 2
+- Anwendung der Formel für Diagonalelemente $a_{ii}$
+
+$$a_{22} = r_{21}^2 + r_{22}^2$$
+
+- Eltern von Tier $2$ unbekannt, $\rightarrow r_{sj} = 0$ und $r_{dj} = 0$
+
+$$r_{21} = `r matR[2,1]`$$. 
+
+- Eltern von Tier $2$ beide unbekannt
+
+$$r_{22} = `r matR[2,2]`$$
+
+$$a_{22} = r_{21}^2 + r_{22}^2 = `r matR[2,1]^2` + `r matR[2,2]^2` = `r matR[2,1]^2 + matR[2,2]^2`$$
+
+
+## Tier 3
+
+- Diagonalelement $a_{33}$ aus Elementen $r_{31}$, $r_{32}$ und $r_{33}$
+- Tier $3$ hat Eltern $1$ und $2$
+
+$$r_{31} = {1\over 2}(r_{11} + r_{21}) = {1\over 2}(`r matR[1,1]` + `r matR[2,1]`) = `r 0.5*(matR[1,1] + matR[2,1])`$$
+```{r VerifyR31}
+stopifnot(all.equal(0.5*(matR[1,1] + matR[2,1]), matR[3,1]))
+```
+
+$$r_{32} = {1\over 2}(r_{12} + r_{22}) = {1\over 2}(`r matR[1,2]` + `r matR[2,2]`) = `r 0.5*(matR[1,2] + matR[2,2])`$$
+```{r VerifyR32}
+stopifnot(all.equal(0.5*(matR[1,2] + matR[2,2]), matR[3,2]))
+```
+
+$$r_{33} = \sqrt{1 - 0.25(a_{11} + a_{22})} = \sqrt{1 - 0.25(`r vecA[1]` + `r vecA[2]`)}
+         = \sqrt{`r 1-0.25*(vecA[1]+vecA[2])`}
+         = `r sqrt(1-0.25*(vecA[1]+vecA[2]))`$$
+```{r VerifyR33}
+stopifnot(all.equal(sqrt(1-0.25*(vecA[1]+vecA[2])), matR[3,3]))
+```
+
+$$a_{33} = r_{31}^2 + r_{32}^2 + r_{33}^2
+         = `r matR[3,1]`^2 + `r matR[3,2]`^2 + `r matR[3,3]`^2
+         = `r matR[3,1]^2 + matR[3,2]^2 + matR[3,3]^2`
+$$
+```{r VerifyA33}
+stopifnot(all.equal(matR[3,1]^2 + matR[3,2]^2 + matR[3,3]^2, vecA[3]))
+```
+
+
+## Tier 4
+- Mutter unbekannt
+- Inzuchtkoeffizient $F_4 = 0$ und  $a_{44} = 1$
+- da Tier $4$ Nachkommen hat, müssen Elemente auf Zeile $4$ in Matrix $R$ berechnet werden 
+
+$$r_{41} = {1\over 2} * r_{11} = {1\over 2}  * `r matR[1,1]` = `r 0.5 * matR[1,1]`$$
+```{r VerifyR41}
+stopifnot(all.equal(0.5 * matR[1,1], matR[4,1]))
+```
+
+$$r_{42} = {1\over 2} *  r_{12} = {1\over 2}  * `r matR[1,2]` = `r 0.5 * matR[1,2]`$$
+```{r VerifyR42}
+stopifnot(all.equal(0.5 * matR[1,2], matR[4,2]))
+```
+
+$$r_{43} = {1\over 2} *  r_{13} = {1\over 2}  * `r matR[1,3]` = `r 0.5 * matR[1,3]`$$
+```{r VerifyR43}
+stopifnot(all.equal(0.5 * matR[1,3], matR[4,3]))
+```
+
+$$r_{44} = \sqrt{1 - {1\over 4} * a_{11}}
+         = \sqrt{1 - {1\over 4} * `r vecA[1]`}
+         = `r sqrt(1 - 0.25*vecA[1])`
+$$
+```{r VerifyR44}
+stopifnot(all.equal(sqrt(1 - 0.25*vecA[1]), matR[4,4]))
+```
+
+
+## Tier 5
+$$r_{51} = {1\over 2}(r_{41} + r_{31}) = {1\over 2}(`r matR[4,1]` + `r matR[3,1]`) = `r 0.5*(matR[4,1] + matR[3,1])`$$
+```{r VerifyR51}
+stopifnot(all.equal(0.5*(matR[4,1] + matR[3,1]), matR[5,1]))
+```
+$$r_{52} = {1\over 2}(r_{42} + r_{32}) = {1\over 2}(`r matR[4,2]` + `r matR[3,2]`) = `r 0.5*(matR[4,2] + matR[3,2])`$$
+```{r VerifyR52}
+stopifnot(all.equal(0.5*(matR[4,2] + matR[3,2]), matR[5,2]))
+```
+$$r_{53} = {1\over 2}(r_{43} + r_{33}) = {1\over 2}(`r matR[4,3]` + `r matR[3,3]`) = `r 0.5*(matR[4,3] + matR[3,3])`$$
+```{r VerifyR53}
+stopifnot(all.equal(0.5*(matR[4,3] + matR[3,3]), matR[5,3]))
+```
+$$r_{54} = {1\over 2}(r_{44} + r_{34}) = {1\over 2}(`r matR[4,4]` + `r matR[3,4]`) = `r 0.5*(matR[4,4] + matR[3,4])`$$
+```{r VerifyR54}
+stopifnot(all.equal(0.5*(matR[4,4] + matR[3,4]), matR[5,4]))
+```
+$$r_{55} = \sqrt{1 - 0.25*(a_{44}+a_{33})} = \sqrt{1 - 0.25*(`r vecA[4]` + `r vecA[3]`)}
+         = `r sqrt(1 - 0.25*(vecA[4] + vecA[3]))`
+$$
+```{r VerifyR55}
+stopifnot(all.equal(sqrt(1 - 0.25*(vecA[4] + vecA[3])), matR[5,5]))
+```
+
+$$a_{55} = r_{51}^2 + r_{52}^2 + r_{53}^2 + r_{54}^2 + r_{55}^2
+         = `r matR[5,1]^2 + matR[5,2]^2 + matR[5,3]^2 + matR[5,4]^2 + matR[5,5]^2`
+$$
+```{r VerifyA55}
+stopifnot(all.equal(matR[5,1]^2 + matR[5,2]^2 + matR[5,3]^2 + matR[5,4]^2 + matR[5,5]^2, vecA[5]))
+```
+
+
+## Tier 6
+
+$$r_{61} = {1\over 2}(r_{51} + r_{21}) = {1\over 2}(`r matR[5,1]` + `r matR[2,1]`) = `r 0.5*(matR[5,1] + matR[2,1])`$$
+```{r VerifyR61}
+stopifnot(all.equal(0.5*(matR[5,1] + matR[2,1]), matR[6,1]))
+```
+$$r_{62} = {1\over 2}(r_{52} + r_{22}) = {1\over 2}(`r matR[5,2]` + `r matR[2,2]`) = `r 0.5*(matR[5,2] + matR[2,2])`$$
+```{r VerifyR62}
+stopifnot(all.equal(0.5*(matR[5,2] + matR[2,2]), matR[6,2]))
+```
+$$r_{63} = {1\over 2}(r_{53} + r_{23}) = {1\over 2}(`r matR[5,3]` + `r matR[2,3]`) = `r 0.5*(matR[5,3] + matR[2,3])`$$
+```{r VerifyR63}
+stopifnot(all.equal(0.5*(matR[5,3] + matR[2,3]), matR[6,3]))
+```
+$$r_{64} = {1\over 2}(r_{54} + r_{24}) = {1\over 2}(`r matR[5,4]` + `r matR[2,4]`) = `r 0.5*(matR[5,4] + matR[2,4])`$$
+```{r VerifyR64}
+stopifnot(all.equal(0.5*(matR[5,4] + matR[2,4]), matR[6,4]))
+```
+$$r_{65} = {1\over 2}(r_{55} + r_{25}) = {1\over 2}(`r matR[5,5]` + `r matR[2,5]`) = `r 0.5*(matR[5,5] + matR[2,5])`$$
+```{r VerifyR65}
+stopifnot(all.equal(0.5*(matR[5,5] + matR[2,5]), matR[6,5]))
+```
+$$r_{66} = \sqrt{1 - 0.25*(a_{55}+a_{22})}
+         = \sqrt{1 - 0.25*(`r vecA[5]`+ `r vecA[2]`)}
+         = `r sqrt(1 - 0.25*(vecA[5]+ vecA[2]))`
+$$
+```{r VerifyR66}
+stopifnot(all.equal(sqrt(1 - 0.25*(vecA[5]+ vecA[2])), matR[6,6]))
+```
+$$a_{66} = r_{61}^2 + r_{62}^2 + r_{63}^2 + r_{64}^2 + r_{65}^2 + r_{66}^2
+         = `r matR[6,1]^2 + matR[6,2]^2 + matR[6,3]^2 + matR[6,4]^2 + matR[6,5]^2 + matR[6,6]^2`
+$$
+```{r VerifyA66}
+stopifnot(all.equal(matR[6,1]^2 + matR[6,2]^2 + matR[6,3]^2 + matR[6,4]^2 + matR[6,5]^2 + matR[6,6]^2, vecA[6]))
+```     
+
+
+## Zusammenfassung der Ergebnisse
+
+```{r SummaryResult}
+dfSummaryResult <- data.frame(Tier = 1:nNrAni, 
+                              Diagonalelement = vecA, 
+                              Inzuchtkoeffzient = vecA-1, 
+                              stringsAsFactors = FALSE )
+knitr::kable(dfSummaryResult)
+```

@@ -1,0 +1,206 @@
+---
+title:  Züchtungslehre - Übung 6
+author: Peter von Rohr
+date: 2017-11-10
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis')
+```
+
+
+## Aufgabe 1: LDL-Zerlegung der Verwandtschaftsmatrix
+
+Gegeben ist das folgende Pedigree
+
+```{r PedEx1A1, results='markup'}
+suppressPackageStartupMessages(require(pedigreemm))
+nNrAni <- 5
+ped <- pedigree(sire = c(NA,NA,1,1,4),dam = c(NA,NA,2,NA,2), label = as.character(1:nNrAni))
+print(ped)
+```
+
+a) Stellen Sie die Verwandtschaftsmatrix $A$ auf
+b) Ermitteln Sid die LDL-Zerlegung von $A$
+c) Berechnen Sie die Inverse der Verwandtschaftsmatrix
+
+__Hinweise__:
+
+- Für Pedigrees ohne Inzucht, können die Diagonalelemente $d_{ii}$ nur drei verschiedene Werte annehmen. Diese sind entweder $1$, falls das Tier ein Foundertier ist ohne bekannte Eltern, $3/4$ falls ein Elternteil bekannt ist, oder $1/2$ falls beide Eltern bekannt sind.
+
+- Ohne Berücksichtigung der Inzucht kann die Inverse $A^{-1}$ einfach aufgrund folgender Regeln aufgestellt werden.
+    + Initialisiere alle Elemente der Matrix $A^{-1}$ mit $0$
+    + Für Tier $i$ mit Eltern $s$ und $d$, 
+        + addiere $\delta_i$ zum Element $(i,i)$,
+        + addiere $-\delta_i/2$ zu den Elementen $(s,i)$, $(i,s)$, $(d,i)$ und $(i,d)$ und 
+        + addiere $\delta_i/4$ zu den Elementen $(s,s)$, $(s,d)$, $(d,s)$ und $(d,d)$
+    + Für Tier $i$ mit bekanntem Elternteil $d$,
+        + addiere $\delta_i$ zum Element $(i,i)$, 
+        + addiere $-\delta_i/2$ zu den Elementen $(d,i)$ und $(i,d)$ und 
+        + addiere $\delta_i/4$ zu den Elementen $(d,d)$
+    + Für Tier $i$ mit unbekannten Eltern
+        + addiere $\delta_i$ zum Element $(i,i)$ 
+        
+wobei $\delta_i$ das $i$-te Element auf der Diagonalen von $D^{-1}$ ist.
+
+<!-- Sie können in Aufgabe a) als zusätzliche Übung noch einmal die Verwandtschaftsmatrix 
+  -- A von Hand aufstellen. Sie können dazu die folgende Vorlage verwenden: 
+  --
+$$ 
+A = \left[\begin{array}{ccccc}
+    &      &     &    &     \\
+    &      &     &    &     \\
+    &      &     &    &     \\
+    &      &     &    &     \\
+    &      &     &    &     \\
+\end{array}\right]
+$$  
+  --
+  --
+  -- Als Alternative können Sie die Elemente der Verwandtschaftsmatrix A auch in 
+  -- der folgenden Tabelle eintragen.
+  --
+\begin{tabular}{ccc}
+\hline
+Zeile  &  Kolonne  &  Wert \\
+\hline
+1      &  1        &       \\  
+1      &  2        &       \\
+1      &  3        &       \\
+1      &  4        &       \\
+1      &  5        &       \\
+2      &  2        &       \\
+2      &  3        &       \\
+2      &  4        &       \\
+2      &  5        &       \\
+3      &  3        &       \\
+3      &  4        &       \\
+3      &  5        &       \\
+4      &  4        &       \\
+4      &  5        &       \\
+5      &  5        &       \\
+\end{tabular}
+
+b) Hier geht es darum die Matrizen $L$ und $D$ zu finden. 
+$$ 
+L = \left[\begin{array}{ccccc}
+    &      &     &    &     \\
+    &      &     &    &     \\
+    &      &     &    &     \\
+    &      &     &    &     \\
+    &      &     &    &     \\
+\end{array}\right]
+$$  
+
+und 
+
+$$ 
+D = \left[\begin{array}{ccccc}
+    &      &     &    &     \\
+    &      &     &    &     \\
+    &      &     &    &     \\
+    &      &     &    &     \\
+    &      &     &    &     \\
+\end{array}\right]
+$$  
+
+  -- c) Die Inverse $A^{-1}$ kann aufgrund der Regeln im Abschnitt "Hinweise"   --
+  --    oder mit den Inversen von $L$ und $D$ berechnet werden.
+  --
+  -->
+
+\pagebreak
+
+## Aufgabe 2: Zuchtwert aufgrund Nachkommenleistung
+```{r AssumptionsEx2}
+### # Annahmen
+nNrOffspring <- 10
+nMeanWwg <- 1.25
+nSdWwg <- 0.3
+nPopMean <- 1
+nH2 <- 0.35
+k <- (4-nH2)/nH2
+nPhenSd <- 1.1
+### # Daten generieren
+set.seed(123)
+dfWeanWeightGain = data.frame(Tier=1:nNrOffspring, Zuwachs = round(rnorm(nNrOffspring, mean=nMeanWwg, sd=nSdWwg), digits = 2))
+nMeanZuw <- mean(dfWeanWeightGain$Zuwachs)
+### # ComputeHatA
+nHatA <- 2*nNrOffspring/(nNrOffspring + k) * (nMeanZuw-nPopMean)
+### # CompSigmaHatA
+nSigmaHatA <- (2*nNrOffspring)/(nNrOffspring + k) * sqrt(0.25*nH2 + (1-0.25*nH2)/nNrOffspring) * nPhenSd
+### # Obere Grenze
+nPvalHatA <- 0.025
+nOgHatA <- nHatA + qnorm(nPvalHatA, lower.tail = FALSE) * nSigmaHatA
+```
+
+Stier Elvis hat $`r nNrOffspring`$ Nachkommen. Von diesen Nachkommen wurden der tägliche Zuwachs (in kg) bis zum Absetzen aufgezeichnet. Das Merkmal hat ein Populationsmittel von $`r nPopMean`$ kg pro Tag. Die Heritabilität $h^2$ beträgt $`r nH2`$ und die phänotypische Standardabweichung $\sigma_y$ ist `r nPhenSd` kg pro Tag. 
+
+```{r ShowDataTable}
+knitr::kable(dfWeanWeightGain)
+```
+
+a) Schätzen Sie den Zuchtwert von Elvis für das Merkmal tägliche Zunahme bis zum Absetzen aufgrund der Nachkommenleistung
+b) Wie gross ist das Bestimmtheitsmass des unter a) geschätzten Zuchtwertes
+c) Berechnen Sie aufgrund der Standardabweichung des geschätzten Zuchtwertes die Wahrscheinlichkeit, dass der Zuchtwert von Elvis grösser oder gleich $+`r round(nOgHatA, digits = 2)`$ kg pro Tag ist.
+
+<!-- Der geschätzte Zuchtwert aufgrund von Nachkommenleistungen wurde in --
+  -- der Vorlesung behandelt. Der dataframe `dfWeanWeightGain` enthält   --
+  -- die Zuwachsdaten. Diese können Sie verwenden zur Berechnung des     --
+  -- Mittelwertes der Nachkommenleistungen.                              --
+  -->
+  
+
+
+## Aufgabe 3: Bedingungen und Schleifen (Loops) in R
+```{r Ex3Init, ref.label="Ex3Loop1", echo=FALSE, results='hide'}
+```
+
+Schleifen (Loops) erlauben es uns gewissen Statements wiederholt ausführen zu lassen. Will man als Beispiel alle natürlichen Zahlen zwischen $`r nLowerLimit`$ und $`r nUpperLimit`$ ausgeben, dann kann das mit folgendem Loop gemacht werden.
+
+```{r Ex3Loop1, echo=TRUE, results='markup'}
+nLowerLimit <- 1
+nUpperLimit <- 10
+for (nIdx in (nLowerLimit:nUpperLimit)){
+  cat(nIdx,"\n")
+}
+```
+
+Die sogenannten `if`-Bedingungen können verwendet werden um den Programmablauf zu steuern. Sollen zum Beispiel in der Schleife, welche oben gezeigt wurde, nur die geraden Zahlen ausgegeben werden kann das mit der folgenden Bedingung machen.
+
+```{r Ex3LoopIf, echo=TRUE, results='markup'}
+nLowerLimit <- 1
+nUpperLimit <- 10
+for (nIdx in (nLowerLimit:nUpperLimit)){
+  if (identical(nIdx %% 2, 0)) {
+    cat(nIdx," ist gerade\n")
+  }
+}
+
+```
+
+### Ihre Aufgabe
+Finden Sie in folgendem Pedigree alle Tiere, die keine Mutter haben. Verwenden Sie dazu einen Loop über alle Tiere und testen Sie mit einer `if`-Bedingung, ob die Mutter bekannt ist. 
+
+```{r RefPedUnknownMother, ref.label="PedUnknownMotherInit", echo=FALSE, results='hide'}
+```
+
+```{r ShowPedUnknownMother, results='markup'}
+print(ped)
+```
+
+
+__Hinweise__: 
+- Am einfachsten beginnen Sie, indem Sie das Pedigree mit folgendem Statement der Variablen `ped` zuweisen.
+
+```
+library(pedigreemm)
+nNrAni <- 5
+ped <- pedigree(sire = c(NA,NA,1,1,4),dam = c(NA,NA,2,NA,2), label = as.character(1:nNrAni))
+```
+
+- In unseren Pedigrees werden die unbekannten Eltern mit `NA` kodiert. Verwenden Sie die Funktion `is.na()` für die Überprüfung, ob die Mutter bekannt ist.
+- Angenommen, sie weisen das Pedigree der Variablen `ped` zu, dann finden sie die Anzahl Tiere im Pedigree mit dem Ausdruck `length(ped@label)`
+- Die Mutter des Tieres $i$ bekommen Sie mit dem Ausdruck `ped@dam[i]`
+

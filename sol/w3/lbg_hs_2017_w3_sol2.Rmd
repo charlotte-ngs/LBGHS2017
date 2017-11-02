@@ -178,7 +178,7 @@ $$A = \left[
 \end{array}
 \right]$$,
 
-$$x\left[
+$$x = \left[
 \begin{array}{c}
 x_1 \\
 x_2 \\
@@ -188,7 +188,7 @@ x_3
 
 und
 
-$$b=\left[
+$$b = \left[
 \begin{array}{c}
 1 \\
 9 \\
@@ -214,6 +214,12 @@ matAInv <- solve(matA)
 vecB <- c(1,9,3)
 sol <- matAInv %*% as.matrix(vecB)
 print(sol)
+```
+
+Wir erhalten die Lösungen des Gleichungssystems auch mit einem einzigen Aufruf der Funktion `solve()`. 
+
+```{r SimpleSolEqn, echo=TRUE, results='markup'}
+solve(matA, vecB)
 ```
 
 
