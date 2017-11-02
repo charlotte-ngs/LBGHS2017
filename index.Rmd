@@ -111,6 +111,8 @@ Thema[which(Datum == format(as.Date("2017/10/13"), "%d.%m"))] <- "[Verwandtschaf
 Thema[which(Datum == format(as.Date("2017/10/20"), "%d.%m"))] <- "[Inverse Verwandtschaftsmatrix](https://charlotte-ngs.github.io/LBGHS2017/cn/w5/inverse_addrelmat.pdf)"
 ### # w6
 Thema[which(Datum == format(as.Date("2017/10/27"), "%d.%m"))] <- "[Berechnung der Inzucht](https://charlotte-ngs.github.io/LBGHS2017/cn/w6/07_inbreeding.pdf)"
+### # w7
+Thema[which(Datum == format(as.Date("2017/11/03"), "%d.%m"))] <- "[BLUP](https://charlotte-ngs.github.io/LBGHS2017/cn/w7/08_blup.pdf)"
 
 dfCnTable <- data.frame(Woche, Datum, Thema, stringsAsFactors = FALSE)
 colnames(dfCnTable) <- vecTableHeaders
@@ -138,6 +140,8 @@ vecSlThema[which(Datum == format(as.Date("2017/10/13"), "%d.%m"))] <- "[Tierzuch
 vecSlThema[which(Datum == format(as.Date("2017/10/20"), "%d.%m"))] <- "[Verwandtschaft und Inzucht](https://charlotte-ngs.github.io/LBGHS2017/sl/w5/lbg_hs_2017_w5_slides_rel_inb.pdf)"
 ### # w6
 vecSlThema[which(Datum == format(as.Date("2017/10/27"), "%d.%m"))] <- "[Inverse Verwandtschaftsmatrix](https://charlotte-ngs.github.io/LBGHS2017/sl/w6/lbg_hs_2017_w6_slides_inverse_addrelmat.pdf)"
+### # w7
+vecSlThema[which(Datum == format(as.Date("2017/11/03"), "%d.%m"))] <- "[Berechnung der Inzucht](https://charlotte-ngs.github.io/LBGHS2017/sl/w7/lbg_hs_2017_w7_sl6__inbreeding.pdf)"
 
 ### # construct the table
 dfSlTable <- data.frame(Woche, Datum, vecSlThema, stringsAsFactors = FALSE)
@@ -168,6 +172,8 @@ dfExTable$vecExThema[which(Datum == format(as.Date("2017/10/13"), "%d.%m"))] <- 
 dfExTable$vecExThema[which(Datum == format(as.Date("2017/10/20"), "%d.%m"))] <- "[Geschätzte Zuchtwerte und Bestimmtheitsmass](https://charlotte-ngs.github.io/LBGHS2017/ex/w5/lbg_hs_2017_w5_ex4.pdf)"
 # w6
 dfExTable$vecExThema[which(Datum == format(as.Date("2017/10/27"), "%d.%m"))] <- "[Pedigree und Verwandtschaft](https://charlotte-ngs.github.io/LBGHS2017/ex/w6/lbg_hs_2017_w6_ex5.pdf)"
+# w7
+dfExTable$vecExThema[which(Datum == format(as.Date("2017/11/03"), "%d.%m"))] <- "[Inverse  Verwandtschaftsmatrix](https://charlotte-ngs.github.io/LBGHS2017/ex/w7/lbg_hs_2017_w7_ex6.pdf)"
 
 ### # generate table output
 colnames(dfExTable) <- vecTableHeaders
@@ -185,6 +191,8 @@ dfSolTable <- data.frame(Woche, Datum, vecSolThema, stringsAsFactors = FALSE)
 dfSolTable$vecSolThema[which(Datum == format(as.Date("2017/10/06"), "%d.%m"))] <- "[Lineare Algebra](https://charlotte-ngs.github.io/LBGHS2017/sol/w2/lbg_hs_2017_w2_sol1.pdf)"
 # w3
 dfSolTable$vecSolThema[which(Datum == format(as.Date("2017/10/13"), "%d.%m"))] <- "[Matrizen in R und Quantitative Genetik](https://charlotte-ngs.github.io/LBGHS2017/sol/w3/lbg_hs_2017_w3_sol2.pdf)"
+# w4
+dfSolTable$vecSolThema[which(Datum == format(as.Date("2017/10/20"), "%d.%m"))] <- "[Zuchtwerte](https://charlotte-ngs.github.io/LBGHS2017/sol/w4/lbg_hs_2017_w4_sol3.pdf)"
 ### # generate table output
 colnames(dfSolTable) <- vecTableHeaders
 knitr::kable(dfSolTable)
