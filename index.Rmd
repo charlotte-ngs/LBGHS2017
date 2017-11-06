@@ -15,6 +15,10 @@ Willkommen auf der Webseite der Vorlesung
 - [751-6305-00L 	Züchtungslehre](http://www.vvz.ethz.ch/Vorlesungsverzeichnis/lerneinheitPre.do?lerneinheitId=116519&semkez=2017W&lang=de)
 
 
+## Themen für Masterarbeiten
+Themen für Masterarbeiten von Qualitas AG in Zusammenarbeit mit der ETHZ sind [hier](https://charlotte-ngs.github.io/LBGHS2017/misc/ThemenMasterArbeiten_HS2017.html) erhältlich.
+
+
 ## Beschreibung
 Methoden zur Analyse tierzüchterischer Daten, insbesondere zum Schätzen von Zuchtwerten: Prinzip der Indexselektion, Übersicht über theoretische Grundlagen von BLUP, Anwendung von gebräuchlichen Modellen, Verwandtschaftsmatrix, Methoden zum Schätzen von Varianzkomponenten, Grundlagen Zuchtprogramme. Der vorgelesene Stoff wird durch Übungen und Anwendungen vertieft.
 

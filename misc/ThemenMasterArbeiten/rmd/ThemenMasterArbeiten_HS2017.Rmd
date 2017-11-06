@@ -1,0 +1,57 @@
+---
+title: "THEMEN FÜR MASTERARBEITEN IN ZUSAMMENARBEIT MIT QUALITAS AG / ETHZ"
+author: "Peter von Rohr"
+date: "11/6/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<style type="text/css">
+h1.title {
+  font-size: 32px;
+  color: Black;
+}
+h1 { /* Header 1 */
+  font-size: 28px;
+  color: DarkRed;
+}
+h2 { /* Header 2 */
+    font-size: 22px;
+  color: DarkRed;
+}
+h3 { /* Header 3 */
+  font-size: 18px;
+  color: DarkRed;
+}
+</style>
+
+Bei Interesse, Fragen etc. bitte bei Peter von Rohr (Qualitas AG) Chamerstrasse 56, 6300 Zug; peter.vonrohr@qualitasag.ch, Tel 041 768 92 21 melden.
+
+
+### GENOMIK IN POPULATIONEN MIT HOHEM NATURSPRUNGANTEIL – LANGFRISTIGE ENTWICKLUNG DER GENAUIGKEIT VON GENOMISCHEN ZUCHTWERTEN BEI VERZICHT AUF RETYPISIERUNG DER MÄNNLICHEN REMONTEN {#project_header .emphasized}
+
+Routinemässig werden Genotypisierungen von Kandidatentieren mit einem sogenannten Low-density chip (LD-chip, etwa 30'000 SNPs) durchgeführt. Die Schätzung der SNP-Effekte in der Trainingspopulation erfolgt mit Stieren, die mit einem dichteren Chip genotypisiert wurden. Männliche Tiere, welche für die Künstliche Besamung selektiert werden, werden deshalb normalerweise mit einem dichteren Chip re-typisiert. Die Populationen Original Braunvieh und Simmental weisen einen hohen Anteil an Natursprung auf. Im Zuchtschema ohne Künstliche Besamung werden selektierte männliche Remonten nicht mit dem dichten Chip re-typisiert. Der Einfluss dieses Zusammenhangs auf die Genauigkeit der genomischen Zuchtwertschätzung bei Original Braunvieh soll an realen Daten mittels Validierungsstudien untersucht werden. Die Arbeiten umfassen die Imputation vom LD-Chip auf höhere Chips (Vorhersage von fehlenden Genotypen) und die Schätzung von genomischen Zuchtwerten.
+
+
+### ANALYSE VON ZWILLINGS- UND MEHRLINGSGEBURTEN IN DEN SCHWEIZERISCHEN MILCHVIEHRASSEN
+
+Das Ziel der Masterarbeit ist die Analyse von Zwillings- und Mehrlingsgeburten bei den Schweizerischen Milchviehrassen Braunvieh, Original Braunvieh, Simmental, Swiss Fleckvieh und Holstein. Die Schwerpunkte der Masterarbeit liegen in der Analyse der Häufigkeit von Zwillings- und Mehrlingsgeburten (deskriptive Statistik), der Bestimmung von Einflussfaktoren auf die Häufigkeit von Zwillings- und Mehrlingsgeburten (Varianzanalyse) und der Schätzung von Heritabilitäten bei ausgewählten Rassen. Die Daten werden von den Schweizersichen Milchviehzuchtverbänden zur Verfügung gestellt. Für die statistische Auswertung wird das Statistikprogramm R verwendet. Für die Heritabilitätsschätzung stehen spezielle Softwareprogramme zur Verfügung.
+
+
+### VARIANZKOMPONENTENSCHÄTZUNG FÜR GEBURTSABLAUF
+
+Die Zuchtwertschätzung für den Geburtsverlauf ist bei allen Rassen schon seit Jahren etabliert. Die Auswertungen erfolgen multivariat für die Merkmale Trächtigkeitsdauer, Normalgeburten, Lebendgeburten und Geburtsgewicht – je direkt und maternal. Offiziell publiziert werden nur die Zuchtwerte für Normal- und Lebendgeburten (direkt und maternal). Da nur Interesse an den Stierenzuchtwerten besteht, wurde bisher für die Varianzkomponenten- und Zuchtwertschätzung kein Tier-, sondern das einfachere Vatermodell verwendet.
+Die Heritabilitäten der einzelnen Merkmale stimmen mit Werten aus der Literatur gut überein. Was jedoch immer wieder zu Diskussionen und Fragen Anlass gibt, sind die Korrelationen zwischen den direkten und maternalen Merkmalen. Im Gegensatz zu Literaturwerten, die in der Regel negativ sind, ergeben die eigenen Schätzungen deutlich positive Werte. Im Rahmen einer Masterarbeit sollen mögliche Gründe für diese unerwarteten Resultate untersucht werden. Folgende Faktoren können dabei variiert werden: Software, Modell (Effekte im Modell, Tier- anstatt Vatermodell), Merkmalskombinationen.
+
+
+### ÜBERPRÜFUNG DER FORMEL ZUR SCHÄTZUNG DER STANDARDLAKTATIONSLEISTUNG
+
+In der Schweiz wird bei Kühen die Standardlaktationsleistung ab dem 80. Laktationstag mittels einer Regressionsformel hochgerechnet. Dabei wird nach Laktationsnummer (1. oder 2 ff.) und Abkalbemonat (1-12) unterschieden. Im Rahmen der Masterarbeit soll die Regressionsformel überarbeitet und bei Bedarf eine neue Schätzmethode für die Standardlaktationsleistung erarbeitet werden.
+
+---
+
+Bei Interesse, Fragen etc. bitte bei Peter von Rohr (Qualitas AG) Chamerstrasse 56, 6300 Zug; peter.vonrohr@qualitasag.ch, Tel 041 768 92 21 melden. 
+

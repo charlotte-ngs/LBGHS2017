@@ -62,7 +62,7 @@ F_x &=& {1\over 2}a_{m(x),v(x)} \nonumber\\
 
 1. Tiere dem Alter nach von links nach rechts in  Matrix anordnen. Erstes Tier ist unbekanntes Tier `NA`.
 2. Oberhalb jedes Tieres werden Eltern eingetragen
-3. Offdiagonalelemente der ersten Zeile und ersten Kolonne werden mit lauter Nullen aufgefüllt.
+3. Diagonalelement für `NA` ist $1$ und alle Offdiagonalelemente sind $0$ (gilt für Zeile und Kolonne).
 4. Als Diagonalelement für Tier $x$ tragen wir $1+F_x$ ein
 5. Offdiagonalelemente für Tier $x$ werden mit den Verwandtschaftsgraden $a_{x,y}$ aufgefüllt. Dabei gilt, dass 
 
