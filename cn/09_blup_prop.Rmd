@@ -1,0 +1,480 @@
+# Eigenschaften von BLUP-Zuchtwerten
+
+## Einleitung
+In diesem Kapitel werden die Eigenschaften von BLUP-Zuchtwerten genauer erklärt. Im letzten Kapitel hatten wir gesehen, dass die geschätzten Zuchtwerte eine Funktion der Beobachtungen ist. Tiere ohne phänotypische Beobachtungen erhalten Zuchtwerte über Verknüpfungen in der inversen Verwandtschaftsmatrix. Welche Beobachtungen in einem geschätzten Zuchtwert eine Rolle spielen wollen wir bei der Zerlegung der geschätzten Zuchtwerte analysieren.
+
+
+## Vergleich verschiedener Zuchtwertschätzmethoden
+Wir haben bisher eine Reihe von Zuchtwertschätzmethoden kennengelernt. Für den Vergleich sollen Zuchtwerte mit den zu vergleichenden Methoden aufgrund des gleichen Datensatzes geschätzt werden. Folgende Methoden werden miteinander verglichen.
+
+- Zuchtwerte aufgrund von Eigenleistungen
+- Zuchtwerte aufgrund von Nachkommenleistungen
+- BLUP Zuchtwertschätzung mit Vatermodell
+- BLUP Zuchtwertschätzung mit Tiermodell
+
+
+### Daten
+Als Datensatz verwenden wir die Zunahmen bis zu Absetzen aus dem letzten Kapitel. Die folgende Tabelle gibt nochmals eine Übersicht über das Datenmaterial.
+
+```{r 09_blup_prop_WwgDataSet, echo=FALSE, results='hide'}
+nNrAniInPed <- 8
+nIdxFirstAniWithData <- 4
+dfWwg <- data.frame(Kalb = c(nIdxFirstAniWithData:nNrAniInPed),
+                    Geschlecht = c("M","F","F","M","M"),
+                    Vater = c(1,3,1,4,3),
+                    Mutter = c(NA,2,2,5,6),
+                    WWG = c(4.5,2.9,3.9,3.5,5.0))
+sigmae2 <- 40
+sigmaa2 <- 20
+alpha <- sigmae2/sigmaa2
+sigmap2 <- sigmaa2 + sigmae2
+h2 <- sigmaa2 / sigmap2
+```
+
+\vspace{2ex}
+\begin{center}
+```{r 09_blup_prop_WwgDataSetShow, echo=FALSE}
+knitr::kable(dfWwg)
+```
+\end{center}
+
+Die Varianzkomponenten $\sigma_e^2$ und $\sigma_a^2$ sind bekannt und haben die Werte $\sigma_e^2 = `r sigmae2`$ und $\sigma_a^2 = `r sigmaa2`$.
+
+
+### Zuchtwerte aufgrund von Eigenleistungen
+Diese Methode ist die einfachste um Zuchtwerte zu schätzen. Sie ist aber auch sehr limitiert, da nur Tiere mit einer eigenen beobachteten Leistung einen Zuchtwert bekommen. Für alle anderen Tiere kann kein Zuchtwert geschätzt werden. Für unser Beispiel bedeutet das, dass die Tiere in folgender Tabelle einen geschätzten Zuchtwert erhalten. Der Einfachheit halber nehmen wir den Mittelwert der Beobachtungen als Populationsmittel an.
+
+\vspace{2ex}
+\begin{center}
+```{r PredBvOwnPerf, echo=FALSE}
+muWwg <- mean(dfWwg$WWG)
+bvOwnPerf <- h2*(dfWwg$WWG - muWwg)
+dfBvOwnPerf <- data.frame(Tier = dfWwg$Kalb, Zuchtwert = round(bvOwnPerf, digits = 3))
+knitr::kable(dfBvOwnPerf)
+```
+\end{center}
+
+### Zuchtwerte aufgrund von Nachkommenleistungen
+```{r ParentsWithOffspringMean, echo=FALSE, results='hide'}
+tabVater <- table(dfWwg$Vater)
+tabMutter <- table(dfWwg$Mutter)
+vEltern <- c(names(tabVater)[which(tabVater>1)],names(tabMutter)[which(tabMutter > 1)])
+vEltern <- vEltern[order(vEltern)]
+nNrEltern <- length(vEltern)
+k <- (4-h2)/h2
+```
+
+Zuchtwerte aufgrund von Nachkommenleistungen zu schätzen, macht eigentlich nur dann Sinn, wenn ein Tier mehr als ein Nachkommen hat. Dies trifft bei unserem Datensatz für die Tiere `r vEltern[1:(nNrEltern-1)]` und `r vEltern[nNrEltern]` zu. Die geschätzten Zuchtwerte aufgrund von Nachkommendurchschnitten sind definiert als
+
+$$\hat{a} = \frac{2n}{n+k}(\tilde{y} - \mu)$$
+
+wobei $n$ für die Anzahl Nachkommen steht und $k$ als $(4-h^2)/h^2$ definiert ist. Für unser Beispiel gilt also, dass $k= `r k`$. Der Durchschnitt der phänotypischen Leistungen der Nachkommen wird mit $\tilde{y}$ bezeichnet. Als Populationsmittel $\mu$ verwenden wir wieder das Mittel aller phänotypischen Beobachtungen. Dieses beträgt $`r muWwg`$. Die folgende Tabelle gibt eine Übersicht über die verwendeten Werte und die geschätzten Zuchtwerte (Kolonnen `BV`).
+
+\vspace{2ex}
+\begin{center}
+```{r InfoBvOffspring, echo=FALSE}
+vecNrOffSpring <- sapply(as.numeric(vEltern), 
+                         function(x) return(length(which(dfWwg$Vater == x)) + 
+                                            length(which(dfWwg$Mutter == x))))
+vecMeanOffspring <- sapply(as.numeric(vEltern), function(x) mean(dfWwg$WWG[c(which(dfWwg$Vater == x), which(dfWwg$Mutter == x))]))
+vecBv <- 2*vecNrOffSpring/(vecNrOffSpring+k) * (vecMeanOffspring-muWwg)
+dfInfoBvOffspring <- data.frame(Tier = vEltern,
+                                n = vecNrOffSpring,
+                                y = vecMeanOffspring,
+                                BV = round(vecBv, digits = 3))
+knitr::kable(dfInfoBvOffspring)
+```
+\end{center}
+
+wobei die Anzahl Nachkommen in Kolonne `n` und die Nachkommendurchschnitte in Kolonne `y` aufgelistet sind.
+
+Zusammenfassend können wir feststellen, dass die geschätzten Zuchtwerte eine tiefere Variabilität aufweisen als die phänotypischen Beobachtungen und die Nachkommendurchschnitte. Vergleichen wir die empirischen Standardabweichungen, wie in folgender Tabelle gezeigt, wird diese Reduktion der Variabilität deutlich.
+
+\vspace{2ex}
+\begin{center}
+```{r VarReduction, echo=FALSE}
+dfVarRed <- data.frame(Zufallsvariable = c("Beobachtungen", "Nachkommendurchschnitt", 
+                                           "Zuchtwerte EL", "Zuchtwerte NL"),
+                       Standardabweichung = round(c(sd(dfWwg$WWG), sd(vecMeanOffspring),
+                                              sd(bvOwnPerf), sd(vecBv)), digits = 3))
+knitr::kable(dfVarRed)
+```
+\end{center}
+
+Es gilt aber zu beachten, dass diese Standardabweichungen auf sehr wenigen Beobachtungen basieren. Somit ist diese Beobachtung zunächst einmal einfach für diesen Datensatz gültig. 
+
+
+### Das Vatermodell
+Das Vatermodell gilt als eigentlicher Vorläufer des Tiermodells. Bei besonderen Datenkonstellationen wird dieses Modell aber heute noch in der Praxis - so zum Beispiel in der Fleischrinderzucht - eingesetzt. Beim Vatermodell handelt es sich auch wie beim Tiermodell um ein lineares gemischtes Modell. Die zufälligen Effekte des Vatermodells sind aber die sogenannten Vatereffekte und nicht wie im Tiermodell die Zuchtwerte. Aufgrund dieser Tatsache bekommen nur männliche Tiere einen Zuchtwert und es werden auch nur die Verwandtschaften über die väterlichen Pfade berücksichtigt. Beim Vatermodell nehmen wir an, dass alle Paarungspartner genetisch ähnlich sind zueinander. Dies kann zu Verzerrungen bei den geschätzten Zuchtwerten führen, falls eine gezielte Paarung praktiziert wird. Der Vorteil des Vatermodells liegt in der reduzierten Anzahl an Gleichungen, welche zu lösen sind.
+
+In Matrixnotation lautet das Vatermodell
+
+\begin{equation}
+y = Xb + Zs + e
+\label{eq:SireModel}
+\end{equation}
+
+Alle Terme in (\ref{eq:SireModel}) sind gleich definiert, wie im Tiermodell, ausser dass $s$ jetzt für den Vektor der zufälligen Vatereffekte steht und dass die Inzidenzmatrix $Z$ die Beobachtungen mit den Vatereffekten verknüpft. Die Varianzkomponenten der zufälligen Effekte lauten
+
+\begin{equation}
+var(s) = A\ \sigma_s^2
+\label{eq:VarSireEffect}
+\end{equation}
+
+wobei $A$ die Verwandtschaftsmatrix zwischen den Vätern ist und $\sigma_s^2 = 0.25\sigma_a^2$ beträgt. Die Mischmodellgleichungen sind gleich, wie beim Tiermodell, ausser, dass 
+
+$$\alpha = \frac{\sigma_e^2}{\sigma_s^2} = \frac{4-h^2}{h^2}$$
+
+### Ein Beispiel
+Zur Erklärung des Vatermodells verwenden wir den gleichen Datensatz wie für das Tiermodell. Bei den Verwandtschaftsbeziehungen werden die Mütter ignoriert. Der für das Vatermodell modifizierte Datensatz sieht dann wie folgt aus.
+
+```{r WwgDataSetSireModel, echo=FALSE, results='hide'}
+nNrAniInPed <- 8
+nIdxFirstAniWithData <- 4
+dfWwgSire <- data.frame(Kalb = c(nIdxFirstAniWithData:nNrAniInPed),
+                    Geschlecht = c("M","F","F","M","M"),
+                    Vater = c(1,3,1,4,3),
+                    Mutter = c(NA,NA,NA,NA,NA),
+                    WWG = c(4.5,2.9,3.9,3.5,5.0))
+
+sigmas2 <- sigmaa2/4
+sigmae2sire <- sigmap2-sigmas2
+alphasire <- sigmae2sire/sigmas2
+### # order sires into a vector
+vecSireId <- unique(dfWwgSire$Vater)
+vecSireId <- vecSireId[order(vecSireId)]
+nNrSire <- length(vecSireId)
+```
+
+Das Ziel hier ist den fixen Effekt des Geschlechts zu schätzen und Zuchtwerte für die Väter `r vecSireId[1:(nNrSire-1)]` und `r vecSireId[nNrSire]` vorauszusagen. Die Parameter seien die gleichen wie im Tiermodell, somit ist $\sigma_s^2 = \sigma_a^2/4 = `r sigmas2`$ und $\sigma_e^2 = `r sigmae2sire`$ daraus folgt $\alpha = `r alphasire`$. 
+
+\vspace{2ex}
+\begin{center}
+```{r WwgDataSetSireShow, echo=FALSE}
+knitr::kable(dfWwgSire)
+```
+\end{center}
+
+Die Inzidenzmatrix $X$ ist gleich wie beim Tiermodell. Da $Z$ die Beobachtungen zu den Vatereffekten zuordnet, sieht $Z$ nun anders aus als im Tiermodell. Die Inzidenzmatrix $Z$ für die Vatereffekte ist
+
+```{r DesignMatrixSireModelZ, echo=FALSE}
+matSireZ <- matrix(data = c(1,0,1,0,0,
+                            0,1,0,0,1,
+                            0,0,0,1,0), ncol = nNrSire)
+cat("$$ Z = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matSireZ, pnDigits = 0), collapse = "\n"))
+cat("\\right]\n")
+cat("$$")
+```
+
+Die Komponenten der Mischmodellgleichungen sehen wie folgt aus
+
+```{r 09_blup_prop_MatXtX, echo=FALSE}
+matX <- matrix(c(1,0,0,1,1,0,1,1,0,0), ncol = 2)
+matXtX <- crossprod(matX)
+cat("$$X^TX = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matXtX, pnDigits = 0), collapse = "\n"))
+cat("\\right]$$")
+```
+
+```{r 09_blup_prop_MatXtZ, echo=FALSE}
+matXtZ <- crossprod(matX,matSireZ)
+cat("$$X^TZ = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matXtZ, pnDigits = 0), collapse = "\n"))
+cat("\\right]$$")
+```
+
+```{r 09_blup_prop_MatZtZ, echo=FALSE}
+matZtZ <- crossprod(matSireZ)
+cat("$$Z^TZ = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matZtZ, pnDigits = 0), collapse = "\n"))
+cat("\\right]$$")
+```
+
+Beim Vatermodell werden nur Verwandtschaftsbeziehungen zwischen den Vätern berücksichtigt. Abgesehen davon, dass Vater $4$ der Sohn von Vater $1$ ist, gibt es keine Abhängigkeiten. Die Inverse $A^{-1}$ sieht somit folgendermassen aus.
+
+```{r MatASire, echo=FALSE}
+suppressPackageStartupMessages(require(pedigreemm))
+pedASire <- pedigree(sire = c(NA,NA,NA,1,3,1,4,3),
+                     dam = c(NA,NA,NA,NA,NA,NA,NA,NA),
+                     label = as.character(1:nNrAniInPed))
+#matAInvSire <- as.matrix(getAInv(ped = pedASire))[vecSireId,vecSireId]
+matAInvSire <- matrix(c(1.333,0,-.667,0,1,0,-.667,0,1.333), ncol = nNrSire)
+cat("$$A^{-1} = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matAInvSire, pnDigits = 3), collapse = "\n"))
+cat("\\right]\n")
+cat("$$\n")
+```
+
+Bei der rechten Handseite sieht $X^Ty$ gleich aus wie beim Tiermodell und $Z^Ty$ berechnen wir aus dem Produkt von $Z^T$ und $y$. 
+
+```{r VecZty, echo=FALSE}
+vecZty <- crossprod(matSireZ,dfWwg$WWG)
+cat("$$Z^Ty = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = vecZty, pnDigits = 1), collapse = "\n"))
+cat("\\right]\n")
+cat("$$\n")
+```
+
+Nun haben wir alle Komponenten und können die Mischmodellgleichungen für das Vatermodell aufstellen.
+
+```{r MmeSire, echo=FALSE, eval=TRUE}
+matCoeffSire <- rbind(cbind(matXtX,matXtZ),cbind(t(matXtZ),matZtZ+matAInvSire*alphasire))
+vecXty <- crossprod(matX,dfWwg$WWG)
+vecRhsSire <- rbind(vecXty,vecZty)
+vecBetaHat <- rmddochelper::vecGetVecElem(psBaseElement = "\\hat{\\beta}", pnVecLen = 2)
+vecSireHat <- rmddochelper::vecGetVecElem(psBaseElement = "\\hat{s}", pnVecLen = nNrSire)
+vecUnknown <- c(vecBetaHat, vecSireHat)
+cat("$$\\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matCoeffSire, pnDigits = 3, pnAlign = rep("c", ncol(matCoeffSire)+1)), collapse = "\n"))
+cat("\\right]\n")
+cat("\\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecUnknown), pnAlign = rep("c", 2)), collapse = "\n"))
+cat("\\right]\n")
+cat(" = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = vecRhsSire, pnDigits = 1, pnAlign = rep("c",2)), collapse = "\n"))
+cat("\\right]\n")
+cat("$$\n")
+```
+
+Aus den oben gezeigten Mischmodellgleichungen lassen sich die Lösungen für die fixen Effekte und die zufälligen Vatereffekte, welche als vorausgesagte Zuchtwerte der Väter gelten, berechnen.
+
+```{r SolutionMmeSire, echo=FALSE}
+vecSolSire <- solve(matCoeffSire, vecRhsSire)
+cat("$$\\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecUnknown), pnAlign = rep("c", 2)), collapse = "\n"))
+cat("\\right]\n")
+cat(" = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecSolSire), pnDigits = 3, pnAlign = rep("c",2)), collapse = "\n"))
+cat("\\right]\n")
+cat("$$\n")
+```
+
+
+\pagebreak
+
+## Vergleich zwischen Tiermodell und Vatermodell
+Wir haben fixe Effekte geschätzt und Zuchtwerte vorausgesagt einmal mit dem Tiermodell (sliehe letztes Kapitel) und soeben mit dem Vatermodell. Wir wollen nun die Resultate der beiden Modelle miteinander vergleichen.
+
+## Fixe Effekte
+In beiden Modellen waren das Geschlecht als fixer Effekt berücksichtigt. Die folgende Tabelle zeigt die geschätzten Effekte für die zwei Ausprägungen des Geschlechts
+
+\vspace{2ex}
+\begin{center}
+```{r CompareFixedEffects, echo=FALSE}
+### # solutions from animal model
+nrFixedEffects <- 2
+matX <- matrix(c(1,0,0,1,1,0,1,1,0,0), ncol = nrFixedEffects)
+nNrObs <- nrow(dfWwg)
+nNrFounder <- nNrAniInPed - nIdxFirstAniWithData - 1
+matZ <- cbind(matrix(0, nrow = nNrObs, ncol = nNrFounder),diag(1,nrow = nNrObs, ncol = nNrObs))
+### # mme components of design matrices
+matXtX <- crossprod(matX)
+matXtZ <- crossprod(matX,matZ)
+matZtZ <- crossprod(matZ)
+### # pedigree
+suppressPackageStartupMessages(require(pedigreemm))
+vecSire <- c(rep(NA,nNrFounder),dfWwg$Vater)
+vecDam <-  c(rep(NA,nNrFounder),dfWwg$Mutter)
+pedEx1 <- pedigree(sire = vecSire, dam = vecDam, label = 1:nNrAniInPed)
+matAInv <- as.matrix(getAInv(ped = pedEx1))
+matZtZAInvAlpha <- matZtZ + matAInv * alpha
+### # rhs 
+vecY <- dfWwg$WWG
+vecXtY <- crossprod(matX,vecY)
+vecZtY <- crossprod(matZ,vecY)
+### # mme
+matCoeff <- cbind(rbind(matXtX, t(matXtZ)), rbind(matXtZ, matZtZAInvAlpha))
+vecRhs <- rbind(vecXtY, vecZtY)
+vecSol <- solve(matCoeff,vecRhs)
+### # comparison table
+dfFixedEff <- data.frame(Effekt      = c("M", "F"),
+                         Tiermodell  = round(vecSol[1:nrFixedEffects], digits = 2),
+                         Vatermodell = round(vecSolSire[1:nrFixedEffects], digits = 2))
+knitr::kable(dfFixedEff)
+```
+\end{center}
+
+Bis auf Rundungsfehler sind die Differenzen zwischen den Effektstufen "M" und "F" bei beiden Modellen gleich. Diese Übereinstimmung ist erklärbar, da in beiden Modellen die gleichen fixen Effekte berücksichtigt wurden und die Effekte aufgrund des gleichen Datensatzes geschätzt wurden.
+
+
+### Zuchtwerte
+Aufgrund der Modelleigenschaften werden beim Tiermodell Zuchtwerte für alle Tiere vorausgesagt und beim Vatermodell nur für die Väter. Ein Vergleich der Zuchtwerte ist in der folgenden Tabelle gezeigt.
+
+\vspace{2ex}
+\begin{center}
+```{r CompTableBv, echo=FALSE}
+vecBvVater <- rep(NA,nNrAniInPed)
+vecBvVater[vecSireId] <- vecSolSire[(nrFixedEffects+1):length(vecSolSire)]
+dfComBv <- data.frame(Tier = c(1:nNrAniInPed),
+                      Tiermodell = round(vecSol[(nrFixedEffects+1):length(vecSol)], digits = 3),
+                      Vatermodell = round(vecBvVater, digits = 3))
+knitr::kable(dfComBv)
+```
+\end{center}
+
+Die Zuchtwerte und auch paarweise Differenzen zwischen den Zuchtwerten sind verschieden zwischen den beiden Modellen. Auch die Rangierung der Väter ist nicht die gleiche bei den beiden Modellen. Bei Tiermodell werden auch die Beiträge der Paarungspartner und aller Nachkommen berücksichtigt. Beim Vatermodell werden die Paarungspartner alle als identisch betrachtet. Nachkommen werden nur auf der väterlichen Seite berücksichtigt. Diese Unterschiede wirken sich auf die vorausgesagten Zuchtwerte aus.
+
+
+## Zerlegung eines mit dem Tiermodell geschätzten Zuchtwertes
+Extrahiert man einzelne Gleichungen aus den Mischmodellgleichungen, so kann gezeigt werden, aus welchen Komponenten sich die vorhergesagten Zuchtwerte zusammensetzen. Diese Technik der Zerlegung erlaubt es weitere Eigenschaften des Tiermodells aufzuzeigen. 
+
+\pagebreak
+
+Wir gehen von folgendem vereinfachten Modell aus
+
+\begin{equation}
+y_i = \mu + a_i + e_i
+\label{eq:SimpleAnimalModelDecomp}
+\end{equation}
+
+\begin{tabular}{lll}
+mit  &  $y_i$  &  Beobachtung für Tier $i$\\
+     &  $a_i$  &  Zuchtwert von Tier $i$ mit Varianz $(1+F_i)\sigma_a^2$\\
+     &  $e_i$  &  zufälliger Rest mit Varianz $\sigma_e^2$\\
+     &  $\mu$  &  übrige fixe Effekte im Modell
+\end{tabular}
+
+In einem fiktiven angenommenen Datensatz haben alle Tiere nur eine Beobachtung. Tier $i$ hat Eltern $s$ und $d$ und $n$ Nachkommen $k_j$ (wobei $j = 1, \ldots, n$) und $n$ Paarungspartner $l_j$ (wobei $j = 1, \ldots, n$). Also hat der Nachkomme $k_j$ die Eltern $i$ und $l_j$. Die Mischmodellgleichungen für das vereinfachte Modell (\ref{eq:SimpleAnimalModelDecomp}) lauten, wie im nachfolgenden Abschnitt gezeigt. Da die fixen Effekte alle in einem gemeinsamen Mittel $\mu$ zusammengefasst werden ist die Inzidenzmatrix $X$ einfach ein Vektor mit lauter Einsen. Da jedes Tier eine Beobachtung hat, entspricht die Matrix $Z$ der Einheitsmatrix.
+
+Unter Berücksichtigung der Regeln zur Aufstellung der Inversen Verwandtschaftsmatrix $A^{-1}$ lässt sich die Gleichung für die Beobachtung $y_i$ wie folgt darstellen.
+
+\begin{eqnarray}
+y_i &=& \hat{\mu} + \left[1 + \alpha \delta^{(i)} + {\alpha\over 4} \sum_{j=1}^n \delta^{(k_j)}\right]\hat{a}_i
+    - {\alpha\over 2} \delta^{(i)}\hat{a}_s - {\alpha\over 2} \delta^{(i)}\hat{a}_d \nonumber\\
+    & & - {\alpha\over 2} \sum_{j=1}^n \delta^{(k_j)}\hat{a}_{k_j} 
+        + {\alpha\over 4} \sum_{j=1}^n \delta^{(k_j)}\hat{a}_{l_j}
+\label{eq:YiDecompEq}
+\end{eqnarray}
+
+Lösen wir die Gleichung (\ref{eq:YiDecompEq}) nach $\hat{a}_i$ auf so folgt
+
+\begin{eqnarray}
+\hat{a}_i &=& \frac{1}{1 + \alpha \delta^{(i)} + {\alpha\over 4} \sum_{j=1}^n \delta^{(k_j)}}
+              \left[y_i - \hat{\mu} + {\alpha\over 2}\left\{\delta^{(i)}(\hat{a}_s + \hat{a}_d) 
+              + \sum_{j=1}^n \delta^{(k_j)} (\hat{a}_{k_j} - {1\over 2}\hat{a}_{l_j}) \right\} \right]
+\label{eq:AhatDecompEq}
+\end{eqnarray}
+
+Aus dieser Zerlegung ist ersichtlich, dass sich der geschätzte Zuchtwert im Tiermodell aus den folgenden Komponenten zusammensetzt:
+
+- Elternzuchtwerte: $\hat{a}_s$ und $\hat{a}_d$
+- Eigenleistung: $y_i$
+- Zuchtwerte von Nachkommen und Paarungspartern: $\hat{a}_{k_j}$ und $\hat{a}_{l_j}$
+
+
+### Ein Beispiel
+```{r MmeSmdSetup, ref.label="MmeSimpleModelDecomp", echo=FALSE, results='hide'}
+```
+
+Zur Illustration nehmen wir ein Beispiel mit $n = `r nNrObsSmd`$ Tieren an. 
+
+```{r MmeSimpleModelDecomp, echo=FALSE}
+### # constants
+nNrObsSmd <- 5
+### # design matrics
+matXSmd <- matrix(data = 1, nrow = nNrObsSmd)
+matZSmd <- diag(1, nrow = nNrObsSmd, ncol = nNrObsSmd)
+matXtXSmd <- crossprod(matXSmd)
+matXtZSmd <- crossprod(matXSmd,matZSmd)
+matZtZSmd <- crossprod(matZSmd)
+```
+```{r MmeSmdCoeffMatShow, echo=FALSE}
+cat("$$X = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matXSmd, pnDigits = 0, pnAlign = rep("c", 2)), collapse = "\n"))
+cat("\\right]\n$$")
+cat("$$Z = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matZSmd, pnDigits = 0, pnAlign = rep("c", nNrObsSmd+1)), collapse = "\n"))
+cat("\\right]\n$$")
+cat("$$X^TX = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matXtXSmd, pnDigits = 0, pnAlign = rep("c", 2)), collapse = "\n"))
+cat("\\right]\n$$")
+cat("$$X^TZ = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matXtZSmd, pnDigits = 0, pnAlign = rep("c", nNrObsSmd+1)), collapse = "\n"))
+cat("\\right]\n$$")
+cat("$$Z^TZ = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matZtZSmd, pnDigits = 0, pnAlign = rep("c", nNrObsSmd+1)), collapse = "\n"))
+cat("\\right]\n$$")
+```
+
+$$X^Ty = \left[\sum_{j=1}^n y_i\right]$$
+
+```{r VecZtYSmd, echo=FALSE}
+vecZtYSmd <- rmddochelper::vecGetVecElem(psBaseElement = "y", pnVecLen = nNrObsSmd)
+cat("$$Z^Ty = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecZtYSmd, nrow = nNrObsSmd), pnDigits = 0, pnAlign = rep("c", 2)), collapse = "\n"))
+cat("\\right]\n$$")
+```
+
+Beim Pedigree nehmen wir den einfachsten Fall mit `r nNrObsSmd` Tieren. 
+
+```{r ExPedSmd, results='markup', echo=FALSE}
+pedSmd <- pedigree(sire = c(NA,NA,NA,1,4), dam = c(NA,NA,NA,2,3), label = as.character(1:nNrObsSmd))
+print(pedSmd)
+```
+
+Aus dem oben gezeigten Pedigree berechnen wir die folgende Inverse $A^{-1}$.
+
+```{r, echo=FALSE}
+matAinvSmd <- as.matrix(getAInv(ped = pedSmd))
+cat("$$A^{-1} = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matAinvSmd, pnDigits = 2, pnAlign = rep("c", nNrObsSmd+1)), collapse = "\n"))
+cat("\\right]\n$$")
+```
+
+Wir setzen nun die Komponenten zusammen zu 
+
+\begin{equation}
+\left[
+\begin{array}{cc}
+X^TX  &  X^TZ\\
+Z^TX  &  Z^TZ + A^{-1} * \alpha
+\end{array}
+\right]
+\left[
+\begin{array}{c}
+\hat{\mu}\\
+\hat{a}
+\end{array}
+\right]
+=
+\left[
+\begin{array}{c}
+X^Ty\\
+Z^Ty
+\end{array}
+\right]
+\label{eq:MmeSmd}
+\end{equation}
+
+Setzen wir als Beobachtungen $y$ die Werte von unserem Datensatz ein und verwenden auch den gleichen Wert für $\alpha = `r alpha`$, dann sehen die Mischmodellgleichungen in Zahlen wie folgt aus.
+
+```{r MmeSmdNumeric, echo=FALSE}
+matCoeffSmd <- cbind(rbind(matXtXSmd,t(matXtZSmd)),rbind(matXtZSmd,matZtZSmd + matAinvSmd * alpha))
+cat("$$\\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matCoeffSmd, pnDigits = 2, pnAlign = rep("c", nNrObsSmd+2)), collapse = "\n"))
+cat("\\right]\n")
+solVecSmd <- c("\\mu", rmddochelper::vecGetVecElem(psBaseElement = "\\hat{a}", pnVecLen = nNrObsSmd))
+cat("\\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(solVecSmd, nrow = nNrObsSmd+1), pnAlign = rep("c", 2)), collapse = "\n"))
+cat("\\right]\n")
+vecRhsSmd <- rbind(crossprod(matXSmd,vecY), crossprod(matZSmd,vecY))
+cat(" = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecRhsSmd, nrow = nNrObsSmd+1), pnDigits = 1, pnAlign = rep("c", 2)), collapse = "\n"))
+cat("\\right]\n")
+cat("$$")
+```
+
+Für unser Beispiel betrachten wir nun das Tier $4$ mit Eltern $1$ und $2$. Das Tier $4$ hat mit Paarungspartner $3$ einen Nachkommen ($5$). 
+
+Aus den Mischmodellgleichungen betrachten wir die zweitletzte Gleichung und können so die Formel (\ref{eq:AhatDecompEq}) verifizieren. Dabei gilt zu berücksichtigen, dass $\delta^{(i)}$ nur drei Werte annehmen kann.
+
+$$
+\delta^{(i)} = \left\{
+  \begin{array}{rl} 
+  2           & \text{falls beide Eltern bekannt}\\
+  {4\over 3}  & \text{falls ein Elternteil bekannt}\\
+  1           & \text{falls beide Eltern unbekannt}
+  \end{array}
+  \right.
+$$

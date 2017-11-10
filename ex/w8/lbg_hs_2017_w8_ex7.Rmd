@@ -1,5 +1,5 @@
 ---
-title:  Züchtungslehre - Lösung 7
+title:  Züchtungslehre - Übung 7
 author: Peter von Rohr
 date: 2017-11-17
 output: pdf_document
@@ -58,44 +58,6 @@ matR <- t(chol(matA))
   -- Pedigree enthält.                                      --
   -->
   
-### Lösung
-
-- Inzuchtkoeffizienten: berechnen sich aus den Diagonalelementen $a_{ii}$ der Verwandtschaftsmatrix. Diese werden aus den Elementen der $i$-ten Zeile der Matrix $R$ aus (\ref{eq:AChol}) berechnet. Genauer gilt
-
-$$a_{ii} = \sum_{j=1}^i r_{ij}^2$$
-
-- Die Diagonalelemente $r_{ii}$ der Matrix $R$ berechnen sich als
-
-$$r_{ii} = \sqrt{1 - 0.25(a_{ss} + a_{dd})}$$
-
-wobei $s$ und $d$ die Eltern von $i$ sind und $a_{dd}$ ($a_{ss}$) dem Diagonalelement der Verwandtschaftsmatrix $A$ entspricht, welches zu Tier $d$ ($s$) gehört. Ist ein Elternteil unbekannt, dann ist das entsprechende Diagonalelement aus $A$ gleich $0$. 
-
-- Die Offdiagonalelemente $r_{ij}$ (für $i\ne j$) entsprechen
-
-$$r_{ij} = {1\over 2}(r_{sj} + r_{dj})$$
-
-wobei $s$ und $d$ die Eltern von $i$ sind. Für unbekannte Eltern $d$ ($s$) sind die Werte $r_{dj}$ ($r_{sj}$) gleich $0$. 
-
-Werden die Elemente der Matrix $R$ nach den soeben beschriebenen Regeln berechnet, erhalten wir das folgende Resultat.
-
-```{r CholMatAResult}
-matA <- as.matrix(getA(ped = pedEx2))
-matR <- t(chol(matA))
-cat("$$R = \\left[\n")
-cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matR, pnDigits = 4), collapse = "\n"))
-cat("\\right]\n")
-cat("$$")
-```
-
-Die Inzuchtkoeffizienten der Tiere sind in der folgenden Tabelle aufgelistet.
-
-```{r InbreedingCoeff}
-dfInbreedingCoeff <- data.frame(Tier = c(1:nNrAniInPedEx2), Inzuchtkoeffizient = round(inbreeding(ped = pedEx2), digits = 4))
-knitr::kable(dfInbreedingCoeff)
-```
-
-
-\vspace{2ex}
 
 ## Aufgabe 2: Erweiterung der `if`-Bedingungen
 ```{r Ex7A1Init, ref.label="Ex7A1Loop", echo=FALSE, results='hide'}
@@ -141,23 +103,3 @@ Finden Sie mit einer Kombination aus einem Loop und von verschiedenen `if`-Bedin
   -- werden im else-Teil der Bedingungsserie abgehandelt. --
   -->
   
-### Lösung
-
-```{r Ex7A1Sol, echo=TRUE, results='markup'}
-nLowerLimit <- 11; nUpperLimit <- 50
-for (nIdx in nLowerLimit:nUpperLimit){
-  if (identical(nIdx %% 2, 0)) {
-     cat(nIdx, " ist durch 2 teilbar\n")
-  } else if(identical(nIdx %% 3, 0)) {
-     cat(nIdx, " ist durch 3 teilbar\n")
-  }  else if(identical(nIdx %% 5, 0)) {
-     cat(nIdx, " ist durch 5 teilbar\n")
-  }  else if(identical(nIdx %% 7, 0)) {
-     cat(nIdx, " ist durch 7 teilbar\n")
-  } else {
-    cat(nIdx, " ist eine Primzahl\n")
-  }
-}
-```
-
-

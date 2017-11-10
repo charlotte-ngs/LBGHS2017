@@ -1,0 +1,383 @@
+---
+title: BLUP Zuchtwertschätzung
+author: Peter von Rohr
+date: 2017-11-10
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## BLUP
+
+- steht für __Best Linear Unbiased Prediction__
+- __Linear__: fixe Effekte plus zufällige Effekte als Linearkombination der Beobachtungswerte geschätzt.
+- __Unbiased__: Schätzungen für fixe Effekte plus zufällige Effekte unverzerrt (unbiased) oder erwartungstreu
+- __Best__: unter allen linearen unverzerrten Schätzern weist der BLUP-Schätzer die kleinste Fehlervarianz auf
+
+
+## Modell
+
+\begin{equation}
+y = Xb + Zu + e
+\label{eq:LinearMixedModel}
+\end{equation}
+
+\begin{tabular}{lll}
+mit & $y$:  & Vektor der Beobachtungswerte\\
+    & $b$:  & Vektor der fixen Effekte\\
+    & $u$:  & Vektor der zufälligen Effekte\\
+    & $e$:  & Vektor der zufälligen Resteffekte\\
+    & $X$:  & Inzidenzmatrix für $b$\\
+    & $Z$:  & Inzidenzmatrix für $u$
+\end{tabular}
+
+## Erwartungswerte und Varianzen
+Die Erwartungswerte und Varianzen der Zufallsvariablen im Modell (\ref{eq:LinearMixedModel}) sind definiert als
+
+\begin{equation}
+E\left[
+\begin{array}{c} 
+y\\
+u\\
+e
+\end{array}\right]
+= \left[
+\begin{array}{c} 
+Xb\\
+0\\
+0
+\end{array}\right]
+\label{eq:ExpValMme}
+\end{equation}
+
+\vspace{2ex}
+\begin{equation}
+var\left[
+\begin{array}{c} 
+y\\
+u\\
+e
+\end{array}\right]
+= \left[
+\begin{array}{ccc} 
+ZGZ^T + R  &  ZG  &  R \\
+GZ^T       &  G   &  0 \\
+R          &  0   &  R
+\end{array}\right]
+\label{eq:CovMme}
+\end{equation}
+
+
+## Schätzgleichungen
+
+Aus den BLUP-Eigenschaften lassen sich die folgenden Schätzgleichungen ableiten.
+
+\begin{equation}
+\hat{b} = (X^TV^{-1}X)^- X^TV^{-1}y
+\label{eq:BlueBhat}
+\end{equation}
+
+\begin{equation}
+\hat{u} = GZ^TV^{-1}(y - X\hat{b})
+\label{eq:BlupUhat}
+\end{equation}
+
+\begin{tabular}{lll}
+mit & $\hat{b}$ & Lösungsvektor der fixen Effekte\\
+    & $\hat{u}$ & Lösungsvektor der zufälligen Effekte \\
+    & $()^-$    & verallgemeinerte Inverse
+\end{tabular}
+
+
+## Mischmodellgleichungen (Mixed Model Equation)
+
+\begin{equation}
+\left[ 
+\begin{array}{cc}
+X^TR^{-1}X  &  X^TR^{-1}Z\\
+Z^tR^{-1}X  &  Z^TR^{-1}Z + G^{-1}
+\end{array}
+\right] 
+\left[
+\begin{array}{c}
+\hat{b}\\
+\hat{u}
+\end{array}
+\right] 
+= 
+\left[
+\begin{array}{c}
+X^TR^{-1}y\\
+Z^TR^{-1}y
+\end{array}
+\right]
+\label{eq:MixedModelEq}
+\end{equation}
+
+- Gleiche Lösungen, wie explizite Schätzgleichungen
+- $R$ (meist) diagonal, somit einfacher zu invertieren
+- Varianzkomponenten müssen bekannt sein
+
+## Das Tiermodell
+\begin{equation}
+y = Xb + Za + e
+\label{eq:SimpleAnimalModel}
+\end{equation}
+
+\begin{tabular}{lll}
+mit & $y$ & phänotypischen Beobachtungen\\
+    & $b$ & fixe Effekte \\
+    & $a$ & zufällige Effekte - Zuchtwerte\\
+    & $e$ & zufällige Resteffekte\\
+    & $X$ & Inzidenzmatrix für $b$\\
+    & $Z$ & Inzidenzmatrix für $a$
+\end{tabular}
+
+
+## Varianzen
+
+\begin{equation}
+Var(a) = G = A\ \sigma_a^2 \text{ und } G^{-1} = A^{-1} \sigma_a^{-2}
+\label{eq:VarAAnimalModel}
+\end{equation}
+
+\begin{equation}
+Var(e) = R = I\ \sigma_e^2 \text{ und } R^{-1} = I\ \sigma_e^{-2}
+\label{eq:VarEAnimalModel}
+\end{equation}
+
+\begin{tabular}{lll}
+wobei & $A$ & additiv genetische Verwandtschaftsmatrix\\
+      & $I$ & Einheitsmatrix \\
+      & $\sigma_a^2$ & additiv genetische Varianz\\
+      & $\sigma_e^2$ & Restvarianz
+\end{tabular}
+
+
+## Mischmodellgleichungen
+
+- für ein Merkmal
+- Erweiterung mit Restvarianz $\sigma_e^2$ führt zu vereinfachten Form
+
+\begin{equation}
+\left[ 
+\begin{array}{cc}
+X^TX  &  X^TZ\\
+Z^TX  &  Z^TZ + A^{-1}\ \alpha
+\end{array}
+\right] 
+\left[
+\begin{array}{c}
+\hat{b}\\
+\hat{a}
+\end{array}
+\right] 
+= 
+\left[
+\begin{array}{c}
+X^Ty\\
+Z^Ty
+\end{array}
+\right]
+\label{eq:MmeAnimalModelOneTrait}
+\end{equation}
+
+\begin{tabular}{lll}
+wobei & $\alpha$ & Verhältnis der Varianzen $\sigma_e^2/\sigma_a^2 = (1-h^2)/h^2$\\
+      & $h^2$    & Heritabilität
+\end{tabular}
+
+- kompakte Schreibweise
+
+$$M * \hat{s} = r$$
+
+\begin{tabular}{lll}
+wobei & $M$       & Koeffizientenmatrix heisst\\
+      & $\hat{s}$ & Lösungsvektor \\
+      & $r$       & Vektor der rechten Handseite
+\end{tabular}
+
+
+## Ein Beispiel für das Tiermodell
+```{r WwgDataSetSetup, ref.label="WwgDataSet", echo=FALSE, results='hide'}
+```
+
+- Merkmal Gewichtszuwachs (WWG in kg) vor dem Absetzen bei Kälbern
+- Ziel: Zuchtwerte für das Merkmal (WWG) schätzen 
+- Varianzkomponenten  $\sigma_e^2 = `r sigmae2`$ und $\sigma_a^2 = `r sigmaa2`$. 
+- Somit ist $\alpha = `r sigmae2`/`r sigmaa2` = `r alpha`$
+
+```{r WwgDataSet, results='hide'}
+nNrAniInPed <- 8
+nIdxFirstAniWithData <- 4
+dfWwg <- data.frame(Kalb = c(nIdxFirstAniWithData:nNrAniInPed),
+                    Geschlecht = c("M","F","F","M","M"),
+                    Vater = c(1,3,1,4,3),
+                    Mutter = c(NA,2,2,5,6),
+                    WWG = c(4.5,2.9,3.9,3.5,5.0))
+sigmae2 <- 40
+sigmaa2 <- 20
+alpha <- sigmae2/sigmaa2
+```
+
+```{r WwgDataSetShow}
+knitr::kable(dfWwg)
+```
+
+## Modell für eine Beobachtung
+
+$$y_{ij} = b_i + a_j + e_{ij}$$
+
+\begin{tabular}{lll}
+wobei & $y_{ij}$ & Merkmal WWG für Kalb $j$ mit Geschlecht $i$\\
+      & $b_i$    & fixer Effekt für Geschlecht $i$\\
+      & $a_j$    & Zuchtwert für Kalb $j$\\
+      & $e_{ij}$ & Resteffekt für Kalb $j$ mit Geschlecht $i$
+\end{tabular}
+
+
+## Gleichungssystem
+
+\begin{eqnarray}
+4.5 &=& b_M + a_4 + e_{M4}\nonumber\\  
+2.9 &=& b_F + a_5 + e_{F5}\nonumber\\  
+3.9 &=& b_F + a_6 + e_{F6}\nonumber\\  
+3.5 &=& b_M + a_7 + e_{M7}\nonumber\\   
+5.0 &=& b_M + a_8 + e_{M8}\nonumber 
+\end{eqnarray}
+
+- Matrix-Vektor-Schreibweise
+
+\begin{equation}
+y = Xb + Za + e
+\label{ex:EqAniModEx}
+\end{equation}
+
+
+## Vektoren im Modell
+
+```{r VecY, results='asis'}
+vecY <- dfWwg$WWG
+cat("$y = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecY, ncol = 1)), collapse = "\n"))
+cat("\\right]$")
+```
+, 
+$b = \left[\begin{array}{c}b_M\\ b_F \end{array}\right]$
+, 
+```{r VecA, results='asis'}
+vecA <- rmddochelper::vecGetVecElem(psBaseElement = "a", pnVecLen = nNrAniInPed)
+cat("$a = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecA, ncol = 1)), collapse = "\n"))
+cat("\\right]$")
+```
+, 
+$e = \left[\begin{array}{c}e_{M4}\\ e_{F5}\\ e_{F6}\\ e_{M7}\\ e_{M8} \end{array}\right]$
+
+
+## Inzidenzmatrizen
+
+```{r MatX, results='asis'}
+matX <- matrix(c(1,0,0,1,1,0,1,1,0,0), ncol = 2)
+cat("$$X = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matX, pnDigits = 0), collapse = "\n"))
+cat("\\right]$$")
+```
+
+\vspace{2ex}
+```{r MatZ, results='asis'}
+nNrObs <- nrow(dfWwg)
+nNrFounder <- nNrAniInPed - nIdxFirstAniWithData - 1
+matZ <- cbind(matrix(0, nrow = nNrObs, ncol = nNrFounder),diag(1,nrow = nNrObs, ncol = nNrObs))
+cat("$$Z = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matZ, pnDigits = 0), collapse = "\n"))
+cat("\\right]$$")
+```
+
+
+## Aufstellen der Mischmodellgleichungen
+```{r MatXtX, results='asis'}
+matXtX <- crossprod(matX)
+cat("$$X^TX = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matXtX, pnDigits = 0), collapse = "\n"))
+cat("\\right]$$")
+```
+
+```{r MatXtZ, results='asis'}
+matXtZ <- crossprod(matX,matZ)
+cat("$$X^TZ = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matXtZ, pnDigits = 0), collapse = "\n"))
+cat("\\right]$$")
+```
+
+```{r MatZtZ, results='asis'}
+matZtZ <- crossprod(matXtZ)
+cat("$$Z^TZ = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matZtZ, pnDigits = 0), collapse = "\n"))
+cat("\\right]$$")
+```
+
+
+## Pedigree
+```{r ShowPedEx1, results='markup'}
+suppressPackageStartupMessages(require(pedigreemm))
+vecSire <- c(rep(NA,nNrFounder),dfWwg$Vater)
+vecDam <-  c(rep(NA,nNrFounder),dfWwg$Mutter)
+pedEx1 <- pedigree(sire = vecSire, dam = vecDam, label = 1:nNrAniInPed)
+print(pedEx1)
+```
+
+
+## Inverse Verwandtschaftsmatrix
+\tiny
+```{r MatAInv, results='asis'}
+matAInv <- as.matrix(getAInv(ped = pedEx1))
+cat("$$A^{-1} = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matAInv, pnDigits = 3), collapse = "\n"))
+cat("\\right]$$")
+```
+\normalsize
+
+
+## Rechte Handseite
+
+```{r VecXtY, results='asis'}
+vecXtY <- crossprod(matX,vecY)
+cat("$$X^Ty = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = vecXtY, pnDigits = 1), collapse = "\n"))
+cat("\\right]$$")
+```
+
+```{r VecZtY, results='asis'}
+vecZtY <- crossprod(matZ,vecY)
+cat("$$Z^Ty = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = vecZtY, pnDigits = 1), collapse = "\n"))
+cat("\\right]$$")
+```
+
+
+## Lösung
+
+$$\hat{s} = M^{-1} * r$$
+
+Die Zahlenwerte für den Lösungsvektor bekommen wir
+
+
+$$\hat{s} = \left[
+\begin{array}{r}
+  4.348 \\ 
+  3.392 \\ 
+  0.158 \\ 
+  -0.018 \\ 
+  -0.054 \\ 
+  0.002 \\ 
+  -0.263 \\ 
+  0.280 \\ 
+  -0.332 \\ 
+  0.287 \\ 
+  \end{array}
+\right]$$
+
+
