@@ -1,0 +1,436 @@
+---
+title:  Züchtungslehre - Lösung 9
+author: Peter von Rohr
+date: 2017-12-01
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis')
+```
+
+```{r TaskCounterSetUp, echo=FALSE}
+en <- rmddochelper::R6ClassEnum$new()
+```
+```
+
+In dieser Übung wollen wir geschätzte Zuchtwerte aufgrund von verschiedenen Schätzmethoden miteinander vergleichen. Bei den Methoden handelt es sich um
+
+- Zuchtwerte aufgrund von Eigenleistungen
+- Zuchtwerte aufgrund von Nachkommenleistungen
+- Zuchtwerte aufgrund eines Vatermodells
+- Zuchtwerte aufgrund eines Tiermodells
+
+Dazu verwenden wir den Datensatz aus der Übung von letzter Woche in einer veränderten Version. Der modifizierte Datensatz enthält auch Informationen zur Mutter.
+
+```{r ShowDataSet}
+nNrRecords <- 9
+nNrSire <- 3
+dfMlrData <- data.frame(Tochter = c(1:nNrRecords) + nNrSire,
+                        Herde   = c("1","1","2","2","2","3","3","3","3"),
+                        Vater   = c("C","A","B","A","C","C","C","A","B"),
+                        Mutter  = c("NA","4","NA","5","5","6","6","4","7"),
+                        Leistung = c(110,100,110,100,100,110,110,100,100))
+nNrHerde <- length(unique(dfMlrData$Herde))
+knitr::kable(dfMlrData)
+```
+
+```{r VarCompDef, echo=FALSE, results='hide'}
+sigmae2 <- 100
+sigmaa2 <- 25
+sigmap2 <- sigmaa2 + sigmae2
+h2 <- sigmaa2/sigmap2
+k <- (4-h2)/h2
+### # phenotypes and mean
+vecYMlr <- dfMlrData$Leistung
+muMlr <- mean(vecYMlr)
+```
+
+
+Für die Varianzkomponenten nehmen wir an, dass $\sigma_e^2 = 100$ und $\sigma_a^2 = 25$ ist. Die phänotypische Varianz $\sigma_p^2$ lässt sich vollständig in $\sigma_a^2$ und  $\sigma_e^2$ zerlegen.
+
+
+```{r, echo=FALSE}
+en$incrCount();cat("## Aufgabe", en$getCount(), "\n")
+```
+Schätzen Sie für jede der Töchter Zuchtwerte aufgrund ihrer Eigenleistungen. Wir nehmen an das Populationsmittel $\mu$ liege beim Mittelwert der phänotypischen Leistungen der Töchter.
+
+
+<!-- solution -->
+### Lösung
+
+Die Erblichkeit ($h^2$) entspricht 
+$$h^2 = \frac{\sigma_a^2}{\sigma_a^2 + \sigma_e^2} = \frac{`r sigmaa2`}{`r sigmap2`} = `r sigmaa2/sigmap2`$$. 
+
+Das Populationsmittel als Mittel über alle beobachteten Töchterleistung entspricht
+
+$$\mu = {1\over n}\sum_{i=1}^ny_i =  `r round(mean(vecYMlr), digits = 1)`$$
+
+\pagebreak
+
+Der geschätzte Zuchtwert $\hat{a}_i$ ist definiert als
+
+$$\hat{a}_i = h^2(y - \mu)$$
+
+
+```{r ZwEl}
+vecZwEl <-  h2*(vecYMlr - muMlr)
+dfZwEl <- data.frame(Tochter   = c(1:nNrRecords) + nNrSire,
+                     Zuchtwert = round(vecZwEl, digits = 3))
+knitr::kable(dfZwEl)
+```
+
+<!-- /solution -->
+
+```{r, echo=FALSE}
+en$incrCount();cat("## Aufgabe", en$getCount(), "\n")
+```
+Schätzen Sie für die drei Väter "A", "B", "C" Zuchtwerte aufgrund der mittleren Leistungen ihrer jeweiligen Nachkommen. Das Populationsmittel ($\mu$) und die Erblichkeit ($h^2$) haben den gleichen Wert, wie in Aufgabe 1.
+
+
+<!-- solution -->
+### Lösung
+
+Die geschätzten Zuchtwerte aufgrund von Nachkommenleistungen sind abhängig von $$k = \frac{4-h^2}{h^2} = `r round(k, digits = 2)`$$
+
+Für einen bestimmten Vater $s$ ist der geschätzte Zuchtwert aufgrund seiner Nachkommenleistungen definiert als
+
+$$\hat{a}_s = \frac{2n}{n+k}(\tilde{y}_s - \mu)$$
+
+wobei $\tilde{y}_s$ die durchschnittliche Leistung der Nachkommen von Vater $s$ ist.
+
+Die folgende Tabelle gibt eine Übersicht über die Resultate
+
+```{r BvEstNk, eval=TRUE}
+suppressPackageStartupMessages(require(dplyr))
+byVater <- group_by(dfMlrData, Vater)
+dfBvNk <- summarise(byVater, AnzahlNk = n(), MeanLeistung = mean(Leistung), 
+BvNk = 2*AnzahlNk/(AnzahlNk + k)*(MeanLeistung - muMlr))
+names(dfBvNk) <- c("Vater", "Anzahl Nachkommen", "Mittlere Leistung", "Zuchtwert")
+dfBvNk$Zuchtwert <- round(dfBvNk$Zuchtwert, digits = 3)
+knitr::kable(dfBvNk)
+```
+
+<!-- /solution -->
+
+\pagebreak
+
+```{r, echo=FALSE}
+en$incrCount();cat("## Aufgabe", en$getCount(), "\n")
+```
+Schätzen Sie die Zuchtwerte für die drei Väter "A", "B" und "C" mit einem Vatermodell. Dabei soll die `Herde` als fixer Effekt und der `Vater` als zufälliger Effekt im Modell berücksichtigt werden. Die Väter "A", "B" und "C" sind nicht verwandt miteinander und haben auch keine bekannten Eltern. 
+
+Die Aufgabe gliedert sich in die folgenden Schritte:
+
+1. Notation des Gleichungssystems in Matrix-Vektor-Schreibweise
+2. Bestimmung der Inzidenzmatrizen $X$ und $Z$
+3. Aufstellen der Mischmodellgleichungen für das Vatermodell
+4. Lösen der Mischmodellgleichungen
+5. Aus den Lösungen von (4) die Schätzwerte für die fixen Effekte und die vorausgesagten Zuchtwerte für die Väter identifizieren
+
+
+<!-- solution -->
+### Lösung
+
+- __Schritt 1__: Notation des Gleichungssystems
+
+$$y = Xb + Zs + e$$
+
+\begin{tabular}{lll}
+mit  &  $y$  &  Vektor der phänotypischen Beobachtungen \\
+     &  $b$  &  Vektor der fixen Herdeneffekte \\
+     &  $s$  &  Vektor der zufälligen Vatereffekte \\
+     &  $X$  &  Inzidenzmatrix für $b$ \\
+     &  $Z$  &  Inzidenzmatrix für $s$
+\end{tabular}
+
+
+- __Schritt 2__: Inzidenzmatrizen $X$ und $Z$
+
+```{r DesignMatSire}
+matXSire <- matrix(data = c(1,0,0,
+                            1,0,0,
+                            0,1,0,
+                            0,1,0,
+                            0,1,0,
+                            0,0,1,
+                            0,0,1,
+                            0,0,1,
+                            0,0,1), nrow = nNrRecords, byrow = TRUE)
+cat("$$X = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matXSire, pnDigits = 0), collapse = "\n"))
+cat("\\right]\n$$")
+
+matZSire <- matrix(data = c(0,0,1,
+                            1,0,0,
+                            0,1,0,
+                            1,0,0,
+                            0,0,1,
+                            0,0,1,
+                            0,0,1,
+                            1,0,0,
+                            0,1,0), nrow = nNrRecords, byrow = TRUE)
+cat("$$Z = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matZSire, pnDigits = 0), collapse = "\n"))
+cat("\\right]\n$$")
+```
+
+\pagebreak
+
+- __Schritt 3__: Mischmodellgleichungen
+
+```{r CoeffMatSire}
+matXtXSire <- crossprod(matXSire)
+cat("$$X^TX = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matXtXSire, pnDigits = 0), collapse = "\n"))
+cat("\\right]\n$$")
+
+matXtZSire <- crossprod(matXSire,matZSire)
+cat("$$X^TZ = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matXtZSire, pnDigits = 0), collapse = "\n"))
+cat("\\right]\n$$")
+
+#alphaSire <- sigmae2/sigmaa2
+sigmas2 <- sigmaa2/4
+sigmae2Sire <- (sigmap2-sigmas2)
+alphaSire <- sigmae2Sire / sigmas2
+matZtZAinvSire <- crossprod(matZSire) + diag(alphaSire, nrow = nNrSire)
+cat("$$Z^TZ + A^{-1} \\cdot \\alpha = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matZtZAinvSire, pnDigits = 0), collapse = "\n"))
+cat("\\right]\n$$")
+```
+
+wobei $\alpha = \sigma_e^2 / \sigma_s^2 = `r sigmae2Sire` / `r sigmas2` = `r sigmae2Sire/sigmas2`$ und $A$ die Verwandtschaftsmatrix zwischen den Vätern. Hier wird angenommen, dass totale phänotypische Varianz $\sigma_p^2 = `r sigmap2`$ konstant bleibt. Im Vatermodell entspricht die Varianz der Vatereffekte ($\sigma_s^2$) einem Viertel der genetisch additiven Varianz ($\sigma_a^2$). Die Restvarianz im Vatermodell ist dann die phänotypische Varianz minus die Varianz der Vatereffekte. Da die Väter nicht verwandt sind untereinander, ist $A = I$. Der Vektor der rechten Handseite besteht aus
+
+```{r VecRhsSire}
+vecXtYSire <- crossprod(matXSire,vecYMlr)
+cat("$$X^Ty = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = vecXtYSire, pnDigits = 0), collapse = "\n"))
+cat("\\right]\n$$")
+vecZtYSire <- crossprod(matZSire,vecYMlr)
+cat("$$Z^Ty = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = vecZtYSire, pnDigits = 0), collapse = "\n"))
+cat("\\right]\n$$")
+```
+
+Zusammengestellt sehen die Mischmodellgleichungen für das Vatermodell, wie folgt aus
+
+```{r MmeSire}
+matCoefSire <- cbind(rbind(matXtXSire,t(matXtZSire)), rbind(matXtZSire,matZtZAinvSire))
+vecSolSire <- c("\\hat{b}_{Herde1}","\\hat{b}_{Herde2}","\\hat{b}_{Herde3}",
+            "\\hat{s}_{VaterA}","\\hat{s}_{VaterB}","\\hat{s}_{VaterC}")
+vecRhsSire <- c(vecXtYSire,vecZtYSire)
+cat("$$\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matCoefSire, pnDigits = 0), collapse = "\n"))
+cat("\\right]\n")
+cat("\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecSolSire, ncol = 1)), collapse = "\n"))
+cat("\\right]\n")
+cat(" = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecRhsSire, ncol = 1), pnDigits = 0), collapse = "\n"))
+cat("\\right]\n$$")
+```
+
+- __Schritt 4__: Lösung der Mischmodellgleichungen
+
+
+```{r MmeSireSolution}
+vecSolSireNum <- solve(matCoefSire,vecRhsSire)
+cat("$$\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecSolSire, ncol = 1)), collapse = "\n"))
+cat("\\right]\n")
+cat(" = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matCoefSire, pnDigits = 0), collapse = "\n"))
+cat("\\right]^{-1}\n")
+cat("\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecRhsSire, ncol = 1), pnDigits = 0), collapse = "\n"))
+cat("\\right]\n")
+cat(" = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecSolSireNum, ncol = 1), pnDigits = 1), collapse = "\n"))
+cat("\\right]\n$$")
+```
+
+\pagebreak
+
+- __Schritt 5__: Identifikation der fixen und zufälligen Effekte
+
+Die ersten drei Elemente des Lösungsvektor entsprechen den Lösungen für die fixen Effekte. 
+
+```{r SolFixEffectSire}
+cat("$$\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecSolSire[1:nNrHerde], ncol = 1)), collapse = "\n"))
+cat("\\right]\n")
+cat(" = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecSolSireNum[1:nNrHerde], ncol = 1), pnDigits = 1), collapse = "\n"))
+cat("\\right]\n$$")
+```
+
+Die Elemente vier bis sechs entsprechen den Vorhersagen für die Vatereffekte
+
+```{r SolRandomEffectSire}
+nLenSolVec <- length(vecSolSire)
+cat("$$\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecSolSire[(nNrHerde+1):nLenSolVec], ncol = 1)), collapse = "\n"))
+cat("\\right]\n")
+cat(" = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecSolSireNum[(nNrHerde+1):nLenSolVec], ncol = 1), pnDigits = 1), collapse = "\n"))
+cat("\\right]\n$$")
+```
+
+<!-- /solution -->
+
+\pagebreak
+
+```{r, echo=FALSE}
+en$incrCount();cat("## Aufgabe", en$getCount(), "\n")
+```
+Schätzen Sie die Zuchtwerte für alle Tiere im Pedigree (Väter und Töchter) mit dem Tiermodell. Dabei soll wieder die `Herde` als fixer Effekt und der Zuchtwert des Tieres als zufälliger Effekt berücksichtigt werden. Der Lösungsweg ist der gleiche, wie derjenige von Aufgabe 3. Der Unterschied besteht einzig im verwendeten Modell
+
+<!-- solution -->
+### Lösung
+
+- __Schritt 1__: Notation des Gleichungssystems
+
+$$y = Xb + Za + e$$
+
+\begin{tabular}{lll}
+mit  &  $y$  &  Vektor der phänotypischen Beobachtungen \\
+     &  $b$  &  Vektor der fixen Herdeneffekte \\
+     &  $a$  &  Vektor der zufälligen Zuchtwerte \\
+     &  $X$  &  Inzidenzmatrix für $b$ \\
+     &  $Z$  &  Inzidenzmatrix für $a$
+\end{tabular}
+
+Wichtig ist hier, dass der Vektor $a$ Zuchtwerte der drei Väter und aller neun Töchter enthält.
+
+- __Schritt 2__: Inzidenzmatrizen $X$ und $Z$
+
+Bei den fixen Effekten hat sich im Vergleich zu Aufgabe 3 nichts geändert. Deshalb können wir die Matrix $X$ aus der Aufgabe 3 übernehmen. Als zufällige Effekte haben wir jetzt die Zuchtwerte aller Tiere und nicht mehr Vatereffekte. Die Matrix $Z$ sieht somit etwas anders aus.
+
+```{r MatZAniModel}
+matZAni <- cbind(matrix(0, nrow = nNrRecords, ncol = nNrSire), diag(1, nrow = nNrRecords, ncol = nNrRecords))
+cat("$$Z = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matZAni, pnDigits = 0), collapse = "\n"))
+cat("\\right]\n$$")
+```
+
+- __Schritt 3__: Mischmodellgleichungen
+Da wir die Matrix $X$ aus der Aufgabe 3 übernommen haben, bleibt sich auch $X^TX$ gleich. Die verbleibenden Komponenten werden nun aufgelistet
+
+```{r MmeAniMod, warning=FALSE}
+matXtXAni <- matXtXSire
+matXtZAni <- crossprod(matXSire, matZAni)
+
+### # pedigree
+suppressPackageStartupMessages(require(pedigreemm))
+pedTask4 <- pedigree(sire = c(NA,NA,NA,3,1,2,1,3,3,3,1,2), 
+                     dam  = c(NA,NA,NA,NA,4,NA,5,5,6,6,4,7), 
+                     label = as.character(1:(nNrSire+nNrRecords)))
+AinvAni <- as.matrix(getAInv(ped = pedTask4))
+matZtZAinvAni <- crossprod(matZAni) + AinvAni * alphaSire
+
+### # rhs
+vecXtYAni<- vecXtYSire
+vecZtYAni <- crossprod(matZAni,vecYMlr)
+vecRhsAni <- c(vecXtYAni,vecZtYAni)
+
+### # mme
+matCoeffAni <- cbind(rbind(matXtXAni,t(matXtZAni)),rbind(matXtZAni,matZtZAinvAni))
+vecSolAni <- c("\\hat{b}_{Herde1}","\\hat{b}_{Herde2}","\\hat{b}_{Herde3}",
+            "\\hat{a}_{VaterA}","\\hat{a}_{VaterB}","\\hat{a}_{VaterC}",
+            "\\hat{a}_4","\\hat{a}_5","\\hat{a}_6",
+            "\\hat{a}_7","\\hat{a}_8","\\hat{a}_9",
+            "\\hat{a}_{10}","\\hat{a}_{11}","\\hat{a}_{12}")
+
+cat("$$\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matCoeffAni, pnDigits = 0), collapse = "\n"))
+cat("\\right]\n")
+cat("\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecSolAni, ncol = 1)), collapse = "\n"))
+cat("\\right]\n")
+cat(" = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecRhsAni, ncol = 1), pnDigits = 0), collapse = "\n"))
+cat("\\right]\n$$")
+
+```
+
+- __Schritt 4__: Lösungen
+
+\tiny
+```{r SolMmeAni, warning=FALSE}
+vecSolNumAni <- solve(matCoeffAni, vecRhsAni)
+cat("$$\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecSolAni, ncol = 1)), collapse = "\n"))
+cat("\\right]\n")
+cat(" = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matCoeffAni, pnDigits = 0), collapse = "\n"))
+cat("\\right]^{-1}\n")
+cat("\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecRhsAni, ncol = 1), pnDigits = 0), collapse = "\n"))
+cat("\\right]\n")
+cat(" = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecSolNumAni, ncol = 1), pnDigits = 1), collapse = "\n"))
+cat("\\right]\n$$")
+```
+
+\normalsize
+
+- __Schritt 5__: Identifikation der Effekte
+
+Die Lösungen für die fixen Effekte entsprechen wie in Aufgabe den ersten drei Elementen des Lösungsvektors.
+
+```{r SolFixEffectAni}
+cat("$$\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecSolAni[1:nNrHerde], ncol = 1)), collapse = "\n"))
+cat("\\right]\n")
+cat(" = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecSolNumAni[1:nNrHerde], ncol = 1), pnDigits = 1), collapse = "\n"))
+cat("\\right]\n$$")
+```
+
+Die verbleibenden Elemente im Lösungsvektor entsprechen den Zuchtwerten der drei Väter "A", "B" und "C" und der neun Töchter $1$ bis $9$. 
+
+```{r SolRandomEffectAni}
+nLenSolVecAni <- length(vecSolAni)
+cat("$$\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecSolAni[(nNrHerde+1):nLenSolVecAni], ncol = 1)), collapse = "\n"))
+cat("\\right]\n")
+cat(" = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecSolNumAni[(nNrHerde+1):nLenSolVecAni], ncol = 1), pnDigits = 1), collapse = "\n"))
+cat("\\right]\n$$")
+```
+
+<!-- /solution -->
+
+```{r, echo=FALSE}
+en$incrCount();cat("## Aufgabe", en$getCount(), "\n")
+```
+Vergleichen Sie die Rangierungen der Tiere gemäss ihrer geschätzer Zuchtwerte aus den verschiedenen Methoden
+
+<!-- solution -->
+### Lösung
+
+Bei den Töchtern können wir die Zuchtwerte aufgrund der Eigenleistung und aufgrund des Tiermodells verglichen werden. 
+
+```{r CompBvDaughter}
+dfCompBvDaughter <- data.frame(Tochter = as.vector(dfMlrData$Tochter),
+                               Eigenleistung = round(vecZwEl, digits = 1),
+                               Tiermodell = round(vecSolNumAni[(nNrHerde+nNrSire+1):nLenSolVecAni], digits = 1))
+knitr::kable(dfCompBvDaughter)
+```
+
+Bei den Töchtern unterscheiden sich die Rangierungen zwischen "Eigenleistung" und "Tiermodell". Die vorausgesagten Zuchtwerte aufgrund des Tiermodells sind klar zu bevorzugen, da diese die gesamte verfügbare Information, d.h. phänotypsiche Beobachtungen, systematische Umwelteinflüsse, Informationen zu Paarungspartnern und den Nachkommen, berücksichtigen. Bei der Eigenleistung wird nur die phänotypische Beobachtung berücksichtigt.
+
+Bei den Väter können wir einen Vergleich zwischen Zuchtwerten aufgrund von Nachkommenleistungen, aufgrund vom Vatermodell und aufgrund vom Tiermodell machen
+
+```{r CompBvSire}
+dfCompBvSire <- data.frame(Vater              = c("A","B","C"),
+                           Nachkommenleistung = round(as.vector(dfBvNk$Zuchtwert), digits = 1),
+                           Vatermodell        = round(vecSolSireNum[(nNrHerde+1):nLenSolVec], digits = 1),
+                           Tiermodell         = round(vecSolNumAni[(nNrHerde+1):(nNrHerde+nNrSire)], digits = 1))
+knitr::kable(dfCompBvSire)
+```
+
+Bei den Vätern stimmt die Rangierung bei den Nachkommenleistungen und dem Vatermodell überein. Beim Tiermodell ist Vater "B" besser als Vater "C". Auch hier gilt wieder, dass nur im Tiermodell alle verfügbaren Informationen berücksichtigt werden. Somit wären die Zuchtwerte aus dem Tiermodell also zu bevorzugen.
+
+<!-- /solution -->

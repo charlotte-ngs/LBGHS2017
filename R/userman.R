@@ -275,12 +275,21 @@ done'
 
 fetch_bash_cmd <- 'COPATH=ex/w5/lbg_hs_2017_w5_ans4.Rmd
 COPATH=ex/w2/lbg_hs_2017_w2_sol1.Rmd
+
+ex/w6/lbg_hs_2017_w6_sol5.Rmd
+ex/w9/lbg_hs_2017_w9_ans8.Rmd
+
 PROJDIR=LBGHS2017
 ADMIN=`whoami`
 CURWD=/home/${ADMIN}
 echo " * Project dir: $PROJDIR"
 echo " * Current working dir: $CURWD"
+#for COPATH in "ex/w6/lbg_hs_2017_w6_sol5.Rmd" "ex/w9/lbg_hs_2017_w9_ans8.Rmd"
+for COPATH in "ex/w7/lbg_hs_2017_w7_sol6.Rmd" "ex/w10/lbg_hs_2017_w10_ans9.Rmd"
+do
+echo $COPATH
 for student in "vrohrp" "ernstt" "martinfe" "dpisoni" "weberan" "wysss" "ulmanns"
+#for student in "vrohrp"
 do 
 echo $student
 cd /home/${student}/${PROJDIR}
@@ -289,4 +298,6 @@ sudo git checkout origin/r4tea-platform ${COPATH}
 sudo chown -R ${student}:${student} .
 cd ${CURWD}
 sleep 2
-done'
+done
+done
+'

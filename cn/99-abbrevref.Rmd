@@ -27,6 +27,22 @@ bref <- c(bibentry(
      key = "MHG2001"),
   bibentry(
     bibtype = "Book",
+    title = "Introduction To Quantitative Genetics",
+    author = c(as.person("D.F. Falconer"), as.person("T.F.C. Mackay")),
+    year = "1996",
+    publisher = "Addison Wesley Longman",
+    key = "FM1996"
+  ),
+  bibentry(
+    bibtype = "Book",
+    title = "The mathematical theory of quantitative genetics",
+    author = c(as.person("M.G. Bulmer")),
+    year = "1980",
+    publisher = "Clarendon Press",
+    key = "Bulmer1980"
+  ),
+  bibentry(
+    bibtype = "Book",
     title = "Handbook of Statistical Genetics",
     editor = c(as.person("D. J. Balding"), as.person("M. Bishop"), as.person("C. Cannings")),
     year = "2009",
@@ -147,7 +163,15 @@ bref <- c(bibentry(
        publisher = "Springer",
        doi       = "10.1007/978-1-62703-447-0_13",
        key       = "CV2013"
-     )
+     ),
+  bibentry(
+    bibtype = "Unpublished",
+    title = "Problems in the use of the relationship matrix in animal breeding.",
+    author = c(as.person("Leo Dempfle [aut]")),
+    year = "1987",
+    note = "International Symposium, Armidale. Notes for Participants.",
+    key = "Dempfle1987"
+  )
 )
 
 ### # Fixed assignmen of bib file

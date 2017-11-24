@@ -1,0 +1,465 @@
+---
+title: Züchtungslehre - Eigenschaften von BLUP-Zuchtwerten
+author: Peter von Rohr
+date: 2017-11-17
+output: 
+  beamer_presentation:
+    fig_caption: FALSE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+## Vergleich verschiedener Zuchtwertschätzmethoden
+
+- Einige Methoden zur Schätzung / Vorhersage von Zuchtwerten
+    + Zuchtwerte aufgrund von Eigenleistungen
+    + Zuchtwerte aufgrund von Nachkommenleistungen
+    + BLUP Zuchtwertschätzung mit Vatermodell
+    + BLUP Zuchtwertschätzung mit Tiermodell
+- Vergleich zwischen Methoden
+    + Vor- und Nachteile
+    + Welche Tiere bekommen Zuchtwerte
+    + Berücksichtigung der Umwelt
+    + Verwandtschaft
+
+
+## Daten
+- Merkmal: Zunahmen bis zu Absetzen
+- Folgende Tabelle gibt eine Übersicht über das Datenmaterial
+
+```{r WwgDataSet, results='hide'}
+nNrAniInPed <- 8
+nIdxFirstAniWithData <- 4
+dfWwg <- data.frame(Kalb = c(nIdxFirstAniWithData:nNrAniInPed),
+                    Geschlecht = c("M","F","F","M","M"),
+                    Vater = c(1,3,1,4,3),
+                    Mutter = c(NA,2,2,5,6),
+                    WWG = c(4.5,2.9,3.9,3.5,5.0))
+sigmae2 <- 40
+sigmaa2 <- 20
+alpha <- sigmae2/sigmaa2
+sigmap2 <- sigmaa2 + sigmae2
+h2 <- sigmaa2 / sigmap2
+```
+
+```{r WwgDataSetShow}
+knitr::kable(dfWwg)
+```
+
+- Varianzkomponenten:  $\sigma_e^2 = `r sigmae2`$ und $\sigma_a^2 = `r sigmaa2`$.
+
+
+## Eigenleistungen
+
+- Geschätzter Zuchtwert $\hat{a}_i = h^2(y_i - \mu)$
+
+```{r PredBvOwnPerf}
+muWwg <- mean(dfWwg$WWG)
+bvOwnPerf <- h2*(dfWwg$WWG - muWwg)
+dfBvOwnPerf <- data.frame(Tier = dfWwg$Kalb, Zuchtwert = round(bvOwnPerf, digits = 3))
+knitr::kable(dfBvOwnPerf)
+```
+
+- Annahme: $\mu = {1\over n}\sum_{i=1}^n y_i = `r muWwg`$
+
+- Nur Tiere mit Eigenleistung bekommen Zuchtwerte
+- Verwandtschaft nicht berücksichtigt
+- Abgesehen von $\mu$ keine Umwelteffekte berücksichtigt
+
+
+## Nachkommenleistungen
+```{r ParentsWithOffspringMean, echo=FALSE, results='hide'}
+tabVater <- table(dfWwg$Vater)
+tabMutter <- table(dfWwg$Mutter)
+vEltern <- c(names(tabVater)[which(tabVater>1)],names(tabMutter)[which(tabMutter > 1)])
+vEltern <- vEltern[order(vEltern)]
+nNrEltern <- length(vEltern)
+k <- (4-h2)/h2
+```
+
+- Geschätzter Zuchtwert: $\hat{a} = \frac{2n}{n+k}(\tilde{y} - \mu)$
+```{r InfoBvOffspring, echo=FALSE}
+vecNrOffSpring <- sapply(as.numeric(vEltern), function(x) return(length(which(dfWwg$Vater == x)) + 
+                                                                                     length(which(dfWwg$Mutter == x))))
+vecMeanOffspring <- sapply(as.numeric(vEltern), function(x) mean(dfWwg$WWG[c(which(dfWwg$Vater == x), which(dfWwg$Mutter == x))]))
+vecBv <- 2*vecNrOffSpring/(vecNrOffSpring+k) * (vecMeanOffspring-muWwg)
+dfInfoBvOffspring <- data.frame(Tier = vEltern,
+                                n = vecNrOffSpring,
+                                y = vecMeanOffspring,
+                                BV = round(vecBv, digits = 3))
+knitr::kable(dfInfoBvOffspring)
+```
+
+- $n$ steht für die Anzahl Nachkommen
+- $k = \frac{4-h^2}{h^2}$
+
+
+## Vatermodell
+
+- Vorläufer des Tiermodells, immer noch verwendet
+- Lineares gemischtes Modell
+    + fixe Effekte analog zum Tiermodell
+    + Vatereffekte $s$ als zufällige Effekte
+- Verwandtschaften nur über Väter
+- nur Väter bekommen Zuchtwerte
+- Modell
+
+$$y = Xb + Zs + e$$
+
+wobei $var(s) = A * \sigma_s^2$
+
+- $\sigma_s^2$: Varianz der Vatereffekte mit $\sigma_s^2 = {1\over 4}\sigma_a^2$
+
+
+## Beispiel
+```{r WwgDataSetSireModel, results='hide'}
+nNrAniInPed <- 8
+nIdxFirstAniWithData <- 4
+dfWwgSire <- data.frame(Kalb = c(nIdxFirstAniWithData:nNrAniInPed),
+                    Geschlecht = c("M","F","F","M","M"),
+                    Vater = c(1,3,1,4,3),
+                    Mutter = c(NA,NA,NA,NA,NA),
+                    WWG = c(4.5,2.9,3.9,3.5,5.0))
+
+sigmas2 <- sigmaa2/4
+sigmae2sire <- sigmap2-sigmas2
+alphasire <- sigmae2sire/sigmas2
+### # order sires into a vector
+vecSireId <- unique(dfWwgSire$Vater)
+vecSireId <- vecSireId[order(vecSireId)]
+nNrSire <- length(vecSireId)
+```
+
+- Gleicher Datensatz, wie beim Tiermodell
+
+```{r WwgDataSetSireShow}
+knitr::kable(dfWwgSire)
+```
+
+- Ziele: 
+    + Schätzung der fixen Effekte für das Geschlecht
+    + Vorhersage der Zuchtwerte für Väter
+
+
+## Inzidenzmatrizen
+
+- $X$ gleich wie beim Tiermodell
+- $Z$ verknüpft Beobachtungen zu Vatereffekten $s$
+```{r DesignMatrixSireModelZ, results='asis'}
+matSireZ <- matrix(data = c(1,0,1,0,0,
+                            0,1,0,0,1,
+                            0,0,0,1,0), ncol = nNrSire)
+cat("$$ Z = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matSireZ, pnDigits = 0), collapse = "\n"))
+cat("\\right]\n")
+cat("$$")
+```
+
+
+## Verwandtschaft nur über Väter
+
+```{r MatASire, results='asis'}
+suppressPackageStartupMessages(require(pedigreemm))
+pedASire <- pedigree(sire = c(NA,NA,NA,1,3,1,4,3),
+                     dam = c(NA,NA,NA,NA,NA,NA,NA,NA),
+                     label = as.character(1:nNrAniInPed))
+#matAInvSire <- as.matrix(getAInv(ped = pedASire))[vecSireId,vecSireId]
+matAInvSire <- matrix(c(1.333,0,-.667,0,1,0,-.667,0,1.333), ncol = nNrSire)
+cat("$$A^{-1} = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matAInvSire, pnDigits = 3), collapse = "\n"))
+cat("\\right]\n")
+cat("$$\n")
+```
+
+## Mischmodellgleichungen
+```{r VecZty, results='asis'}
+matX <- matrix(c(1,0,0,1,1,0,1,1,0,0), ncol = 2)
+matXtX <- crossprod(matX)
+matXtZ <- crossprod(matX,matSireZ)
+matZtZ <- crossprod(matSireZ)
+vecZty <- crossprod(matSireZ,dfWwg$WWG)
+matCoeffSire <- rbind(cbind(matXtX,matXtZ),cbind(t(matXtZ),matZtZ+matAInvSire*alphasire))
+vecXty <- crossprod(matX,dfWwg$WWG)
+vecRhsSire <- rbind(vecXty,vecZty)
+vecBetaHat <- rmddochelper::vecGetVecElem(psBaseElement = "\\hat{\\beta}", pnVecLen = 2)
+vecSireHat <- rmddochelper::vecGetVecElem(psBaseElement = "\\hat{s}", pnVecLen = nNrSire)
+vecUnknown <- c(vecBetaHat, vecSireHat)
+cat("$$\\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matCoeffSire, pnDigits = 3, pnAlign = rep("c", ncol(matCoeffSire)+1)), collapse = "\n"))
+cat("\\right]\n")
+cat("\\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecUnknown), pnAlign = rep("c", 2)), collapse = "\n"))
+cat("\\right]\n")
+cat(" = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = vecRhsSire, pnDigits = 1, pnAlign = rep("c",2)), collapse = "\n"))
+cat("\\right]\n")
+cat("$$\n")
+```
+
+## Lösungen
+```{r SolutionMmeSire, results='asis'}
+vecSolSire <- solve(matCoeffSire, vecRhsSire)
+cat("$$\\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecUnknown), pnAlign = rep("c", 2)), collapse = "\n"))
+cat("\\right]\n")
+cat(" = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecSolSire), pnDigits = 3, pnAlign = rep("c",2)), collapse = "\n"))
+cat("\\right]\n")
+cat("$$\n")
+```
+
+
+## Vergleich: Tiermodell - Vatermodell
+```{r CompareFixedEffects, results='asis'}
+### # solutions from animal model
+nrFixedEffects <- 2
+matX <- matrix(c(1,0,0,1,1,0,1,1,0,0), ncol = nrFixedEffects)
+nNrObs <- nrow(dfWwg)
+nNrFounder <- nNrAniInPed - nIdxFirstAniWithData - 1
+matZ <- cbind(matrix(0, nrow = nNrObs, ncol = nNrFounder),diag(1,nrow = nNrObs, ncol = nNrObs))
+### # mme components of design matrices
+matXtX <- crossprod(matX)
+matXtZ <- crossprod(matX,matZ)
+matZtZ <- crossprod(matZ)
+### # pedigree
+suppressPackageStartupMessages(require(pedigreemm))
+vecSire <- c(rep(NA,nNrFounder),dfWwg$Vater)
+vecDam <-  c(rep(NA,nNrFounder),dfWwg$Mutter)
+pedEx1 <- pedigree(sire = vecSire, dam = vecDam, label = 1:nNrAniInPed)
+matAInv <- as.matrix(getAInv(ped = pedEx1))
+matZtZAInvAlpha <- matZtZ + matAInv * alpha
+### # rhs 
+vecY <- dfWwg$WWG
+vecXtY <- crossprod(matX,vecY)
+vecZtY <- crossprod(matZ,vecY)
+### # mme
+matCoeff <- cbind(rbind(matXtX, t(matXtZ)), rbind(matXtZ, matZtZAInvAlpha))
+vecRhs <- rbind(vecXtY, vecZtY)
+vecSol <- solve(matCoeff,vecRhs)
+### # comparison table
+dfFixedEff <- data.frame(Effekt      = c("M", "F"),
+                         Tiermodell  = round(vecSol[1:nrFixedEffects], digits = 2),
+                         Vatermodell = round(vecSolSire[1:nrFixedEffects], digits = 2))
+knitr::kable(dfFixedEff)
+```
+
+- Schätzungen der Effekte verschieden
+- Differenzen zwischen Schätzungen gleich
+
+
+## Zuchtwerte
+
+```{r CompTableBv, results='asis'}
+vecBvVater <- rep(NA,nNrAniInPed)
+vecBvVater[vecSireId] <- vecSolSire[(nrFixedEffects+1):length(vecSolSire)]
+dfComBv <- data.frame(Tier = c(1:nNrAniInPed),
+                      Tiermodell = round(vecSol[(nrFixedEffects+1):length(vecSol)], digits = 3),
+                      Vatermodell = round(vecBvVater, digits = 3))
+knitr::kable(dfComBv)
+```
+
+- Im Vatermodell bekommen nur Väter Zuchtwerte
+- Rangierung verschieden zwischen Tier- und Vatermodell
+- Im Tiermodell werden Paarungspartner und alle Nachkommen berücksichtigt
+
+
+## Zerlegung von geschätzten Zuchtwerten mit Tiermodell
+
+- einfaches Modell
+
+\begin{equation}
+y_i = \mu + a_i + e_i
+\label{eq:SimpleAnimalModelDecomp}
+\end{equation}
+
+\begin{tabular}{lll}
+mit  &  $y_i$  &  Beobachtung für Tier $i$\\
+     &  $a_i$  &  Zuchtwert von Tier $i$ mit Varianz $(1+F_i)\sigma_a^2$\\
+     &  $e_i$  &  zufälliger Rest mit Varianz $\sigma_e^2$\\
+     &  $\mu$  &  übrige fixe Effekte im Modell
+\end{tabular}
+
+- jedes Tier nur eine Beobachtung
+- Tier $i$ hat Eltern $s$ und $d$ 
+- Tier $i$ hat $n$ Nachkommen $k_j$ (wobei $j = 1, \ldots, n$) 
+- Tier $i$ hat $n$ Paarungspartner $l_j$ (wobei $j = 1, \ldots, n$)
+
+
+## Zerlegung
+
+\begin{eqnarray}
+y_i &=& \hat{\mu} + \left[1 + \alpha \delta^{(i)} + {\alpha\over 4} \sum_{j=1}^n \delta^{(k_j)}\right]\hat{a}_i
+    - {\alpha\over 2} \delta^{(i)}\hat{a}_s - {\alpha\over 2} \delta^{(i)}\hat{a}_d \nonumber\\
+    & & - {\alpha\over 2} \sum_{j=1}^n \delta^{(k_j)}\hat{a}_{k_j} 
+        + {\alpha\over 4} \sum_{j=1}^n \delta^{(k_j)}\hat{a}_{l_j}
+\label{eq:YiDecompEq}
+\end{eqnarray}
+
+Lösen wir die Gleichung (\ref{eq:YiDecompEq}) nach $\hat{a}_i$ auf so folgt
+
+\begin{eqnarray}
+\hat{a}_i &=& \frac{1}{1 + \alpha \delta^{(i)} + {\alpha\over 4} \sum_{j=1}^n \delta^{(k_j)}}
+              \left[y_i - \hat{\mu} \right. \nonumber\\
+          & & \left.   + {\alpha\over 2}\left\{\delta^{(i)}(\hat{a}_s + \hat{a}_d) 
+              + \sum_{j=1}^n \delta^{(k_j)} (\hat{a}_{k_j} - {1\over 2}\hat{a}_{l_j}) \right\} \right]
+\label{eq:AhatDecompEq}
+\end{eqnarray}
+
+
+## Regeln für $A^{-1}$
+
+- Für Tier $i$ mit Eltern $s$ und $d$, 
+    + addiere $\delta_i$ zum Element $(i,i)$, 
+    + addiere $-\delta_i/2$ zu  $(s,i)$, $(i,s)$, $(d,i)$ und $(i,d)$
+    + addiere $\delta_i/4$ zu  $(s,s)$, $(s,d)$, $(d,s)$ und $(d,d)$
+- Für Tier $i$ mit bekanntem Elternteil $d$,
+    + addiere $\delta_i$ zum Element $(i,i)$, 
+    + addiere $-\delta_i/2$ zu den Elementen $(d,i)$ und $(i,d)$ und 
+    + addiere $\delta_i/4$ zu den Elementen $(d,d)$
+- Für Tier $i$ mit unbekannten Eltern
+    + addiere $\delta_i$ zum Element $(i,i)$ 
+- Ohne Inzucht ist 
+    $$\delta_i = \left\{\begin{array}{rl}
+                       2   &  \text{bei bekannten Eltern} \\
+                       4/3 &  \text{bei einem bekannten Elternteil} \\
+                       1   &  \text{bei unbekannten Eltern}\\
+                       \end{array}\right.
+    $$
+
+
+## Ein Beispiel
+```{r MmeSimpleModelDecomp}
+### # constants
+nNrObsSmd <- 5
+### # design matrics
+matXSmd <- matrix(data = 1, nrow = nNrObsSmd)
+matZSmd <- diag(1, nrow = nNrObsSmd, ncol = nNrObsSmd)
+matXtXSmd <- crossprod(matXSmd)
+matXtZSmd <- crossprod(matXSmd,matZSmd)
+matZtZSmd <- crossprod(matZSmd)
+```
+```{r MmeSmdCoeffMatShow, results='asis'}
+cat("\\begin{center}\n$X = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matXSmd, pnDigits = 0, pnAlign = rep("c", 2)), collapse = "\n"))
+cat("\\right]$\\hspace{2ex}")
+cat("$Z = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matZSmd, pnDigits = 0, pnAlign = rep("c", nNrObsSmd+1)), collapse = "\n"))
+cat("\\right]$\n\\end{center}\n")
+cat("$$X^TX = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matXtXSmd, pnDigits = 0, pnAlign = rep("c", 2)), collapse = "\n"))
+cat("\\right]\n$$")
+cat("$$X^TZ = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matXtZSmd, pnDigits = 0, pnAlign = rep("c", nNrObsSmd+1)), collapse = "\n"))
+cat("\\right]\n$$")
+cat("$$Z^TZ = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matZtZSmd, pnDigits = 0, pnAlign = rep("c", nNrObsSmd+1)), collapse = "\n"))
+cat("\\right]\n$$")
+```
+
+## Rechte Handseite
+$$X^Ty = \left[\sum_{j=1}^n y_i\right]$$
+
+```{r VecZtYSmd, results='asis'}
+vecZtYSmd <- rmddochelper::vecGetVecElem(psBaseElement = "y", pnVecLen = nNrObsSmd)
+cat("$$Z^Ty = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecZtYSmd, nrow = nNrObsSmd), pnDigits = 0, pnAlign = rep("c", 2)), collapse = "\n"))
+cat("\\right]\n$$")
+```
+
+## Pedigree
+```{r ExPedSmd, results='markup'}
+pedSmd <- pedigree(sire = c(NA,NA,NA,1,4), dam = c(NA,NA,NA,2,3), label = as.character(1:nNrObsSmd))
+print(pedSmd)
+```
+
+```{r AinvSmd, results='asis'}
+matAinvSmd <- as.matrix(getAInv(ped = pedSmd))
+cat("$$A^{-1} = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matAinvSmd, pnDigits = 2, pnAlign = rep("c", nNrObsSmd+1)), collapse = "\n"))
+cat("\\right]\n$$")
+```
+
+
+## Mischmodellgleichungen (MMG)
+```{r MmeSmdNumeric, results='asis'}
+matCoeffSmd <- cbind(rbind(matXtXSmd,t(matXtZSmd)),rbind(matXtZSmd,matZtZSmd + matAinvSmd * alpha))
+cat("$$\\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matCoeffSmd, pnDigits = 2, pnAlign = rep("c", nNrObsSmd+2)), collapse = "\n"))
+cat("\\right]\n")
+solVecSmd <- c("\\hat{\\mu}", rmddochelper::vecGetVecElem(psBaseElement = "\\hat{a}", pnVecLen = nNrObsSmd))
+cat("\\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(solVecSmd, nrow = nNrObsSmd+1), pnAlign = rep("c", 2)), collapse = "\n"))
+cat("\\right]\n")
+vecRhsSmd <- rbind(crossprod(matXSmd,vecY), crossprod(matZSmd,vecY))
+cat(" = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecRhsSmd, nrow = nNrObsSmd+1), pnDigits = 1, pnAlign = rep("c", 2)), collapse = "\n"))
+cat("\\right]\n")
+cat("$$")
+```
+
+- Beispiel: Beobachtung für Tier 4
+
+## Gleichung der Beobachtung $y_4$ für Tier 4
+
+```{r MMGTier4, results='asis'}
+rmddochelper::insertOdgAsPdf(psOdgFileStem = "MMGTier4")
+```
+
+
+## Zerlegung für Tier 4 
+
+- Eltern 1 und 2
+- Nachkomme 5
+- Paarungspartner 3
+- $\alpha = 2$
+
+
+$$y_4 = \hat{\mu} + (-2)*\hat{a}_1 + (-2)*\hat{a}_2 + (1) * \hat{a}_3 + (6) * \hat{a}_4 + (-2) * \hat{a}_5$$
+
+- nach $\hat{a}_4$ aufgelöst bekommen wir
+
+$$\hat{a}_4 = {1\over 6} \left[y_4 - \hat{\mu} + 2*\hat{a}_1 + 2*\hat{a}_2 - \hat{a}_3 + 2 * \hat{a}_5\right]$$
+
+
+## Komponenten der Zerlegung
+
+- Tier: $$\left[1 + \alpha \delta^{(i)} + {\alpha\over 4} \sum_{j=1}^n \delta^{(k_j)}\right]^{-1}
+         = \left[1 + 2*2 + 0.5 * 2\right]^{-1} = 1/6$$
+- Eltern: $${\alpha\over 2}\left\{\delta^{(i)}(\hat{a}_s + \hat{a}_d)\right\} = {2\over 2}\left\{2(\hat{a}_1 + \hat{a}_2)\right\}
+            = 2(\hat{a}_1 + \hat{a}_2)$$
+- Nachkommen:$${\alpha\over 2}\sum_{j=1}^n \delta^{(k_j)} \hat{a}_{k_j} = {2\over 2} * 2 * \hat{a}_5 = 2 * \hat{a}_5$$
+- Paarungspartner: $$-{\alpha\over 2} \sum_{j=1}^n \delta^{(k_j)}{1\over 2}\hat{a}_{l_j} = -{2\over 2} * 2 * {1\over 2}\hat{a}_3
+                     = - \hat{a}_3$$
+
+
+## Weshalb die Vergleiche?
+
+```{r CowShowImg, results='asis'}
+rmddochelper::insertOdgAsPdf(psOdgFileStem = "CowShowImg")
+```
+
+- Wie werden Tier ausgewählt?
+- Was wird berücksichtigt bei der Auswahl
+- Was geben die ausgewählten Tiere weiter an Nachkommen?
+
+
+## Zusammenfassung
+
+- Eigenleistung
+$$\hat{a}_i = h^2(y_i - \mu)$$
+
+- Nachkommen
+$$\hat{a}_i = \frac{2n}{n+k}(\bar{y}_i - \mu)$$
+
+- BLUP-Tiermodell
+\begin{eqnarray}
+\hat{a}_i &=& \left[1 + \alpha \delta^{(i)} + {\alpha\over 4} \sum_{j=1}^n \delta^{(k_j)}\right]^{-1}
+              \left[y_i - \hat{\mu} \right. \nonumber\\
+          & & \left.   + {\alpha\over 2}\left\{\delta^{(i)}(\hat{a}_s + \hat{a}_d) 
+              + \sum_{j=1}^n \delta^{(k_j)} (\hat{a}_{k_j} - {1\over 2}\hat{a}_{l_j}) \right\} \right]\nonumber
+\end{eqnarray}
+
+

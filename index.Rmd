@@ -119,6 +119,12 @@ Thema[which(Datum == format(as.Date("2017/10/27"), "%d.%m"))] <- "[Berechnung de
 Thema[which(Datum == format(as.Date("2017/11/03"), "%d.%m"))] <- "[BLUP](https://charlotte-ngs.github.io/LBGHS2017/cn/w7/08_blup.pdf)"
 ### # w8
 Thema[which(Datum == format(as.Date("2017/11/10"), "%d.%m"))] <- "[Eigenschaften von BLUP-Zuchtwerten](https://charlotte-ngs.github.io/LBGHS2017/cn/w8/09_blup_prop.pdf)"
+### # w9
+Thema[which(Datum == format(as.Date("2017/11/17"), "%d.%m"))] <- "[Nachtrag zu  BLUP-Zuchtwerten](https://charlotte-ngs.github.io/LBGHS2017/cn/w9/09_blup_prop_add.pdf)"
+### # w10
+Thema[which(Datum == format(as.Date("2017/11/24"), "%d.%m"))] <- "[Anhang zu  BLUP-Zuchtwerten](https://charlotte-ngs.github.io/LBGHS2017/cn/w10/09_blup_prop_appendix.pdf)"
+
+
 
 dfCnTable <- data.frame(Woche, Datum, Thema, stringsAsFactors = FALSE)
 colnames(dfCnTable) <- vecTableHeaders
@@ -150,6 +156,10 @@ vecSlThema[which(Datum == format(as.Date("2017/10/27"), "%d.%m"))] <- "[Inverse 
 vecSlThema[which(Datum == format(as.Date("2017/11/03"), "%d.%m"))] <- "[Berechnung der Inzucht](https://charlotte-ngs.github.io/LBGHS2017/sl/w7/lbg_hs_2017_w7_sl6__inbreeding.pdf)"
 ### # w8
 vecSlThema[which(Datum == format(as.Date("2017/11/10"), "%d.%m"))] <- "[BLUP Zuchtwertschätzung](https://charlotte-ngs.github.io/LBGHS2017/sl/w8/lbg_hs_2017_w8_sl7_blup.pdf)"
+### # w9
+vecSlThema[which(Datum == format(as.Date("2017/11/17"), "%d.%m"))] <- "[Eigenschaften von BLUP Zuchtwerten](https://charlotte-ngs.github.io/LBGHS2017/sl/w9/lbg_hs_2017_w9_sl8_blup_prop.pdf)"
+### # w10
+vecSlThema[which(Datum == format(as.Date("2017/11/24"), "%d.%m"))] <- "[Varianzkomponentenschätzung I](https://charlotte-ngs.github.io/LBGHS2017/sl/w10/lbg_hs_2017_w10_sl9_varcomp.pdf)"
 
 ### # construct the table
 dfSlTable <- data.frame(Woche, Datum, vecSlThema, stringsAsFactors = FALSE)
@@ -184,6 +194,10 @@ dfExTable$vecExThema[which(Datum == format(as.Date("2017/10/27"), "%d.%m"))] <- 
 dfExTable$vecExThema[which(Datum == format(as.Date("2017/11/03"), "%d.%m"))] <- "[Inverse  Verwandtschaftsmatrix](https://charlotte-ngs.github.io/LBGHS2017/ex/w7/lbg_hs_2017_w7_ex6.pdf)"
 # w8
 dfExTable$vecExThema[which(Datum == format(as.Date("2017/11/10"), "%d.%m"))] <- "[Berechnung der Inzucht](https://charlotte-ngs.github.io/LBGHS2017/ex/w8/lbg_hs_2017_w8_ex7.pdf)"
+# w9
+dfExTable$vecExThema[which(Datum == format(as.Date("2017/11/17"), "%d.%m"))] <- "[Fixe und gemischte lineare Modelle](https://charlotte-ngs.github.io/LBGHS2017/ex/w9/lbg_hs_2017_w9_ex8.pdf)"
+# w10
+dfExTable$vecExThema[which(Datum == format(as.Date("2017/11/24"), "%d.%m"))] <- "[Vergleich von Zuchtwertschätzmethoden](https://charlotte-ngs.github.io/LBGHS2017/ex/w10/lbg_hs_2017_w10_ex9.pdf)"
 
 ### # generate table output
 colnames(dfExTable) <- vecTableHeaders
@@ -205,6 +219,10 @@ dfSolTable$vecSolThema[which(Datum == format(as.Date("2017/10/13"), "%d.%m"))] <
 dfSolTable$vecSolThema[which(Datum == format(as.Date("2017/10/20"), "%d.%m"))] <- "[Zuchtwerte](https://charlotte-ngs.github.io/LBGHS2017/sol/w4/lbg_hs_2017_w4_sol3.pdf)"
 # w5
 dfSolTable$vecSolThema[which(Datum == format(as.Date("2017/10/27"), "%d.%m"))] <- "[Geschätzte Zuchtwerte und Bestimmtheitsmass](https://charlotte-ngs.github.io/LBGHS2017/sol/w5/lbg_hs_2017_w5_sol4.pdf)"
+# w6
+dfSolTable$vecSolThema[which(Datum == format(as.Date("2017/11/03"), "%d.%m"))] <- "[Inverse  Verwandtschaftsmatrix](https://charlotte-ngs.github.io/LBGHS2017/sol/w6/lbg_hs_2017_w6_sol5.pdf)"
+# w7
+dfSolTable$vecSolThema[which(Datum == format(as.Date("2017/11/10"), "%d.%m"))] <- "[Berechnung der Inzucht](https://charlotte-ngs.github.io/LBGHS2017/sol/w7/lbg_hs_2017_w7_sol6.pdf)"
 
 ### # generate table output
 colnames(dfSolTable) <- vecTableHeaders

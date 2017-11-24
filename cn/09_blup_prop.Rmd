@@ -478,3 +478,164 @@ $$
   \end{array}
   \right.
 $$
+
+
+\pagebreak
+
+## Nachtrag zur genetisch additiven Verwandtschaftsmatrix
+[@Hofer1990], welcher [@Dempfle1987] zitiert weist auf zwei unterschiedliche Interpretationen der genetisch additiven __Verwandtschaftsmatrix__ $A$ hin. Die eine basiert auf der Wahrscheinlichkeit, dass zwei Allele herkunftsgleich sind, d.h. zwei Kopien eines und des selben Ahnenallels (IBD) entsprechen. Diese entspricht der Wahrscheinlichkeit, dass an einem beliebigen Locus zwei Allele von zwei Tieren $s$ und $d$ herkunftsgleich oder identical by descent sind. Diese Wahrscheinlichkeit entspricht dem halben genetisch additiven Verwandtschaftsgrad $a_{sd}$ zwischen den Tieren $s$ und $d$ und dem Inzuchtkoeffizienten $F_i$ des Nachkommen $i$ von $s$ und $d$. 
+
+Bei der zweiten Interpretation liegt das __"infinitesimal model"__ aus der quantitativen Genetik zu Grunde. In diesem Modell wird angenommen, dass Beobachtungswerte von quantitativen Eigenschaften von sehr vielen unabhängigen Genloci mit sehr kleiner Wirkung beeinflusst werden. Als weitere Annahme gehen wir im "infinitesimal model" auch davon aus, dass die genetischen Effekte unabhängig sind von der Umwelt und einer multivariaten Normalverteilung folgen. Durch die Selektion geht zwar die Eigenschaft der Normalverteilung verloren, aber [@Bulmer1980] konnte zeigen, dass die Abweichungen nur von geringem Ausmass sind.
+
+Basierend auf dem "infinitesimal model" und der Normalverteilung der Umwelteffekte und der phänotypischen Beobachtungen müssen auch die __Zuchtwerte__ einer __multivariaten Normalverteilung__ folgen. Diese Verteilung ist anhand der __Erwartungswerte__ und der __Varianz-Kovarianz-Matrix__ bestimmt. Schon beim Ein-Locus Modell wurden Zuchtwerte als Abweichungen definiert. Diese Definition führt dazu, dass der Erwartungswert von Zuchtwerten immer gleich null ist. Fassen wir alle Zuchtwerte einer Population in einen Vektor zusammen und bezeichen den mit $a$, dann können wir einfach schreiben:
+
+$$E[a] = 0$$
+wobei $0$ hier für den Null-Vektor steht.
+
+Für die Varianz-Kovarianz-Matrix der Zuchtwerte hatten wir schon gesehen, dass wir diese gleich der genetisch-additiven Verwandtschaftsmatrix $A$ mal der genetisch additiven Varianzkomponente $\sigma_a^2$ gesetzt hatten. Somit gilt, dass 
+
+$$Var(a) = A * \sigma_a^2$$
+
+### Komponenten einer Varianz-Kovarianz-Matrix
+Allgemein befinden sich in einer Varianz-Kovarianz-Matrix auf der Diagonalen die Varianzen der einzelnen Komponenten und auf der Off-Diagonalen die Kovarianzen zwischen den Komponenten.
+
+### Diagonalelemente
+In unserem Falle handelt es sich bei den Komponenten um die Zuchtwerte aller Tiere in einer Population. Somit entspricht das $i$-te Diagonalelement ($(Var(a))_{ii}$) der Varianz-Kovarianz-Matrix $Var(a)$ der Varianz des Zuchtwerte $a_i$ von Tier $i$. Deshalb gilt die folgende Beziehung
+
+$$(Var(a))_{ii} = Var(a_i) = (A)_{ii} * \sigma_a^2 = a_{ii} * \sigma_a^2 = (1+F_i) * \sigma_a^2$$
+
+Auf den ersten Blick scheint es schwer nachvollziehbar, dass mit zunehmendem Inzuchtgrad $F_i$ die Varianz $Var(a_i)$ auch zunehmen soll. Eine einfache Erklärung für dieses Phänomen folgt aus der Betrachtung des Ein-Locus-Modells. Wenn in einer Population der mittlere Inzuchtgrad steigt, dann steigt der Anteil Allele, welche herkunftsgleich sind. Wenn zwei Allele in einem Tier herkunftsgleich sind, dann ist das Tier sicher homozygot. Somit ist mit steigendem Inzuchtgrad in einer Population auch der Anteil der homozygoten Tiere erhöht. Im Gegenzug dazu sinkt der Anteil der heterozygoten Tiere. Für einen bestimmten Genort $G$ bedeutet dies, dass der Anteil an $G_1G_2$ Tieren sinkt und der Anteil an $G_2G_2$ und $G_1G_1$ Tieren ansteigt. Im Bezug auf die Verteilung der genotypischen Werte in der Population nimmt der Anteil der extremen Werte von $G_1G_1$ und $G_2G_2$ zu im Vergleich zum Anteil der Werte von $G_2G_2$. Die Zunahme des Anteils der extremen Werte hat auch eine Zunahme der Varianz zur Folge. Eine detailierte Herleitung der Formel für $Var(a_i)$ ist im nächsten Abschnitt als Anhang zu diesem Kapitel gegeben.
+
+### Off-Diagonale
+Auf der Off-Diagonalen stehen die Kovarianzen zwischen den Zuchtwerten verschiedener Tiere. Als Beispiel entspricht das Element der Matrix $Var(a)$ in der dritten Zeile und der siebten Kolonne der Kovarianz der Zuchtwerte von Tier drei und Tier sieben. Dies entspricht gemäss unserer angenommen Definition von $Var(a)$ dem folgenden Ausdruck
+
+$$(Var(a))_{37} = Cov(a_3, a_7) = (A)_{37} * \sigma_a^2 = a_{37} * \sigma_a^2$$
+
+wobei $a_{37}$ dem additiv genetischen Verwandtschaftsgrad zwischen den Tieren $3$ und $7$ entspricht. Hier stellt sich die Frage, weshalb wir die Kovarianz der Zuchtwerte zweier Tiere anhand des Verwandtschaftsgrades berechnen können. Nehmen wir einmal an, dass Tier $7$ ein Nachkomme von Tier $3$ ist. Die Frage ist nun, wie können wir die Kovarianz der Zuchtwerte für die Tiere $3$ und $7$ bestimmen? Stellen wir uns vor, dass wir für alle Eltern-Nachkommen-Paare in unserer Population eine phänotypische Leistung in einem Merkmal beobachten und das wir diese in einem Scatter-Plot auftragen. So ein Plot könnte etwa wie folgt aussehen:
+
+\vspace{2ex}
+```{r 09_ParentOffspringScatter, echo=FALSE}
+set.seed(9976)
+vecParent <- c(20:50 + rnorm(31, sd=3))
+vecOffspring <- 0.5 * vecParent + rnorm(31,sd=3)
+df_par_off <- data.frame(Parent = vecParent,
+                         Offspring = vecOffspring)
+ggplot2::ggplot(df_par_off, ggplot2::aes(x=Parent, y=Offspring)) +
+  ggplot2::geom_point(shape=1) +
+  ggplot2::geom_smooth(method = lm, se = FALSE)
+```
+
+Die Steigung $b$ der in blau eingezeichneten Regressionsgeraden berechnet sich als Verhältnis zwischen der Kovarianz der Nachkommen- und Elternleistung und der Varian der Elternleistung. Somit ist 
+
+$$b = \frac{Cov(y_{Offspring},y_{Parent})}{Var(y_{Parent})}$$
+
+Der Nenner in der obigen Formel des Regressionskoeffizienten entspricht einfach der phänotypischen Varianz der Elternleistungen und ist im Folgenden von keiner grossen Bedeutung. Für die Aufschlüsselung der Kovarianz im Zähler verwenden wir wieder unser Modell, welches phänotpyische Leistungen in genetische Komponenten und in Umweltkomponenten aufteilt. Als genetische Komponenten interessierung uns hier nur die additiven Anteile (Zuchtwerte). Alle anderen Komponenten werden in einem zufälligen Restterm $\epsilon$ zusammengefasst. Die phänotypischen Leisungen der Eltern lassen sich also aufteilen in 
+
+$$y_{Parent} = \mu + a_{Parent} + \epsilon_{Parent}$$
+
+Analog dazu lassen sich die Leistungen der Nachkommen aufteilen in 
+
+$$y_{Offspring} = \mu + a_{Offspring} + \epsilon_{Offsprint}$$
+
+Unter der Annahme, dass die Eltern- und die Nachkommenleistungen in der gleichen Umwelt erbracht wurden und, dass sich die Zuchtwerte der anderen Elternteile im Mittel über alle Eltern-Nachkommen-Paare zu $0$ aufaddieren, können wir den Zuchtwert der Nachkommen schreiben als 
+
+$$a_{Offspring} = 1/2 a_{Parent}$$
+
+Setzen wir dies in der Kovarianz ein ergibt sich
+
+$$Cov(y_{Offspring},y_{Parent}) = Cov(\mu + a_{Offspring} + \epsilon_{Offsprint}, \mu + a_{Parent} + \epsilon_{Parent})$$
+$$=Cov(a_{Offspring}, a_{Parent}) = Cov(1/2 a_{Parent}, a_{Parent}) = 1/2 * \sigma_a^2$$
+
+Der Faktor vor $\sigma_a^2$ entspricht genau dem Term in der genetisch-additiven Verwandtschaftsmatrix zwischen einem Elternteil und einem direkten Nachkommen. Mit der gleich Argumentation können auch alle anderen Koeffizienten von Verwandtenpaaren hergeleitet werden und wir werden in jedem Fall eine Übereinstimmung zwischen den Faktoren der Kovarianzen und den Elementen in der Verwandtschaftsmatrix $A$ finden.
+
+\pagebreak
+
+## Anhang: Herleitung der Diagonalelemente von A
+Die hier gezeigte Herleitung basiert auf den Ausführungen im Kapitel 15 von [@FM1996]. Die Diagonalelemente $(A)_{ii}$ der genetisch-additiven Verwandtschaftsmatrix entsprechen gemäss der allgemeinen Definition einer Varianz-Kovarianz-Matrix der Varianz ($Var(a_i)$) des Zuchtwerts $a_i$. Wir haben schon früher gesehen, dass diese Varianz von der additiv-genetischen Varianzkomponente $\sigma_a^2$ und vom Inzuchtgrad $F_i$ des Tieres $i$ abhängen.
+
+$$Var(a_i) = (1+F_i)\sigma_a^2$$
+
+Weshalb diese Formel für $Var(a_i)$ gilt, wollen wir in der folgenden Herleitung zeigen.
+
+### Ein-Locus Modell
+Zur Vereinfachung betrachten wir wieder das Ein-Locus Modell aus der quantitativen Genetik. Gegeben sei also ein Genort $G$ mit zwei Allelen $G_1$ und $G_2$ und drei möglichen Genotypen. Weiter nehmen wir an, dass der Locus $G$ rein additiv ist, dass also der Wert $d=0$ ist. Somit können wir die genotypischen Werte und die Zuchtwerte wie folgt zusammenfassen.
+
+\vspace{2ex}
+\begin{center}
+\begin{tabular}{l|c|r|r}
+\hline
+Genotypen & Frequenz & Werte & Zuchtwerte\\
+\hline
+$G_1G_1$ & $p^2$ & $a$ & $2qa$\\
+\hline
+$G_1G_2$ & $2pq$ & $0$ & $(q-p)a$\\
+\hline
+$G_2G_2$ & $q^2$ & $-a$ & $-2pa$\\
+\hline
+\end{tabular}
+\end{center}
+
+Für die Zahlen in der oben gezeigten Tabelle nehmen wir an, dass die Genotypen nach dem Hardy-Weinberg-Gleichgewicht verteilt sind und dass die Population frei von Inzucht ist. Lassen wir die Annahme betreffend der Inzucht fallen und nehmen an, dass am Locus $G$ ein mittlerer Inzuchtgrad von $F$ vorliegt, so verändern sich die Frequenzen wie folgt.
+
+\vspace{2ex}
+\begin{center}
+\begin{tabular}{l|c|r|r}
+\hline
+Genotypen & Frequenz\\
+\hline
+$G_1G_1$ & $p^2 + pqF=p(p+qF)$\\
+\hline
+$G_1G_2$ & $2pq-2pqF = 2pq(1-F)$\\
+\hline
+$G_2G_2$ & $q^2+pqF = q(q + pF)$\\
+\hline
+\end{tabular}
+\end{center}
+
+Bei einem mittleren Inzuchtgrad von $F \ne 0$ sinkt der Anteil der heterozygoten Genotypen $G_1G_2$ und der Anteil der homozygoten Genotypen $G_1G_1$ und $G_2G_2$ steigt. Diese Verschiebung der Anteile hat Konsequenzen auf die Berechnung der additiv genetischen Varianz. Das Populationsmittel $\mu$ entspricht nun
+
+$$\mu = (p^2 +pqF)*a - (q^2 + pqF) * a = (p^2-q^2)a = (p-q)a$$
+
+und ist unter der Annahme, dass $d=0$ ist, unabhängig von $F$. Für die Herleitung der Änderung der genetisch-additiven Varianz durch Inzucht unterteilen wir die gesamte berücksichtigte Population in verschiedene Linien. Durch den Effekt der Inzucht verschieben sich die Allelfrequenzen in den verschiedenen Linien hin zu den Extremwerten $0$ oder $1$. Durch die verschiebung der Allelfrequenzen zu den Extremwerten, nimmt die Varianz innerhalb der Linien ab. Durch die Aufteilung der Population in Linien gibt es aber eine neue Varianzkomponenten, nämlich die Varianz zwischen den Linien. 
+
+Für den einfachsten Fall ohne Dominanz mit $d=0$ und nur einem Genort ist die genetisch additive Varianz $V_G$ gegeben als 
+
+$$V_G = 2pqa^2$$
+Die mittlere genetische Varianz innerhalb der Linien beträgt
+
+$$V_{Gw} = 2(\bar{pq})a^2$$
+
+wobei $\bar{pq}$ dem mittleren Wert von $pq$ über alle Linien entspricht. Gemäss der obigen Tabelle mit den Frequenzen gilt 
+
+$$(\bar{pq}) = pq(1-F)$$
+Somit ist 
+
+$$V_{Gw} = 2(\bar{pq})a^2 = 2pq(1-F)a^2 = V_G(1-F)$$
+
+Die neue Varianzkomponente zwischen den Linien entspricht der Varianz des Mittels $\mu$ der einzelnen Linien und wir haben gesehen, dass $\mu = a(p-q) = a(1-2q)$. Die Varianz von $\mu$ erhalten wir nun als
+
+$$\sigma_{\mu}^2 = 4a^2\sigma_q^2 = 4a^2pqF = 2FV_G$$
+wobei $\sigma_q^2$ die Varianz der Allelfrequenz $q$ zwischen den Linien darstellt. Die totale genetisch-additive Varianz erhalten wir nun durch das Summieren der Varianz zwischen den Linien $\sigma_{\mu}^2$ und der Varianz innerhalb der Linien $V_{Gw}$. Somit erhalten wir 
+
+$$V_A = \sigma_{\mu}^2 + V_{Gw} = 2FV_G + V_G(1-F) = (1+F)V_G$$
+
+### Generalisierung
+Dieser Ausdruck entspricht den Diagonalelementen der additiv genetischen Verwandtschaftsmatrix. Da wir in der Herleitung nur einen rein additiven Locus berücksichtigt haben und mögliche Effekte von Dominanz und Epistasie vernachlässigt haben, ist das erhaltene Resultat eine Näherung, welche aber auch für den Fall von sehr vielen Genorten mit kleiner Wirkung zu keinen grossen Fehlern führt.
+
+
+
+<!--
+Dempfle, L. (1987): Problems in the use of the relationship matrix in animal breeding.
+Advances in Statistical Methods for Genetic Improvement of Livestock.
+International Symposium, Armidale. Notes for Participants.
+
+Bulmer, M.G. (1980): The mathematical theory of quantitative genetics. Clarendon
+Press, Oxford.
+
+Kennedy, B.W. und D.A. Sorensen (1988): Properties of mixed-model methods for
+predictions of genetic merit. Proc. 2°d tot. Conf. Quant. Genet., B.S. Weir, M.M
+Goodman, EJ. Eisen und G. Namkoong, ed., Sinauer, Sunderland. p. 91-103.
+
+Kennedy, B.W., L.R. Schaeffer und DA. Sorensen (1988): Genetic properties of animal
+modeis. J. Dairy Sei. 71, Suppl. 2: 17-26.
+-->

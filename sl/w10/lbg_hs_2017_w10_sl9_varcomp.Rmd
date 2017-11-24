@@ -1,0 +1,187 @@
+---
+title: Varianzkomponentenschätzung
+author: Peter von Rohr
+date: 2017-11-24
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Einleitung
+
+- BLUP-Zuchtwertschätzung: bekannte Varianzkomponenten $\sigma_e^2$ und $\sigma_a^2$
+- In Praxis: Schätzung der Varianzkomponenten von Daten, Verwendung von Schätzwerten in MME
+- Abgesehen von BLUP, wo sind Varianzkomponenten schon aufgetaucht?
+
+
+## Regression und Least Squares
+
+- Im klassischen Regressionsmodell mit nur fixen Effekten
+
+\begin{equation}
+y = Xb + e
+\label{eq:RegModel}
+\end{equation}
+
+- Schätzung $\hat{b}$ mit Least Squares (kleinste Quadrate)
+- Least Squares gibt keine Schätzung für $\sigma_e^2$
+- Woher kommt $\widehat{\sigma_e^2}$?
+
+
+## Residuen
+
+- Definition $$r_i = y_i - \hat{y}_i = y_i - x^T_i\hat{b}$$
+- Summe der quadrierten Residuen als plausibler Schätzer
+
+\begin{equation}
+\hat{\sigma_e}^2 = \frac{1}{n-p} \sum_{i=1}^n r_i^2
+\label{eq:EstResidualVar}
+\end{equation}
+
+- Woher kommt Faktor $\frac{1}{n-p}$
+- Grund: Erwartungstreue: $$E\left[\hat{\sigma_e}^2 \right] = \sigma_e^2$$
+- Wird auch als `Least Squares` Schätzer bezeichnet
+
+## Beispiel in R
+
+```{r WwgDataSet, echo=FALSE, results='as.is'}
+nNrAniInPed <- 8
+nIdxFirstAniWithData <- 4
+dfWwg <- data.frame(Kalb = c(nIdxFirstAniWithData:nNrAniInPed),
+                    Geschlecht = c("M","F","F","M","M"),
+                    Vater = c(1,3,1,4,3),
+                    Mutter = c(NA,2,2,5,6),
+                    WWG = c(4.5,2.9,3.9,3.5,5.0))
+
+dfWwgRed <- dfWwg[,c("Kalb","Geschlecht","WWG")]
+knitr::kable(dfWwgRed)
+```
+
+
+## Regression in R
+
+- Mit `summary()` werden die Resultate von `lm()` zusammengefasst
+```{r LsEstimateWwgRed, echo=TRUE, results='hide'}
+lmWwg <- lm(WWG ~ -1 + Geschlecht, data = dfWwgRed)
+summary(lmWwg)
+```
+
+- Schätzung für $\hat{\sigma_e}$ unter `Residual standard error`
+
+```{r ResStandardError, echo=TRUE, results='markup'}
+n <- nrow(dfWwgRed)
+p <- length(unique(dfWwgRed$Geschlecht))
+vecResiduals <- residuals(lmWwg)
+nResVarEst <- crossprod(vecResiduals) / (n-p)
+(nResSd <- sqrt(nResVarEst))
+```
+
+
+## Varianzanalyse
+
+- Ursprünglichstes Verfahren zur Schätzung von Varianzkomponenten
+- Wird auch zum Testen von globalen Hypothesen verwendet
+- Annahme: lineares Modell mit nur fixem Effekt $b$
+- Frage: Haben Effektstufen von $b$ überhaupt einen Einfluss auf $y$?
+- Globale Nullhypothese $H_0: b_1 = b_2 = \ldots = 0$
+
+
+## Tabelle der Varianzanalyse
+
+```{r AovTableWwgRed, results='markup'}
+aovWwg <- aov(WWG ~ -1 + Geschlecht, data = dfWwgRed)
+summary(aovWwg)
+```
+
+- Gemittelte Summenquadrate
+$$MSQ_R = SSQ_R/df_R = \left(\sum_{i=1}^n r_i^2\right)/df_R$$
+
+$$MSQ_b = SSQ_b/df_b = \left(\sum_{i=1}^n \hat{y}_i^2\right)/df_b = \left(\sum_{i=1}^n (x^T_ib)^2\right)/df_b$$
+
+- Teststatistik mit $\mathcal{F}$-Verteilung
+$$F = MSQ_b / MSQ_R$$
+
+
+## Schätzung von Varianzkomponenten
+
+- "zufälliges" Modell: Beispiel Vater-Effekte
+
+$$y = 1\mu + Zu + e$$
+
+- Eigenschaften von $u$:
+    + nur ein allgemeines Mittel als fixe Faktorstufe 
+    + Zufallsvariable mit vorgegebener Verteilung
+    + unabhängig mit konstanter Varianz $\sigma_u^2$ und Erwartungswert $E\left[u\right] = 0$
+
+- Wie können wir $\sigma_u^2$ aus den Daten schätzen?
+
+
+## Erwartungswerte von Summenquadraten
+
+- Erwartungswerte von gemittelten Summenquadraten sind Funktionen von Varianzkomponenten
+
+$$E\left[MSQ_e \right] = \sigma_e^2$$
+
+$$E\left[MSQ_u \right] = n\sigma_u^2 + \sigma_e^2$$
+
+- Anstelle der Erwartungswerte die empirischen Werte einsetzen
+
+$\rightarrow$ Schätzung für Varianzkomponenten
+
+
+## Schätzungen
+
+$$\widehat{\sigma_e^2} = MSQ_e$$
+
+$$\widehat{\sigma_u^2} = \frac{MSQ_u - MSQ_e}{n}$$
+
+
+## Beispiel
+
+```{r WwgRedSire, echo=FALSE, results='asis'}
+dfWwgSire <- dfWwg[, c("Kalb", "Vater", "WWG")]
+dfWwgSire[dfWwgSire$Kalb == 7,"Vater"] <- 3
+knitr::kable(dfWwgSire)
+```
+
+
+## Tabelle der Varianzanalyse
+
+```{r VarTabSireData, echo=TRUE, results='markup'}
+aovWwgSire <- aov(formula = WWG ~ Vater, 
+                  data = dfWwgSire)
+summary(aovWwgSire)
+```
+
+
+## Resultate
+
+```{r VarEst, echo=FALSE, results='hide'}
+nNrObs <- length(dfWwgSire)
+nMeanObs <- mean(dfWwgSire$WWG)
+vecWwgSireCorrected <- dfWwgSire$WWG - nMeanObs
+nSsqRes <- crossprod(residuals(aovWwgSire))
+nResVarEst <- nSsqRes / aovWwgSire$df.residual 
+nSsqVater <- crossprod(vecWwgSireCorrected) - nSsqRes
+ndfVater <- nNrObs - aovWwgSire$df.residual - 1 ### -1 comes due to intercept in model
+nMsqVater <- nSsqVater / ndfVater
+nVaterVarEst <- (nMsqVater - nResVarEst)/nNrObs
+```
+
+$$\widehat{\sigma_e^2} = MSQ_e = `r nResVarEst`$$
+
+Setzen wir diese Schätzung in Gleichung (\ref{eq:ResultEstVarSire}) ein, dann erhalten wir
+
+$$\widehat{\sigma_u^2} = \frac{MSQ_u - MSQ_e}{n} = `r nVaterVarEst`$$
+
+
+## Negative Schätzwerte
+
+- Schätzwert für $\sigma_u^2$ ist negativ
+- Ursache: spezielle Datenkonstellation (hier zu kleine Datenmenge)
+- Varianzanalyse kann keine negativen Schätzwerte verhindern
+
+$\rightarrow$ Varianzanalyse in Tierzucht kaum verwendet
+$\rightarrow$ andere Methoden im folgenden Kapitel

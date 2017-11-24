@@ -7,7 +7,14 @@
 ### ################################################### ###
 ###
 ### #   Set input file and read content into vector
-psFile <- "sol/w9/lbg_hs_2017_w9_sol8.Rmd"
+#psFile <- "sol/w9/lbg_hs_2017_w9_sol8.Rmd"
+#psExFile <- "ex/w9/lbg_hs_2017_w9_ex8.Rmd"
+#psAnsFile <- "../../r4tea-platform/LBGHS2017/ex/w9/lbg_hs_2017_w9_ans8.Rmd"
+
+psFile <- "sol/w10/lbg_hs_2017_w10_sol9.Rmd"
+psExFile <- "ex/w10/lbg_hs_2017_w10_ex9.Rmd"
+psAnsFile <- "../../r4tea-platform/LBGHS2017/ex/w10/lbg_hs_2017_w10_ans9.Rmd"
+
 
 #' Remove solutions from solution document
 #'
@@ -50,6 +57,9 @@ rem_solution_section <- function(psSrcFile, psTrgFile = NULL, pbDebugOut = FALSE
   if (length(vecCont) > nLastSolEnd)
     vecResult <- c(vecResult, vecCont[(nLastSolEnd+1):length(vecCont)])
   
+  ### # replace title pattern of solution with exercise
+  vecResult <- sub(pattern = "Lösung", replacement = "Übung", x = vecResult, fixed = TRUE)
+  
   ### # check whether we have to construct the target filename
   sTrgFile <- psTrgFile
   if (is.null(sTrgFile)){
@@ -76,4 +86,8 @@ rem_solution_section <- function(psSrcFile, psTrgFile = NULL, pbDebugOut = FALSE
   return(invisible(TRUE))
 }
 
-rem_solution_section(psSrcFile = psFile, pbDebugOut = TRUE)
+### # testing stuff
+#rem_solution_section(psSrcFile = psFile, pbDebugOut = TRUE)
+
+### # create all files in a loop
+#for (f in c(psExFile,psAnsFile)) {rem_solution_section(psSrcFile = psFile, psTrgFile = f)}

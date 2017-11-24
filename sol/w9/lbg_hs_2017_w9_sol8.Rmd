@@ -43,7 +43,7 @@ b) Berechnen Sie die Schätzungen für die fixen Effekte der `Herde` und des `Va
 
 ### Hinweise
 - Die Funktion zur Anpassung von Regressionen in `R` lautet `lm()`
-- Die Angabe der Daten für die Funktion `lm()` muss über ein `Dataframe` gemacht werden. Dies kann entweder über die direkte Angabe der Daten in der Funktion `data.frame()` gemacht werden, oder die Daten können auch mit `read.csv2()` von der Webseite (https://charlotte-ngs.github.io/LBGHS2016/w10/mlrdata.csv) eingelesen werden. Die direkte Angabe des Dataframes sieht wie folgt aus:
+- Die Angabe der Daten für die Funktion `lm()` muss über ein `Dataframe` gemacht werden. Dies kann entweder über die direkte Angabe der Daten in der Funktion `data.frame()` gemacht werden, oder die Daten können auch mit `read.csv2()` von der Webseite (https://charlotte-ngs.github.io/LBGHS2017/ex/w9/mlrdata.csv) eingelesen werden. Die direkte Angabe des Dataframes sieht wie folgt aus:
 
 ```{r DirectSpecDataframe, eval=FALSE, echo=FALSE} 
 nNrRecords <- 9
@@ -60,6 +60,16 @@ Leistung ~ -1 + Herde + Vater
 ```
 
 - Die Resultate des angepassten Modells können mit der Funktion `summary()` angezeigt werden.
+
+<!-- ------------------------------------------------------ --
+  --   a) Das Aufstellen des Regressionsmodells bedeutet,   --
+  --      dass die Regressionsgleichungen in Matrix-        --
+  --      Vektor-Schreibweise dargestellt werden und die    --
+  --      im Modell enthaltenen Matrizen und Vektoren       --
+  --      aufgrund der Daten angegeben werden.              --
+  --   b) Die Anpassung des Modells und die Berechnung der  --
+  --      Lösungen kann mit R gemacht werden.               --
+  -- ------------------------------------------------------ -->
 
 <!-- solution -->
 ### Lösung 
@@ -124,6 +134,14 @@ wobei $I$ die Einheitsmatrix bezeichnet.
 ### Ihre Aufgabe
 a) Stellen Sie die Mischmodellgleichungen für die Daten in Aufgabe 1 auf. 
 b) Berechnen Sie die Schätzer für die fixen Effekte der Herde und machen Sie eine Voraussage für die zufälligen Vatereffekte
+
+<!-- --------------------------------------------------- --
+  --    a) Wie in Aufgabe 1) geht es hier auch darum     --
+  --       die Mischmodellgleichungen in Matrix-Vektor   --
+  --       Schreibweise darzustellen und die Matrizen    --
+  --       und Vektoren mit ihren Elementen anzugeben.   --
+  --    b) Hier werden die Lösungen mit R berechnet.     --
+  -- --------------------------------------------------- -->
 
 <!-- solution -->
 ### Lösung
