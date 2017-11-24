@@ -1,0 +1,96 @@
+---
+title:  Züchtungslehre - Übung 9
+author: Peter von Rohr
+date: 2017-12-01
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis')
+```
+
+```{r TaskCounterSetUp, echo=FALSE}
+en <- rmddochelper::R6ClassEnum$new()
+```
+```
+
+In dieser Übung wollen wir geschätzte Zuchtwerte aufgrund von verschiedenen Schätzmethoden miteinander vergleichen. Bei den Methoden handelt es sich um
+
+- Zuchtwerte aufgrund von Eigenleistungen
+- Zuchtwerte aufgrund von Nachkommenleistungen
+- Zuchtwerte aufgrund eines Vatermodells
+- Zuchtwerte aufgrund eines Tiermodells
+
+Dazu verwenden wir den Datensatz aus der Übung von letzter Woche in einer veränderten Version. Der modifizierte Datensatz enthält auch Informationen zur Mutter.
+
+```{r ShowDataSet}
+nNrRecords <- 9
+nNrSire <- 3
+dfMlrData <- data.frame(Tochter = c(1:nNrRecords) + nNrSire,
+                        Herde   = c("1","1","2","2","2","3","3","3","3"),
+                        Vater   = c("C","A","B","A","C","C","C","A","B"),
+                        Mutter  = c("NA","4","NA","5","5","6","6","4","7"),
+                        Leistung = c(110,100,110,100,100,110,110,100,100))
+nNrHerde <- length(unique(dfMlrData$Herde))
+knitr::kable(dfMlrData)
+```
+
+```{r VarCompDef, echo=FALSE, results='hide'}
+sigmae2 <- 100
+sigmaa2 <- 25
+sigmap2 <- sigmaa2 + sigmae2
+h2 <- sigmaa2/sigmap2
+k <- (4-h2)/h2
+### # phenotypes and mean
+vecYMlr <- dfMlrData$Leistung
+muMlr <- mean(vecYMlr)
+```
+
+
+Für die Varianzkomponenten nehmen wir an, dass $\sigma_e^2 = 100$ und $\sigma_a^2 = 25$ ist. Die phänotypische Varianz $\sigma_p^2$ lässt sich vollständig in $\sigma_a^2$ und  $\sigma_e^2$ zerlegen.
+
+
+```{r, echo=FALSE}
+en$incrCount();cat("## Aufgabe", en$getCount(), "\n")
+```
+Schätzen Sie für jede der Töchter Zuchtwerte aufgrund ihrer Eigenleistungen. Wir nehmen an das Populationsmittel $\mu$ liege beim Mittelwert der phänotypischen Leistungen der Töchter.
+
+
+
+```{r, echo=FALSE}
+en$incrCount();cat("## Aufgabe", en$getCount(), "\n")
+```
+Schätzen Sie für die drei Väter "A", "B", "C" Zuchtwerte aufgrund der mittleren Leistungen ihrer jeweiligen Nachkommen. Das Populationsmittel ($\mu$) und die Erblichkeit ($h^2$) haben den gleichen Wert, wie in Aufgabe 1.
+
+
+
+\pagebreak
+
+```{r, echo=FALSE}
+en$incrCount();cat("## Aufgabe", en$getCount(), "\n")
+```
+Schätzen Sie die Zuchtwerte für die drei Väter "A", "B" und "C" mit einem Vatermodell. Dabei soll die `Herde` als fixer Effekt und der `Vater` als zufälliger Effekt im Modell berücksichtigt werden. Die Väter "A", "B" und "C" sind nicht verwandt miteinander und haben auch keine bekannten Eltern. 
+
+Die Aufgabe gliedert sich in die folgenden Schritte:
+
+1. Notation des Gleichungssystems in Matrix-Vektor-Schreibweise
+2. Bestimmung der Inzidenzmatrizen $X$ und $Z$
+3. Aufstellen der Mischmodellgleichungen für das Vatermodell
+4. Lösen der Mischmodellgleichungen
+5. Aus den Übungen von (4) die Schätzwerte für die fixen Effekte und die vorausgesagten Zuchtwerte für die Väter identifizieren
+
+
+
+\pagebreak
+
+```{r, echo=FALSE}
+en$incrCount();cat("## Aufgabe", en$getCount(), "\n")
+```
+Schätzen Sie die Zuchtwerte für alle Tiere im Pedigree (Väter und Töchter) mit dem Tiermodell. Dabei soll wieder die `Herde` als fixer Effekt und der Zuchtwert des Tieres als zufälliger Effekt berücksichtigt werden. Der Übungsweg ist der gleiche, wie derjenige von Aufgabe 3. Der Unterschied besteht einzig im verwendeten Modell
+
+
+```{r, echo=FALSE}
+en$incrCount();cat("## Aufgabe", en$getCount(), "\n")
+```
+Vergleichen Sie die Rangierungen der Tiere gemäss ihrer geschätzer Zuchtwerte aus den verschiedenen Methoden
+ 
