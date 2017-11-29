@@ -285,7 +285,8 @@ CURWD=/home/${ADMIN}
 echo " * Project dir: $PROJDIR"
 echo " * Current working dir: $CURWD"
 #for COPATH in "ex/w6/lbg_hs_2017_w6_sol5.Rmd" "ex/w9/lbg_hs_2017_w9_ans8.Rmd"
-for COPATH in "ex/w7/lbg_hs_2017_w7_sol6.Rmd" "ex/w10/lbg_hs_2017_w10_ans9.Rmd"
+#for COPATH in "ex/w7/lbg_hs_2017_w7_sol6.Rmd" "ex/w10/lbg_hs_2017_w10_ans9.Rmd"
+for COPATH in "ex/w7/lbg_hs_2017_w7_sol6.Rmd"
 do
 echo $COPATH
 for student in "vrohrp" "ernstt" "martinfe" "dpisoni" "weberan" "wysss" "ulmanns"

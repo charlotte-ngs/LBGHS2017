@@ -1,0 +1,208 @@
+---
+title:  Züchtungslehre - Lösung 10
+author: Peter von Rohr
+date: 2017-12-08
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis')
+```
+
+```{r DocumentStatus}
+en <- rmddochelper::R6ClassEnum$new()
+```
+
+Gegeben ist der folgende Datensatz
+
+```{r WwgDataSet, results='hide'}
+nNrAniInPed <- 7
+nIdxFirstAniWithData <- 4
+dfWwg <- data.frame(Tier = c(1:nNrAniInPed),
+                    Vater = c(NA,NA,NA,NA,1,5,5),
+                    Mutter = c(NA,NA,NA,NA,2,3,4),
+                    WWG = c(4.5,2.9,3.9,3.5,5.0,5.2,5.7))
+sigmae2 <- 40
+sigmaa2 <- 20
+alpha <- sigmae2/sigmaa2
+sigmap2 <- sigmaa2 + sigmae2
+h2 <- sigmaa2 / sigmap2
+```
+
+```{r ShowWwgDataSet, results='asis'}
+knitr::kable((dfWwg))
+```
+
+Wir nehmen an, dass die Restvarianz $\sigma_e^2 = `r sigmae2`$ und die genetisch additive Varianz $\sigma_a^2 = `r sigmaa2`$. 
+
+
+```{r ExPedSmd, results='markup'}
+suppressPackageStartupMessages(require(pedigreemm))
+pedSmd <- pedigree(sire = dfWwg$Vater, dam = dfWwg$Mutter, label = as.character(dfWwg$Tier))
+#print(pedSmd)
+matAInv <- as.matrix(getAInv(ped = pedSmd))
+#print(matAInv)
+```
+
+
+```{r, echo=FALSE}
+en$incrCount();cat("## Aufgabe", en$getCount(), "\n")
+```
+In der Vorlesung haben wir die Zerlegung der phänotypischen Beobachtung aufgrund der Mischmodellgleichungen eines Tiermodells besprochen. Wir wollen in dieser Aufgabe nochmals eine solche Zerlegung üben und die Bestandteile eines geschätzten Zuchtwertes mit dem BLUP-Tiermodell noch einmal analysieren. Die Zerlegung soll für die phänotypische Beobachtung von Tier $5$ aus dem oben gezeigten Datensatz gemacht werden.
+
+Wir nehmen an die Mischmodellgleichung für das BLUP-Tiermodell habe die folgende Struktur
+
+```{r MmeSimpleModelDecomp}
+### # constants
+nNrObsSmd <- nrow(dfWwg)
+### # design matrics
+matXSmd <- matrix(data = 1, nrow = nNrObsSmd, ncol = 1)
+matZSmd <- diag(1, nrow = nNrObsSmd, ncol = nNrObsSmd)
+matXtXSmd <- crossprod(matXSmd)
+matXtZSmd <- crossprod(matXSmd,matZSmd)
+matZtZSmd <- crossprod(matZSmd)
+matZtZAInvSmd <- matZtZSmd + matAInv * alpha
+
+# right-handside
+vecY <- dfWwg$WWG
+vecRhsSmd <- rbind(crossprod(matXSmd,vecY), crossprod(matZSmd,vecY))
+
+# coefficient matrix
+matCoeffSmd <- cbind(rbind(matXtXSmd,t(matXtZSmd)),rbind(matXtZSmd,matZtZAInvSmd))
+# solution vector
+solVecSmd <- c("\\hat{\\mu}", rmddochelper::vecGetVecElem(psBaseElement = "\\hat{a}", pnVecLen = nNrObsSmd))
+
+# show mme
+cat("$$\\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matCoeffSmd, pnDigits = 2, pnAlign = rep("c", nNrObsSmd+2)), collapse = "\n"))
+cat("\\right]\n")
+cat("\\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(solVecSmd, nrow = nNrObsSmd+1), pnAlign = rep("c", 2)), collapse = "\n"))
+cat("\\right]\n")
+cat(" = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecRhsSmd, nrow = nNrObsSmd+1), pnDigits = 1, pnAlign = rep("c", 2)), collapse = "\n"))
+cat("\\right]\n")
+cat("$$")
+```
+
+### Ihre Aufgabe:
+- Zerlegen Sie die phänotypische Beobachtung $y_5$ aufgrund er Mischmodellgleichungen
+- Lösen Sie die Zerlegung nach dem geschätzten Zuchtwerte $\hat{a}_5$ auf
+- Zeigen Sie alle Komponenten, welche in $\hat{a}_5$ enthalten sind
+
+
+<!-- solution -->
+### Lösung
+
+- Zerlegung der phänotypischen Beobachtung $y_5$
+
+\begin{equation}
+y_5 = `r vecY[5]` = \hat{\mu} - 2(\hat{a}_1 + \hat{a}_2) + \hat{a}_3 + \hat{a}_4 + 7\hat{a}_5 - 2(\hat{a}_6 + \hat{a}_7)
+\label{eq:DecompPhenObs}
+\end{equation}
+
+- Auflösung von (\ref{eq:DecompPhenObs}) nach $\hat{a}_5$:
+
+\begin{equation}
+\hat{a}_5  = {1\over 7}(y_5 - \hat{\mu} + 2(\hat{a}_1 + \hat{a}_2) - \hat{a}_3 - \hat{a}_4 + 2(\hat{a}_6 + \hat{a}_7)) 
+\label{eq:SolveAhatAni5}
+\end{equation}
+
+- Komponenten, welche in $\hat{a}_5$ enthalten sind
+    + Tier: phänotypische Leistung $y_5$ korrigiert um fixe Effekte $\hat{\mu}$. Faktor des geschätzten Zuchtwertes entspricht 
+      $$\left(1 + \alpha \delta^{(i)} + {\alpha\over 4} \sum_{j=1}^n \delta^{(k_j)}\right)^{-1} 
+        = \left(1 + \alpha \delta^{(5)} + {\alpha\over 4} (\delta^{(6)} + \delta^{(7)}\right)^{-1}
+        = \left(1 + 2*2 + 0.5 *(2+2)\right)^{-1} = 1/7$$
+    + Eltern: Summe der geschätzten Elternzuchtwerte $(\hat{a}_1 + \hat{a}_2)$ gewichtet mit 
+      $${\alpha\over 2}\delta^{(i)} = {\alpha\over 2}\delta^{(5)} = 2/2 * 2 = 2$$    
+    + Nachkommen: Gewichtungsfaktor der geschätzten Zuchtwerte der Nachkommen
+      $${\alpha\over 2}\delta^{(k_j)} = {\alpha\over 2}\delta^{(6)} = {\alpha\over 2}\delta^{(7)} = 2/2*2 = 2$$
+    + Paarungspartner: Gewichtungsfaktor der geschätzten Zuchtwerte der Paarungspartner
+      $$-{\alpha\over 4}\delta^{(k_j)} = -{\alpha\over 4}\delta^{(6)} = -{\alpha\over 4}\delta^{(7)} 
+        = -0.5 * 2 = -1$$
+
+<!-- /solution -->
+
+```{r, echo=FALSE}
+en$incrCount();cat("## Aufgabe", en$getCount(), "\n")
+```
+Die analoge Zerlegung einer phänotypischen Beobachtung soll jetzt für den Fall eines Vatermodells gemacht werden. Vergleichen Sie dabei die Komponenten eines Vatereffektes mit den Bestandteilen eines geschätzten Zuchtwertes aus dem Tiermodell in Aufgabe 1.
+
+```{r Sigmas2VarKomp}
+sigmas2 <- sigmaa2/4
+sigmae2Sire <- sigmap2 - sigmas2
+alphaSire <- sigmae2Sire/sigmas2
+```
+
+Die Varianzkomponenten $\sigma_s^2$ beträgt ein Viertel der genetisch-additiven Varianz. Wir übernehmen die phänotypische Varianz aus Aufgabe 1. Somit ist die Restvarianz im Vatermodel $\sigma_e^2 = `r sigmae2Sire`$ und das Verhältnis der Varianzen $\alpha = \sigma_e^2/\sigma_s^2 = `r alphaSire`$. 
+
+Die Mischmodellgleichungen für das Vatermodell lauten
+
+```{r MmeSireModel}
+nNrSireEffects <- length(unique(dfWwg$Vater[!is.na(dfWwg$Vater)]))
+matZSmdSire <- rbind(matrix(0, nrow = sum(is.na(dfWwg$Vater)), ncol = nNrSireEffects), matrix(data = c(1,0,0,0,1,1), nrow = sum(!is.na(dfWwg$Vater)), ncol = nNrSireEffects))
+matXtZSmdSire <- crossprod(matXSmd, matZSmdSire)
+matZtZSmdSire <- crossprod(matZSmdSire)
+### # pedigree
+matASire <- matrix(data = c(1,.5,.5,1), nrow = nNrSireEffects)
+matAInvSire <- solve(matASire)
+matZtZAInvSmdSire <- matZtZSmdSire + matAInvSire * alphaSire
+### # rhs
+vecRhsSmdSire <- rbind(crossprod(matXSmd,vecY), crossprod(matZSmdSire,vecY))
+# coefficient matrix
+matCoeffSmdSire <- cbind(rbind(matXtXSmd,t(matXtZSmdSire)),rbind(matXtZSmdSire,matZtZAInvSmdSire))
+# solution vector
+solVecSmdSire <- c("\\hat{\\mu}", "\\hat{s}_1", "\\hat{s}_5")
+
+# show mme
+cat("$$\\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matCoeffSmdSire, pnDigits = 2, pnAlign = rep("c", ncol(matCoeffSmdSire)+1)), 
+          collapse = "\n"))
+cat("\\right]\n")
+cat("\\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(solVecSmdSire, nrow = lenght(solVecSmdSire)), pnAlign = rep("c", 2)), 
+          collapse = "\n"))
+cat("\\right]\n")
+cat(" = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecRhsSmdSire, nrow = length(vecRhsSmdSire)), pnDigits = 1, pnAlign = rep("c", 2)), collapse = "\n"))
+cat("\\right]\n")
+cat("$$")
+```
+
+### Ihre Aufgabe:
+- Zerlegen Sie die phänotypische Beobachtung $y_5$, welche der zweiten Zeile der Mischmodellgleichungen im Vatermodell enspricht.
+- Lösen Sie die Zerlegung nach dem geschätzten Zuchtwerte $\hat{s}_1$ auf
+- Zeigen Sie alle Komponenten, welche in $\hat{s}_1$ enthalten sind
+
+\pagebreak
+
+<!-- solution -->
+### Lösung
+
+- Zerlegung der phänotypischen Beobachtun:
+$$y_5 = \hat{\mu} + 15.67*\hat{s}_1 - 7.33 * \hat{s}_5 $$
+
+- Auflösung nach $\hat{s}_1$:
+$$\hat{s}_1 = (y_5 - \hat{\mu} + 7.33 * \hat{s}_5) / 15.67$$
+
+- Komponenten, welche in $\hat{s}_1$ enthalten sind
+    + phänotypische Leistung $y_5$ korrigiert um fixe Effekte. Faktor von $\hat{s}_1$ entspricht:
+      $$1 + \alpha * \delta^{(5)} = 1 + 11 * 4/3 = `r round(1 + 11 * 4/3, digits = 2)`$$
+    + geschätzter Zuchtwert $\hat{s}_5$ des Sohnes $5$ hat folgenden Faktor: 
+      $$\alpha * \delta^{(5)}/2 = 11 * 2/3 = `r round(11 * 2/3, digits = 2)`$$
+    
+<!-- /solution -->
+
+```{r, echo=FALSE}
+en$incrCount();cat("## Aufgabe", en$getCount(), "\n")
+```
+Welches sind die Unterschiede zwischen den Zerlegungen der phänotypischen Beobachtungen und der Komponenten der geschätzten Zuchtwerte in den Aufgaben 1 und 2?
+
+<!-- solution -->
+### Lösung
+
+- Im Tiermodell ist der Zuchtwert des Tieres $i$ ein Bestandteil der phänotypischen Beobachtung vom gleichen Tier $i$. Beim Vatermodell ist der Zuchtwert des Vaters $s$ vom Tier $i$ Bestandteil der phänotypischen Beobachtung vom Tier $i$.
+- Im Tiermodell werden alle Verwandten unabhängig vom Geschlecht berücksichtigt. Das heisst die geschätzten Zuchtwerte beider Eltern und aller Nachkommen sind im geschätzten Zuchtwert vom Tier $i$ berücksichtigt. Im Vatermodell werden nur die männlichen Verwandten berücksichtigt, also nur der Vater und die männlichen Nachkommen kommen im Ausdruck für den geschätzten Zuchtwert vor.
+- Im Tiermodell wird der geschätzte Zuchtwert des Tieres $i$ um die geschätzten Zuchtwerte der Paarungspartner von $i$ korrigiert. Im Vatermodell spielen die Paarungspartner keine Rolle
+
+<!-- /solution -->

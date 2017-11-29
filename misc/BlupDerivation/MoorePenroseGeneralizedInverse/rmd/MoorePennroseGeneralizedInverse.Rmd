@@ -1,0 +1,126 @@
+---
+title: "Moore-Pennrose Generalized Inverse"
+author: "Peter von Rohr"
+date: "11/27/2017"
+output: pdf_document
+bibliography: ["MoorePennroseGeneralizedInverse.bib"]
+biblio-style: apalike
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Disclaimer
+This document collects a few facts about how to compute the Moore-Pennrose Generalized Inverse of a matrix.
+
+
+## Introduction
+What is shown here comes out of a review study of the book [@Searle1971]. Chapter 1 of [@Searle1971] reviews many aspect of generalized inverse matrices pointing out that the Moore-Penrose generalized inverse is unique for any given matrix $A$. 
+
+
+## A Generalized Inverse
+### Definition
+We start with the definition of a generlized inverse matrix $G$ for any given matrix $A$. The definition is given as follows. Given any matrix $A$, a generalized inverse matrix $G$ of $A$ is defined as 
+
+\begin{equation}
+AGA = A
+\label{eq:GinvDef}
+\end{equation}
+
+### Computation
+One possible solution for $G$ can be computed using the construction of a diagonal form of $A$. This diagonal form can be computed as
+
+\begin{equation}
+PAQ = \Delta = \left[ \begin{array}{cc} D_r & 0 \\ 0 & 0 \\ \end{array} \right]
+\label{eq:DiagFormMatA}
+\end{equation}
+
+where $D_r$ is a diagonal matrix of order $r$ where $r$ is the rank of $A$. From the above diagonal form (\ref{eq:DiagFormMatA}), we can also see that 
+
+\begin{equation}
+A = P^{-1} \Delta Q^{-1}
+\label{eq:DiagFormMatAReverse}
+\end{equation}
+
+The inverse matrices $P^{-1}$ and $Q^{-1}$ exist, because matrices $P$ and $Q$ are matrices of elementary operations. 
+ 
+The matrix $\Delta^-$ defined as 
+
+\begin{equation}
+\Delta^- = \left[ \begin{array}{cc} D_r^{-1} & 0 \\ 0 & 0 \\ \end{array} \right]
+\label{eq:DeltaMinusDef}
+\end{equation}
+
+is a generalized inverse of $\Delta$ satisfying the definition in (\ref{eq:GinvDef}). This is shown by writing the definition in (\ref{eq:GinvDef}) using the matrices $\Delta$ and $\Delta^-$, as shown below. 
+
+$$\Delta \Delta^- \Delta = 
+\left[ \begin{array}{cc} D_r & 0 \\ 0 & 0 \\ \end{array} \right]
+\left[ \begin{array}{cc} D_r^{-1} & 0 \\ 0 & 0 \\ \end{array} \right]
+\left[ \begin{array}{cc} D_r & 0 \\ 0 & 0 \\ \end{array} \right] = 
+\Delta$$
+
+One possible instance of the matrix $G$ can be computed as 
+
+\begin{equation}
+G = Q \Delta^- P
+\label{eq:GinvComputation}
+\end{equation}
+
+The matrix $G$ given in (\ref{eq:GinvComputation}) is indeed a generalized inverse of $A$, because according to (\ref{eq:GinvDef}), (\ref{eq:DiagFormMatAReverse}) and (\ref{eq:DeltaMinusDef}), we can write
+
+\begin{equation}
+AGA = P^{-1} \Delta Q^{-1} Q \Delta^- P P^{-1} \Delta Q^{-1} = P^{-1} \Delta \Delta^- \Delta Q^{-1}
+    = P^{-1} \Delta Q^{-1} = A
+\label{eq:GinvComputation}
+\end{equation}
+
+The results of (\ref{eq:GinvComputation}) and (\ref{eq:GinvComputation}) shows us how to come up with a generalized inverse $G$ for any matrix $A$. Now the question is how to compute such a matrix $G$ efficiently. For that reason it is well worth while to have a closer look at formula (\ref{eq:DiagFormMatAReverse}). 
+
+
+## Singular Value Decomposition (SVD)
+In (\ref{eq:DiagFormMatAReverse}) the matrix $A$ is decomposed into the product of three matrices $P^{-1}$, $\Delta$ and $Q^{-1}$. What we know about the three matrices is that the matrix $\Delta$ is a diagonal matrix and that matrices $P^{-1}$ and $Q^{-1}$ are invertible. The structure of this decomposition is very similar to the __singular value decomposition__ (SVD). The SVD of a matrix $A$ is defined as 
+
+\begin{equation}
+A = U * D * V^T
+\label{eq:SvdDef}
+\end{equation}
+
+where $D$ is a diagonal matrix and matrices $U$ and $V$ are orthogonal matrices. Orthogonal matrices are special because their transpose is equal to their inverse, hence $UU^T = U^TU = I$ and $VV^T = V^TV = I$. The diagonal elements in matrix $D$ correspond to the so called singular values of matrix $A$. 
+
+### Generalized inverse
+When looking at the SVD in (\ref{eq:SvdDef}) and comparing that to the decomposition in (\ref{eq:DiagFormMatAReverse}), we can see that the former decomposition is a special case of the latter one. Hence, we can use the results of the SVD of $A$ to compute the generalized inverse $G$. As shown in (\ref{eq:GinvComputation}), the matrix $G$ is 
+
+$$G = Q \Delta^- P$$
+
+According to (\ref{eq:DeltaMinusDef}) $\Delta^-$ can be computed by inverting all the non-zero diagnoal elements in $\Delta$ and $\Delta$ corresponds to the matrix $D$ in the SVD of $A$. The matrices $P$ and $Q$ can also be taken from the SVD of $A$. The matrix $P^{-1}$ in (\ref{eq:DiagFormMatAReverse}) corresponds to the matrix $U$ in (\ref{eq:SvdDef}) and similarly the matrix $Q^{-1}$ corresponds to the matrix $V^T$. Taking into account that matrices $U$ and $V$ are orthogonal, we can write
+
+\begin{equation}
+G = Q \Delta^- P = V D^- U^T
+\label{eq:GenInvSvd}
+\end{equation}
+
+### Properties
+Using the fact that the SVD of any given matrix $A$ is unique, the computed generalized inverse $G$ in (\ref{eq:GenInvSvd}) should also be unique. The only unique generalized inverse is the Moore-Pennrose inverse which is what we found in (\ref{eq:GenInvSvd}). This needs to be verified.
+
+\pagebreak
+
+## References
+<!-- References -->
+```{r Bibliography, eval=FALSE, echo=FALSE, results='hide'}
+bref <- c(
+bibentry(
+    bibtype = "Book",
+    title = "Linear Models",
+    author = c(as.person("S.R. Searle")),
+    year = "1971",
+    publisher = "Wiley Classics",
+    key = "Searle1971"
+  ))
+### # Fixed assignmen of bib file
+sBibFile <- "MoorePennroseGeneralizedInverse.bib"
+if(!file.exists(sBibFile))
+  cat(paste(toBibtex(bref), collapse = "\n"), "\n", file = sBibFile)
+
+```  

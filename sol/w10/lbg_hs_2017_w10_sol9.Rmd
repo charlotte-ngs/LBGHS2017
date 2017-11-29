@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = FALSE, results = 'asis')
 ```{r TaskCounterSetUp, echo=FALSE}
 en <- rmddochelper::R6ClassEnum$new()
 ```
-```
+
 
 In dieser Übung wollen wir geschätzte Zuchtwerte aufgrund von verschiedenen Schätzmethoden miteinander vergleichen. Bei den Methoden handelt es sich um
 

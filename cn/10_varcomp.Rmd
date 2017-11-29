@@ -1,0 +1,210 @@
+# Varianzkomponentenschätzung
+
+## Einleitung
+Im Kapitel BLUP-Zuchtwertschätzung haben wir die Varianzkomponenten $\sigma_e^2$ und $\sigma_a^2$ als bekannt angenommen. In der praktischen Zuchtarbeit sind diese unbekannt und müssen aus den Daten geschätzt werden. Der Prozess, welcher aus beobachteten Daten Varianzparameter für ein bestimmtes Modell liefert wird als __Varianzkomponentenschätzung__ bezeichnet. In gewissen Studiengängen ist die Varianzkomponentenschätzung das Thema einer ganzen Vorlesung. Wir versuchen hier einen ersten Einblick in dieses Thema in einer Woche zu bekommen.
+
+
+## Regression und Least Squares
+In einem klassischen Regressionsmodell (\ref{eq:RegModel}) werden die fixen Effekte mit `Least Squares` geschätzt. 
+
+\begin{equation}
+y = Xb + e
+\label{eq:RegModel}
+\end{equation}
+
+Unter der Annahme, dass die Matrix $X$ vollen Kolonnenrang $p$ hat, entspricht die Least Squares-Schätzung $\hat{b}$ für die fixen Effekte $b$
+
+\begin{equation}
+\hat{b} = (X^TX)^{-1}X^Ty
+\label{eq:LsEst}
+\end{equation}
+
+Die Least-Squares Prozedur an sich liefert keine Schätzung $\hat{\sigma_e}^2$ für die Restvarianz $\sigma_e^2$. Häufig wird 
+eine Schätzung $\hat{\sigma_e}^2$ basierend auf den Residuen $r_i = y_i - x_i^T\hat{b}$ verwendet. Dieser Schätzer für $\sigma_e^2$ lautet
+
+\begin{equation}
+\hat{\sigma_e}^2 = \frac{1}{n-p} \sum_{i=1}^n r_i^2
+\label{eq:EstResidualVar}
+\end{equation}
+
+Die Residuen $r_i$ sind plausible Schätzungen für die Reste $e_i$. Somit ist der Schätzer für die Restvarianz plausibel bis auf den Faktor $\frac{1}{n-p}$. Dieser Faktor macht den Schätzer in (\ref{eq:EstResidualVar}) erwartungstreu, was bedeutet, dass $E\left[\hat{\sigma_e}^2 \right] = \sigma_e^2$. 
+
+
+## Varianzanalyse
+Ursprünglich wurde die Varianzanalyse entwickelt um globale Unterschiede zwischen fixen Effektstufen unter gewissen Unsicherheitsfaktoren, wie Messfehler oder anderen Einflüssen zu testen. In einer späteren Entwicklung wurde die Varianzanalyse angepasst für die Schätzung von Varianzkomponenten in Modellen mit zufälligen Effekten. 
+
+### Globale Tests von Effekten
+Wollen wir zum Beispiel wissen ob das Geschlecht in unserem bekannten Datensatz mit den Zunahmen seit dem Absetzen überhaupt einen Einfluss hat, können wir das mit einer Varianzanalyse überprüfen. Wir schauen uns dazu den reduzierten Datensatz an und betrachten einmal nur einen allfälligen Einfluss des Geschlechts auf die Zunahmen. 
+
+```{r 10_WwgDataSet, results='hide'}
+nNrAniInPed <- 8
+nIdxFirstAniWithData <- 4
+dfWwg <- data.frame(Kalb = c(nIdxFirstAniWithData:nNrAniInPed),
+                    Geschlecht = c("M","F","F","M","M"),
+                    Vater = c(1,3,1,4,3),
+                    Mutter = c(NA,2,2,5,6),
+                    WWG = c(4.5,2.9,3.9,3.5,5.0))
+sigmae2 <- 40
+sigmaa2 <- 20
+alpha <- sigmae2/sigmaa2
+```
+
+\vspace{2ex}
+\begin{center}
+```{r WwgDataRedSetShow}
+dfWwgRed <- dfWwg[,c("Kalb","Geschlecht","WWG")]
+knitr::kable(dfWwgRed)
+```
+\end{center}
+
+Zum oben gezeigten reduzierten Datensatz betrachten wir das fixe Modell (d.h. ein Modell mit nur fixen Effekten), in welchem nur das Geschlecht als Einflussfaktor auf die Zunahmen (WWG) modelliert wird. Wir haben also 
+
+\begin{equation}
+y = Xb + e
+\label{eq:FixModelWwg}
+\end{equation}
+
+wobei der Vektor $b$ die zwei Effektstufen für das Geschlecht enthält. Somit ist 
+
+$$b = \left[
+  \begin{array}{c}
+  b_F\\
+  b_M\\
+  \end{array}
+\right]
+$$
+
+Der globale Test, ob das Geschlecht überhaupt einen Einfluss hat, entspricht der Nullhypothese $H_0:\ b_F = b_M = 0$. Die geschätzten Effekte können wir mit Least-Squares berechnen. Angenommen, dass unsere Daten in einem Dataframe namens `dfWwgRed` gespeichert sind, sieht die Least-Squares-Schätzung In R folgendermassen aus.
+
+```{r LsEstimateWwgRed, echo=TRUE, results='markup'}
+lmWwg <- lm(WWG ~ -1 + Geschlecht, data = dfWwgRed)
+summary(lmWwg)
+```
+
+Die Tabelle der Varianzanalyse zur Überprüfung der globalen Nullhypothese $H_0:\ b_F = b_M = 0$ erhalten wir mit 
+
+```{r AovTableWwgRed, echo=TRUE, results='markup'}
+aovWwg <- aov(WWG ~ -1 + Geschlecht, data = dfWwgRed)
+summary(aovWwg)
+```
+
+Die Test-Statistik für unseren globalen Test entnehmen wir der Spalte, welche mit `F-value` überschrieben ist. Den gleichen Wert hatten wir schon bei den Resultaten der Funktion `lm()` gefunden. Die sehr tiefe Irrtumswahrscheinlichkeit ($Pr(>|t|) = 0.00294$) bedeutet, dass wir bei einer Ablehnung der globalen Nullhypothese $H_0:\ b_F = b_M = 0$ nur mit einer sehr tiefen Wahrscheinlichkeit einen Fehler erster Art begehen würden. Die Summenquadrate (Sum Sq) berechnen wir gemäss
+
+\begin{equation}
+SSQ_T = \sum_{i=1}^n y_i^2
+\label{eq:SsqTotal}
+\end{equation}
+
+Die Summenquadrate der Residuen (Residuals) entspricht der Summe der quadrierten Residuen. 
+
+\begin{equation}
+SSQ_R = \sum_{i=1}^n r_i^2
+\label{eq:SsqResidual}
+\end{equation}
+
+wobei $r_i = y_i - \hat{y}_i = y_i - x^T_ib$. Die Summenquadrate des Geschlechts $SSQ_b$ entsprechen der Summe der quadrierten gefitteten Werte $\hat{y}_i = x^T_ib$. Die Summenquadrate $SSQ_b$ sind auch gleich der Differenz zwischen $SSQ_T$ und $SSQ_R$. 
+
+\begin{equation}
+SSQ_b = \sum_{i=1}^n \hat{y}_i^2 = \sum_{i=1}^n (x^T_ib)^2
+\label{eq:SsqModel}
+\end{equation}
+
+Die mittleren Summenquadrate (abgekürzt MSQ, wird im R-output mit `Mean Sq` bezeichnet) berechnen sich aus dem Verhältnis der Summenquadrate durch die Anzahl Freiheitsgrade (df). In diesem einfachen Bespiel entspricht die totale Anzahl an Freiheitsgraden ($df_T$) der Anzahl Beobachtungen ($n$) minus $1$. Die Anzahl Freiheitsgrade $df_b$ für das Geschlecht entspricht den Anzahl Faktorstufen, somit ist $df_b = 2$. Die Anzahl Freiheitsgrade der Residuen $df_e$ ist dann die Differenz zwischen $df_T$ und $df_b$. 
+
+Das Verhältnis der mittleren Summenquadrate des Modells (Geschlecht) und der mittleren Summenquadrate der Residuen (Residuals) definiert eine Teststatistik $F$. Unter der globalen Nullhypothese folgt die Teststatistik $F$ einer $F$-Verteilung mit $df_b$ und $df_R$ Freiheitsgraden. Aus dieser Verteilung lässt sich dann die Irrtumswahrscheinlichkeit $Pr(>|t|)$ ableiten.
+
+
+### Schätzung einer Varianzkomponente
+Lineare Modelle, welche neben den Resteffekten auch noch weitere zufällige Effekte aufweisen werden häufig als "zufällige Modelle" (random models) bezeichnet. Als Beispiel eines zufälligen Models können wir wieder den Datensatz mit den Zunahmen anschauen. In dieser Variante betrachten wir aber nur den Effekt der Väter auf die Zunahmen und ignorieren den Geschlechtseinfluss. Wir haben also  einen reduzierten Datensatz, wo nur die Vätereffekte vorkommen. Damit wir die später geforderte Unabhängigkeit der Vatereffekte in unserem Datensatz nicht verletzen, weisen wir Kalb $7$ den Vater $3$ an Stelle vom aktuellen Vater $4$ zu. 
+
+\vspace{2ex}
+\begin{center}
+```{r WwgRedSire}
+dfWwgSire <- dfWwg[, c("Kalb", "Vater", "WWG")]
+dfWwgSire[dfWwgSire$Kalb == 7,"Vater"] <- 3
+knitr::kable(dfWwgSire)
+```
+\end{center}
+
+Das Modell (\ref{eq:RandomModelWwg}), welches die Beobachtungen als Funktion der zufälligen Vatereffekte darstellt sieht algebraisch ähnlich aus wie das fixe Modell in (\ref{eq:FixModelWwg}). Beim fixen Modell (\ref{eq:FixModelWwg}) sind die einzelnen Stufen $b_i$ fix und es wurden alle möglichen Faktorstufen des Geschlechts berücksichtigt. Hingegen in (\ref{eq:RandomModelWwg}) steht $u_i$ für den Effekt vom Vater $i$ und Vater $i$ ist einfach ein Vater aus einer sehr grossen Population von Vätern. Die Väter, welche im Vektor $u$ berücksichtigt sind, entsprechen einer zufälligen Auswahl aus der Population von Vätern.
+
+\begin{equation}
+y = Zu + e
+\label{eq:RandomModelWwg}
+\end{equation}
+
+Die Väter in (\ref{eq:RandomModelWwg}) sind also charakteristisch für zufällige Effekte. Trotzdem, dass wir nur eine zufällige Stichprobe an Vätern kennen, möchten wir doch Aussagen zur ganzen Population machen. Da die Beiträge der Väter als zufällige Effekte modelliert werden, entspricht der einzelne Vatereffekt $u_i$ einer Zufallsvariablen, welcher wir eine Dichteverteilung zuordnen. Zwei Eigenschaften von Dichteverteilungen, welche wir im Zusammenhang mit zufälligen Effekten häufig postulieren sind 
+
+1. die zufälligen Effekte $u_i$ sind unabhängig voneinander. In unserem Beispiel trifft das nur zu, wenn die Väter nicht verwandt sind miteinander.
+2. der Erwartungswert der zufälligen Effekte $u_i$ ist $0$ und die zufälligen Effekte haben alle die gleiche Varianz $\sigma_u^2$. 
+
+Für das zufällige Modell müssen wir also abgesehen von den Effekten auch noch die Varianzkomponenten $\sigma_u^2$ und $\sigma_e^2$ schätzen. Eine Möglichkeit zu Schätzungen für die Varianzkomponenten zu gelangen ist über die Varianzanalyse. Es kann gezeigt werden, dass die Erwartungswerte der mittleren Summenquadrate als Funktionen der unbekannten Varianzkomponenten dargestellt werden können. Spezifisch für unser Modell kann gezeigt werden, dass der Erwartungswert der mittleren Summenquadrate der Resteffekte gleich der Restvarianz ist. Es gilt also
+
+\begin{equation}
+E\left[MSQ_e \right] = \sigma_e^2
+\label{eq:MsqVarRes}
+\end{equation}
+
+Für die Varianzkomponente der Vatereffekte können wir die erwarteten mittleren Summenquadrate einer Funktion aus $\sigma_u^2$ und $\sigma_e^2$ gleichsetzen.
+
+\begin{equation}
+E\left[MSQ_u \right] = n\sigma_u^2 + \sigma_e^2
+\label{eq:MsqVarSire}
+\end{equation}
+
+Wir setzen nun die empirischen Werte der mittleren Summenquadrate gleich den Erwartungswerten und verwenden diese als Schätzer für die Varianzkomponenten. Somit erhalten wir
+
+\begin{equation}
+MSQ_e = \widehat{\sigma_e^2}
+\label{eq:EstVarRes}
+\end{equation}
+
+und 
+
+\begin{equation}
+MSQ_u = n\widehat{\sigma_u^2} + \widehat{\sigma_e^2}
+\label{eq:EstVarSire}
+\end{equation}
+
+Lösen wir (\ref{eq:EstVarSire}) nach $\widehat{\sigma_u^2}$ auf, so erhalten wir als Schätzer für die Varianzkomponenten der Vatereffekte
+
+\begin{equation}
+\widehat{\sigma_u^2} = \frac{MSQ_u - MSQ_e}{n}
+\label{eq:ResultEstVarSire}
+\end{equation}
+
+
+### Unser Beispiel
+Die folgenden Anweisungen in `R` zeigen, wie die Varianzanalysentabelle für unser zufälliges Modell aufgestellt wird.
+
+```{r VarTabSireData, echo=TRUE, results='markup'}
+aovWwgSire <- aov(formula = WWG ~ Vater, data = dfWwgSire)
+summary(aovWwgSire)
+```
+
+Aufgrund von Gleichung (\ref{eq:EstVarRes}) erhalten wir eine Schätzung für die Restvarianz als
+
+```{r VarEst, echo=FALSE, results='hide'}
+nNrObs <- length(dfWwgSire)
+nMeanObs <- mean(dfWwgSire$WWG)
+vecWwgSireCorrected <- dfWwgSire$WWG - nMeanObs
+nSsqRes <- crossprod(residuals(aovWwgSire))
+nResVarEst <- nSsqRes / aovWwgSire$df.residual 
+nSsqVater <- crossprod(vecWwgSireCorrected) - nSsqRes
+ndfVater <- nNrObs - aovWwgSire$df.residual - 1 ### -1 comes due to intercept in model
+nMsqVater <- nSsqVater / ndfVater
+nVaterVarEst <- (nMsqVater - nResVarEst)/nNrObs
+```
+
+$$\widehat{\sigma_e^2} = `r nResVarEst`$$
+
+Setzen wir diese Schätzung in Gleichung (\ref{eq:ResultEstVarSire}) ein, dann erhalten wir
+
+$$\widehat{\sigma_u^2} = `r nVaterVarEst`$$
+
+### Negative Schätzwerte
+Der Schätzwert für die Varianzkomponente $\sigma_u^2$ ist negativ. Dies ist durch die spezielle Datenkonstellation verursacht. Aufgrund von nur `r nNrObs` Beobachtungen können keine zuverlässigen Varianzkomponenten geschätzt werden. Die Methode der Varianzanalyse hat keinen Mechanismus zur Verfügung, welcher negative Schätzwerte verhindern könnte.
+
+Varianzkomponenten sind als Quadrate definiert und somit können diese nicht negativ sein. Da aber aufgrund von Datenkonstellationen die Schätzungen negativ sein können, ist die Methode der Varianzanalyse für die Varianzkomponentenschätzung nicht sehr beliebt. 
+
+Im nächsten Kapitel werden wir uns alternative Verfahren zur Schätzung von Varianzkomponenten anschauen.
