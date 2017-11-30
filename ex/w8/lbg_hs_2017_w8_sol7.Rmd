@@ -1,0 +1,163 @@
+---
+title:  Züchtungslehre - Lösung 7
+author: Peter von Rohr
+date: 2017-11-17
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis')
+```
+
+
+## Aufgabe 1:
+
+Gegeben ist das folgende Pedigree. Berechnen Sie die Inzuchtkoeffizienten aller Tiere im Pedigree und die Elemente der Matrix $R$, wobei $R$ aufgrund der Cholesky-Zerlegung der additiv genetischen Verwandtschaftsmatrix $A$ definiert ist. Es gilt also 
+
+\begin{equation}
+A = R * R^T
+\label{eq:AChol}
+\end{equation}
+
+wobei $R$ eine linke untere Dreiecksmatrix ist.
+
+```{r PedigreeSetUp, results='markup'}
+nNrAniInPedEx2 <- 8
+suppressPackageStartupMessages(require(pedigreemm))
+pedEx2 <- pedigree(sire = c(NA, NA, 1, 1, 4, 5, 5, 6), 
+                   dam  = c(NA, NA, 2, 3, 3, 2, 3, 7),
+                   label = as.character(1:nNrAniInPedEx2))
+print(pedEx2)
+```
+
+__Hinweise__:
+Sie können Ihre Resultate überprüfen mit folgenden R-Funktionen.
+
+- Die Matrix $R$ entspricht der Transponierten des Ergebnisses der Funktion `chol(matA)` wobei `matA` die genetisch additive Verwandtschaftsmatrix ist. Also können Sie die Matrix $R$ mit folgenden Anweisungen in R berechnen.
+
+```{r HintEx2, eval=FALSE, echo=TRUE}
+library(pedigreemm)
+nNrAniInPedEx2 <- 8
+pedEx2 <- pedigree(sire = c(NA, NA, 1, 1, 4, 5, 5, 6), 
+                   dam  = c(NA, NA, 2, 3, 3, 2, 3, 7),
+                   label = as.character(1:nNrAniInPedEx2))
+matA <- as.matrix(getA(ped = pedEx2))
+matR <- t(chol(matA))
+```
+
+- Die Inzuchtkoeffizienten können mit der Funktion `inbreeding()` berechnet werden.
+
+<!-- ------------------------------------------------------ --
+  -- In dieser Übung sollen die Inzuchtkoeffizienten        --
+  -- und die Elemente der Matrix R von Hand berechnet       --
+  -- werden. Zur Kontrolle können die Inzuchtkoeffizienten  --
+  -- mit der Funktion `inbreeding()` und die Matrix R       --
+  -- wie oben gezeigt, mit dem R-statement `t(chol(matA))   --
+  -- berechnet werden. Dabei nehmen wir an, dass matA die   --
+  -- genetisch additive Verwandtschaftsmatrix zum gegebenen --
+  -- Pedigree enthält.                                      --
+  -->
+  
+### Lösung
+
+- Inzuchtkoeffizienten: berechnen sich aus den Diagonalelementen $a_{ii}$ der Verwandtschaftsmatrix. Diese werden aus den Elementen der $i$-ten Zeile der Matrix $R$ aus (\ref{eq:AChol}) berechnet. Genauer gilt
+
+$$a_{ii} = \sum_{j=1}^i r_{ij}^2$$
+
+- Die Diagonalelemente $r_{ii}$ der Matrix $R$ berechnen sich als
+
+$$r_{ii} = \sqrt{1 - 0.25(a_{ss} + a_{dd})}$$
+
+wobei $s$ und $d$ die Eltern von $i$ sind und $a_{dd}$ ($a_{ss}$) dem Diagonalelement der Verwandtschaftsmatrix $A$ entspricht, welches zu Tier $d$ ($s$) gehört. Ist ein Elternteil unbekannt, dann ist das entsprechende Diagonalelement aus $A$ gleich $0$. 
+
+- Die Offdiagonalelemente $r_{ij}$ (für $i\ne j$) entsprechen
+
+$$r_{ij} = {1\over 2}(r_{sj} + r_{dj})$$
+
+wobei $s$ und $d$ die Eltern von $i$ sind. Für unbekannte Eltern $d$ ($s$) sind die Werte $r_{dj}$ ($r_{sj}$) gleich $0$. 
+
+Werden die Elemente der Matrix $R$ nach den soeben beschriebenen Regeln berechnet, erhalten wir das folgende Resultat.
+
+```{r CholMatAResult}
+matA <- as.matrix(getA(ped = pedEx2))
+matR <- t(chol(matA))
+cat("$$R = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matR, pnDigits = 4), collapse = "\n"))
+cat("\\right]\n")
+cat("$$")
+```
+
+Die Inzuchtkoeffizienten der Tiere sind in der folgenden Tabelle aufgelistet.
+
+```{r InbreedingCoeff}
+dfInbreedingCoeff <- data.frame(Tier = c(1:nNrAniInPedEx2), Inzuchtkoeffizient = round(inbreeding(ped = pedEx2), digits = 4))
+knitr::kable(dfInbreedingCoeff)
+```
+
+
+\vspace{2ex}
+
+## Aufgabe 2: Erweiterung der `if`-Bedingungen
+```{r Ex7A1Init, ref.label="Ex7A1Loop", echo=FALSE, results='hide'}
+```
+
+In der letzten Übung hatten wir gesehen, wie der Programmablauf mit `if`-Bedingungen gesteuert wird. Im einfachsten Fall wird eine Bedingung überprüft und falls diese zutrifft, werden gewissen Anweisungen ausgeführt. Dieses Konzept kann auch erweitert werden. Wir können verschiedene Bedingungen gleichzeitig überprüfen und bei deren Zutreffen jeweilen verschiedene Anweisungen ausführen. 
+
+Als Beispiel können wir bei den natürlichen Zahlen zwischen `r nLowerLimit` und `r nUpperLimit` überprüfen, ob diese durch 2, 3 oder 5 teilbar sind.
+
+\pagebreak
+
+```{r Ex7A1Loop, echo=TRUE, results='markup'}
+nLowerLimit <- 1
+nUpperLimit <- 10
+for (nIdx in nLowerLimit:nUpperLimit){
+  if (identical(nIdx %% 2, 0)) {
+    cat(nIdx, " ist durch 2 teilbar\n")
+  } else if(identical(nIdx %% 3, 0)) {
+    cat(nIdx, " ist durch 3 teilbar\n")
+  }  else if(identical(nIdx %% 5, 0)) {
+    cat(nIdx, " ist durch 5 teilbar\n")
+  } else {
+    cat(nIdx, " ist weder durch 2 noch durch 3 noch durch 5 teilbar\n")
+  }
+}
+```
+
+Aufgrund des Resultats sehen wir klar, dass jede Bedingung nur einmal getestet wird. Dies erkennen wir aufgrund der Tatsache, dass für die Zahlen $6$ und $10$ nur die Teilbarkeit durch $2$ aufgelistet wird. Falls keine der zu testenden Bedingungen in den runden Klammern nach den `if`-Anweisungen zutreffen wird der Teil nach der `else`-Anweisung ausgeführt.
+
+
+### Ihre Aufgabe
+Finden Sie mit einer Kombination aus einem Loop und von verschiedenen `if`-Bedingungen die Zahlen, welche durch $2$, $3$ und $7$ teilbar sind und alle Primzahlen zwischen $11$ und $50$. Für das Finden der Primzahlen reicht es, wenn Sie die Teilbarkeit bis zur Zahl $7$ überprüfen. Ist eine Zahl nur durch $1$ und sich selber teilbar, dann ist es eine Primzahl.
+
+<!-- ---------------------------------------------------- --
+  -- Analog zum oben gezeigten R-code-junk soll in        --
+  -- einem Loop zwischen 11 und 50 getested werden,       --
+  -- welche Zahlen durch 2, 3, 5 und 7 teilbar sind.      --
+  -- Alle Zahlen zwischen 11 und 50, welche weder         --
+  -- durch 2, 3, 5 oder 7 teilbar sind, sind Primzahlen.  --
+  -- Die Teilbarkeit wird wieder in einer Serie von if-   --
+  -- und else if-Bedingungen überprüft. Alle Zahlen,      --
+  -- welche weder durch 2, 3, 5 oder 7 Teilbar sind,      -- 
+  -- werden im else-Teil der Bedingungsserie abgehandelt. --
+  -->
+  
+### Lösung
+
+```{r Ex7A1Sol, echo=TRUE, results='markup'}
+nLowerLimit <- 11; nUpperLimit <- 50
+for (nIdx in nLowerLimit:nUpperLimit){
+  if (identical(nIdx %% 2, 0)) {
+     cat(nIdx, " ist durch 2 teilbar\n")
+  } else if(identical(nIdx %% 3, 0)) {
+     cat(nIdx, " ist durch 3 teilbar\n")
+  }  else if(identical(nIdx %% 5, 0)) {
+     cat(nIdx, " ist durch 5 teilbar\n")
+  }  else if(identical(nIdx %% 7, 0)) {
+     cat(nIdx, " ist durch 7 teilbar\n")
+  } else {
+    cat(nIdx, " ist eine Primzahl\n")
+  }
+}
+```
+
+
