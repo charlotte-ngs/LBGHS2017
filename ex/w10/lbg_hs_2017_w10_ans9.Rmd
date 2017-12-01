@@ -63,9 +63,6 @@ en$incrCount();cat("## Aufgabe", en$getCount(), "\n")
 Schätzen Sie für die drei Väter "A", "B", "C" Zuchtwerte aufgrund der mittleren Leistungen ihrer jeweiligen Nachkommen. Das Populationsmittel ($\mu$) und die Erblichkeit ($h^2$) haben den gleichen Wert, wie in Aufgabe 1.
 
 
-
-\pagebreak
-
 ```{r, echo=FALSE}
 en$incrCount();cat("## Aufgabe", en$getCount(), "\n")
 ```
@@ -79,9 +76,6 @@ Die Aufgabe gliedert sich in die folgenden Schritte:
 4. Lösen der Mischmodellgleichungen
 5. Aus den Übungen von (4) die Schätzwerte für die fixen Effekte und die vorausgesagten Zuchtwerte für die Väter identifizieren
 
-
-
-\pagebreak
 
 ```{r, echo=FALSE}
 en$incrCount();cat("## Aufgabe", en$getCount(), "\n")

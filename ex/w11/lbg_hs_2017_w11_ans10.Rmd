@@ -143,8 +143,6 @@ cat("$$")
 - Lösen Sie die Zerlegung nach dem geschätzten Zuchtwerte $\hat{s}_1$ auf
 - Zeigen Sie alle Komponenten, welche in $\hat{s}_1$ enthalten sind
 
-\pagebreak
-
 
 ```{r, echo=FALSE}
 en$incrCount();cat("## Aufgabe", en$getCount(), "\n")
