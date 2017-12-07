@@ -1,0 +1,246 @@
+---
+title:  Züchtungslehre - Lösung 8
+author: Peter von Rohr
+date: 2017-11-24
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, results = 'asis')
+```
+
+```{r TaskCounterSetUp, echo=FALSE}
+en <- rmddochelper::R6ClassEnum$new()
+```
+
+
+```{r, echo=FALSE}
+en$incrCount();cat("## Aufgabe", en$getCount(), "\n")
+```
+In der Vorlesung wurden die linearen gemischten Modelle zur Voraussage von Zuchtwerten vorgestellt. Damit der Unterschied zwischen linearen Modellen mit nur fixen Effekten (Regressionsmodelle) und den linearen gemischten Modellen besser verständlich wird, wollen in dieser Übung nochmals anschauen, wie multiple lineare Regressionen an Daten angepasst werden.
+
+Gegeben sei der folgende Datensatz.
+
+```{r MultLinRegModelData, echo=FALSE}
+nNrRecords <- 9
+dfMlrData <- data.frame(Tochter = c(1:nNrRecords),
+                        Herde   = c("1","1","2","2","2","3","3","3","3"),
+                        Vater   = c("C","A","B","A","C","C","C","A","B"),
+                        Leistung = c(110,100,110,100,100,110,110,100,100))
+### # write data to outfile
+sMlrOutfile <- "mlrdata.csv"
+if (!file.exists(sMlrOutfile)) write.csv2(dfMlrData, file = sMlrOutfile)
+### # create the table
+knitr::kable(dfMlrData)
+```
+
+Die Zahlen in der Kolonne Leistung der oben gezeigten Tabelle sollen als beobachtete phänotypische Leistungen aufgefasst werden. Im anzupassenden Regressionsmodell sollen `Herde` und `Vater` als fixe Effekte verwendet werden. 
+
+### Ihre Aufgabe
+a) Stellen Sie das Regressionsmodell für die oben aufgelisteten Daten.
+b) Berechnen Sie die Schätzungen für die fixen Effekte der `Herde` und des `Vaters`.
+
+
+### Hinweise
+- Die Funktion zur Anpassung von Regressionen in `R` lautet `lm()`
+- Die Angabe der Daten für die Funktion `lm()` muss über ein `Dataframe` gemacht werden. Dies kann entweder über die direkte Angabe der Daten in der Funktion `data.frame()` gemacht werden, oder die Daten können auch mit `read.csv2()` von der Webseite (https://charlotte-ngs.github.io/LBGHS2017/ex/w9/mlrdata.csv) eingelesen werden. Die direkte Angabe des Dataframes sieht wie folgt aus:
+
+```{r DirectSpecDataframe, eval=FALSE, echo=FALSE} 
+nNrRecords <- 9
+dfMlrData <- data.frame(Tochter = c(1:nNrRecords),
+                        Herde   = c("1","1","2","2","2","3","3","3","3"),
+                        Vater   = c("C","A","B","A","C","C","C","A","B"),
+                        Leistung = c(110,100,110,100,100,110,110,100,100))
+```
+
+- Das Modell wird mit der speziellen Model-Syntax von R spezifiziert. Diese würde für unser Beispiel, wie folgt aussehen:
+
+```
+Leistung ~ -1 + Herde + Vater
+```
+
+- Die Resultate des angepassten Modells können mit der Funktion `summary()` angezeigt werden.
+
+<!-- ------------------------------------------------------ --
+  --   a) Das Aufstellen des Regressionsmodells bedeutet,   --
+  --      dass die Regressionsgleichungen in Matrix-        --
+  --      Vektor-Schreibweise dargestellt werden und die    --
+  --      im Modell enthaltenen Matrizen und Vektoren       --
+  --      aufgrund der Daten angegeben werden.              --
+  --   b) Die Anpassung des Modells und die Berechnung der  --
+  --      Lösungen kann mit R gemacht werden.               --
+  -- ------------------------------------------------------ -->
+
+<!-- solution -->
+### Lösung 
+a) Das Regressionsmodell lautet
+
+$$y = Xb + e$$
+
+wobei der Beobachtungsvektor $y$
+
+```{r VecYTask1, echo=FALSE}
+vecYTask1 <- dfMlrData$Leistung
+cat("$$y = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecYTask1, ncol = 1), pnDigits = 0), collapse = "\n"))
+cat("\\right]\n$$")
+```
+
+Die Inzidenzmatrix $X$
+
+```{r DesignMatTask1, echo=FALSE}
+matXTask1 <- matrix(data = c(1,0,0,0,0,1,
+                             1,0,0,1,0,0,
+                             0,1,0,0,1,0,
+                             0,1,0,1,0,0,
+                             0,1,0,0,0,1,
+                             0,0,1,0,0,1,
+                             0,0,1,0,0,1,
+                             0,0,1,1,0,0,
+                             0,0,1,0,1,0), nrow = nNrRecords, byrow = TRUE)
+cat("$$X = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matXTask1, pnDigits = 0), collapse = "\n"))
+cat("\\right]\n$$")
+```
+
+Der Vektor $b$ der fixen Effekte
+
+```{r VecFixEffectsTask1, echo=FALSE}
+vecFixEffects <- c("Herde_1", "Herde_2", "Herde_3", "Vater_A", "Vater_B", "Vater_C")
+cat("$$b = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecFixEffects, ncol = 1), pnDigits = 0), collapse = "\n"))
+cat("\\right]\n$$")
+```
+
+b) Angenommen, die Daten sind in einem Dataframe namens `dfMlrData` gespeichert. Dann wird das Regressionsmodell mit folgenden Anweisungen angepasst.
+
+```{r LinRegModel, echo=TRUE, results='markup'}
+lmMlrData <- lm(Leistung ~ -1 + Herde + Vater, data = dfMlrData)
+summary(lmMlrData)
+```
+<!-- /solution -->
+
+
+```{r, echo=FALSE}
+en$incrCount();cat("## Aufgabe", en$getCount(), "\n")
+```
+Anstelle des Regressionsmodells in der Aufgabe 1 verwenden wir jetzt ein gemischtes lineares Modell. In diesem Modell werden die Herden als fixe Effekte und die Väter als zufällige Effekte modelliert. In der Vorlesung werden wir diese Art von Modellen noch genauer unter dem Namen "Vatermodell" anschauen. Die Covarianzmatrix $G$ der zufälligen Vatereffekte setzen wir dabei zu
+
+$$G = 0.1*I$$
+
+wobei $I$ die Einheitsmatrix bezeichnet.
+
+
+### Ihre Aufgabe
+a) Stellen Sie die Mischmodellgleichungen für die Daten in Aufgabe 1 auf. 
+b) Berechnen Sie die Schätzer für die fixen Effekte der Herde und machen Sie eine Voraussage für die zufälligen Vatereffekte
+
+<!-- --------------------------------------------------- --
+  --    a) Wie in Aufgabe 1) geht es hier auch darum     --
+  --       die Mischmodellgleichungen in Matrix-Vektor   --
+  --       Schreibweise darzustellen und die Matrizen    --
+  --       und Vektoren mit ihren Elementen anzugeben.   --
+  --    b) Hier werden die Lösungen mit R berechnet.     --
+  -- --------------------------------------------------- -->
+
+<!-- solution -->
+### Lösung
+a) Die Mischmodellgleichungen lauten
+
+$$\left[
+  \begin{array}{rr}
+  X^TX  &  X^TZ\\
+  Z^TX  &  Z^TZ + G^{-1}
+  \end{array}
+\right]
+\left[
+  \begin{array}{c}
+  \hat{Herde}_1\\
+  \hat{Herde}_2\\
+  \hat{Herde}_3\\
+  \hat{Vater}_A\\
+  \hat{Vater}_B\\
+  \hat{Vater}_C
+  \end{array}
+\right]
+=
+\left[
+  \begin{array}{c}
+  X^Ty\\
+  Z^Ty
+  \end{array}
+\right]
+$$
+
+Abgekürzt können wir die Mischmodellgleichungen schreiben als
+
+$$M * \hat{s} = r$$
+
+Die einzelnen Komponenten lauten
+
+```{r MatXtXTask2, echo=FALSE}
+matXTask2 <- matXTask1[,1:3]
+matXtXTask2 <- crossprod(matXTask2)
+cat("$$X^TX = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matXtXTask2, pnDigits = 0), collapse = "\n"))
+cat("\\right]\n$$")
+```
+
+```{r MatXtZTask2, echo=FALSE}
+matZTask2 <- matXTask1[,4:6]
+matXtZTask2 <- crossprod(matXTask2,matZTask2)
+cat("$$X^TZ = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matXtZTask2, pnDigits = 0), collapse = "\n"))
+cat("\\right]\n$$")
+```
+
+```{r MatZtZTask2, echo=FALSE}
+matZtZTask2 <- crossprod(matZTask2)
+cat("$$Z^TZ = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matZtZTask2, pnDigits = 0), collapse = "\n"))
+cat("\\right]\n$$")
+```
+
+$$G^{-1} = 10*I$$
+
+```{r VecXtYTask2, echo=FALSE}
+vecXtYTask2 <- crossprod(matXTask2,vecYTask1)
+vecZtYTask2 <- crossprod(matZTask2,vecYTask1)
+cat("$$X^Ty = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecXtYTask2, ncol = 1), pnDigits = 0), collapse = "\n"))
+cat("\\right]\n$$")
+cat("$$Z^Ty = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecZtYTask2, ncol = 1), pnDigits = 0), collapse = "\n"))
+cat("\\right]\n$$")
+```
+
+Stellen wir alle Komponenten zusammen erhalten wir
+
+```{r MmeTask2, echo=FALSE}
+matCoeffTask2 <- cbind(rbind(matXtXTask2,t(matXtZTask2)),rbind(matXtZTask2,matZtZTask2 + 10*diag(1,nrow = nrow(matZtZTask2))))
+vecRhsTask2 <- c(vecXtYTask2,vecZtYTask2)
+cat("$$\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matCoeffTask2, pnDigits = 0), collapse = "\n"))
+cat("\\right]\n")
+vecFixEffectsHat <- c("\\hat{Herde}_1", "\\hat{Herde}_2", "\\hat{Herde}_3", "\\hat{Vater}_A", "\\hat{Vater}_B", "\\hat{Vater}_C")
+cat("\\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecFixEffectsHat, ncol = 1)), collapse = "\n"))
+cat("\\right]\n")
+cat(" = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecRhsTask2, ncol = 1), pnDigits = 0), collapse = "\n"))
+cat("\\right]\n$$")
+```
+
+b) Die Lösungen berechnen wir als 
+
+$$\hat{s} = M^{-1} * r$$ 
+
+
+
+```{r SolMmeTask2, eval=TRUE, echo=FALSE}
+vecSolTask2 <- solve(matCoeffTask2,vecRhsTask2)
+cat("$$\\hat{s} = \\left[")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecSolTask2, ncol = 1), pnDigits = 4), collapse = "\n"))
+cat("\\right]\n$$")
+```
+<!-- /solution -->
