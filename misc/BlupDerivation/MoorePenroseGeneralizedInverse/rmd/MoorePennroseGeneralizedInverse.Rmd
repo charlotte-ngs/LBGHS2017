@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Disclaimer
-This document collects a few facts about how to compute the Moore-Pennrose Generalized Inverse of a matrix.
+This document collects a few facts about how to compute generalized inverses of real-valued matrices in general and in particular how to get to the unique Moore-Pennrose inverse of any matrix $A$ using the singular value decomposition of $A$. The results shown here are linked to solving systems of linear equations that arise in the context of least squares estimation procedures.
 
 
 ## Introduction
@@ -184,7 +184,30 @@ Pre-multiplying both sides of the above equation with $A$ and using the above sp
 $$Ax = AGa_j = a_j$$
 This is true for all columns $a_j$ of $A$ and hence $AGA = A$. 
 
-Conversely, if $AGA = A$, then $AGAx = Ax$
+Conversely, if $AGA = A$, then $AGAx = Ax$ and when $Ax = y$, then $AGy = y$ and $A(Gy) = y$, hence 
+
+$$x = Gy$$
+is a solution of $Ax = y$. Because the matrix $G$ is not required to be unique, but is just one possible generalized inverse, the above shown solution for $x$ is also not unique.
+
+Theorem 2 in [@Searle1971] gives all solutions $\tilde{x}$ for $A\tilde{x} = y$ as 
+
+$$\tilde{x} = Gy - (GA - I)z$$
+for an arbitrary vector $z$. The proof for this is obtained by pre-multiplying the above equation with $A$ yielding 
+
+$$A\tilde{x} = AGy - (AGA - A)z$$
+because $AGA = A$ and by Theorem 1 $\tilde{x} = Gy$ is a solution, Theorem 2 holds.
+
+
+## Least Squares
+In simple fixed linear models $y = Xb + e$ with $Var(y) = I\sigma^2$, estimates $\hat{b}$ for the unknown parameter vector $b$ are obtained by 
+
+$$(X^TX)\hat{b} = X^Ty$$
+
+In general, matrix $X$ does not have full column rank and hence $(X^TX)$ is singular and cannot be inverted. Using the result of Theorem 1 in [@Searle1971], we can still write one solution for $\hat{b}$ as
+
+$$\hat{b} = (X^TX)^-X^Ty$$
+
+[@Searle1971] shows a list of useful properties of generalized inverses of symmatric matrices such as $(X^TX)$
 
 \pagebreak
 

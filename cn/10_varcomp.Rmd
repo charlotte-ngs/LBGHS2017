@@ -57,6 +57,7 @@ knitr::kable(dfWwgRed)
 ```
 \end{center}
 
+\vspace{2ex}
 Zum oben gezeigten reduzierten Datensatz betrachten wir das fixe Modell (d.h. ein Modell mit nur fixen Effekten), in welchem nur das Geschlecht als Einflussfaktor auf die Zunahmen (WWG) modelliert wird. Wir haben also 
 
 \begin{equation}
@@ -74,7 +75,7 @@ $$b = \left[
 \right]
 $$
 
-Der globale Test, ob das Geschlecht überhaupt einen Einfluss hat, entspricht der Nullhypothese $H_0:\ b_F = b_M = 0$. Die geschätzten Effekte können wir mit Least-Squares berechnen. Angenommen, dass unsere Daten in einem Dataframe namens `dfWwgRed` gespeichert sind, sieht die Least-Squares-Schätzung In R folgendermassen aus.
+Der globale Test, ob das Geschlecht überhaupt einen Einfluss hat, entspricht der Nullhypothese $H_0:\ b_F = b_M = 0$. Die geschätzten Effekte können wir mit Least-Squares berechnen. Angenommen, dass unsere Daten in einem Dataframe namens `dfWwgRed` gespeichert sind, sieht die Least-Squares-Schätzung in R folgendermassen aus.
 
 ```{r LsEstimateWwgRed, echo=TRUE, results='markup'}
 lmWwg <- lm(WWG ~ -1 + Geschlecht, data = dfWwgRed)
@@ -88,14 +89,14 @@ aovWwg <- aov(WWG ~ -1 + Geschlecht, data = dfWwgRed)
 summary(aovWwg)
 ```
 
-Die Test-Statistik für unseren globalen Test entnehmen wir der Spalte, welche mit `F-value` überschrieben ist. Den gleichen Wert hatten wir schon bei den Resultaten der Funktion `lm()` gefunden. Die sehr tiefe Irrtumswahrscheinlichkeit ($Pr(>|t|) = 0.00294$) bedeutet, dass wir bei einer Ablehnung der globalen Nullhypothese $H_0:\ b_F = b_M = 0$ nur mit einer sehr tiefen Wahrscheinlichkeit einen Fehler erster Art begehen würden. Die Summenquadrate (Sum Sq) berechnen wir gemäss
+Die Test-Statistik für unseren globalen Test entnehmen wir der Spalte, welche mit `F-value` überschrieben ist. Den gleichen Wert hatten wir schon bei den Resultaten der Funktion `lm()` gefunden. Die sehr tiefe Irrtumswahrscheinlichkeit ($Pr(>|t|) = 0.00294$) bedeutet, dass wir bei einer Ablehnung der globalen Nullhypothese $H_0:\ b_F = b_M = 0$ nur mit einer sehr tiefen Wahrscheinlichkeit einen Fehler erster Art begehen würden. Die Summenquadrate (`Sum Sq`) berechnen wir gemäss
 
 \begin{equation}
 SSQ_T = \sum_{i=1}^n y_i^2
 \label{eq:SsqTotal}
 \end{equation}
 
-Die Summenquadrate der Residuen (Residuals) entspricht der Summe der quadrierten Residuen. 
+Die Summenquadrate der Residuen (`Residuals`) entspricht der Summe der quadrierten Residuen. 
 
 \begin{equation}
 SSQ_R = \sum_{i=1}^n r_i^2
@@ -109,9 +110,9 @@ SSQ_b = \sum_{i=1}^n \hat{y}_i^2 = \sum_{i=1}^n (x^T_ib)^2
 \label{eq:SsqModel}
 \end{equation}
 
-Die mittleren Summenquadrate (abgekürzt MSQ, wird im R-output mit `Mean Sq` bezeichnet) berechnen sich aus dem Verhältnis der Summenquadrate durch die Anzahl Freiheitsgrade (df). In diesem einfachen Bespiel entspricht die totale Anzahl an Freiheitsgraden ($df_T$) der Anzahl Beobachtungen ($n$) minus $1$. Die Anzahl Freiheitsgrade $df_b$ für das Geschlecht entspricht den Anzahl Faktorstufen, somit ist $df_b = 2$. Die Anzahl Freiheitsgrade der Residuen $df_e$ ist dann die Differenz zwischen $df_T$ und $df_b$. 
+Die mittleren Summenquadrate (abgekürzt MSQ, wird im R-output mit `Mean Sq` bezeichnet) berechnen sich aus dem Verhältnis der Summenquadrate durch die Anzahl Freiheitsgrade (`df`). In diesem einfachen Bespiel entspricht die totale Anzahl an Freiheitsgraden ($df_T$) der Anzahl Beobachtungen ($n$) minus $1$. Die Anzahl Freiheitsgrade $df_b$ für das Geschlecht entspricht den Anzahl Faktorstufen, somit ist $df_b = 2$. Die Anzahl Freiheitsgrade der Residuen $df_e$ ist dann die Differenz zwischen $df_T$ und $df_b$. 
 
-Das Verhältnis der mittleren Summenquadrate des Modells (Geschlecht) und der mittleren Summenquadrate der Residuen (Residuals) definiert eine Teststatistik $F$. Unter der globalen Nullhypothese folgt die Teststatistik $F$ einer $F$-Verteilung mit $df_b$ und $df_R$ Freiheitsgraden. Aus dieser Verteilung lässt sich dann die Irrtumswahrscheinlichkeit $Pr(>|t|)$ ableiten.
+Das Verhältnis der mittleren Summenquadrate des Modells (`Geschlecht`) und der mittleren Summenquadrate der Residuen (`Residuals`) definiert eine Teststatistik $F$. Unter der globalen Nullhypothese folgt die Teststatistik $F$ einer $F$-Verteilung mit $df_b$ und $df_R$ Freiheitsgraden. Aus dieser Verteilung lässt sich dann die Irrtumswahrscheinlichkeit $Pr(>|t|)$ ableiten.
 
 
 ### Schätzung einer Varianzkomponente
@@ -126,6 +127,7 @@ knitr::kable(dfWwgSire)
 ```
 \end{center}
 
+\vspace{2ex}
 Das Modell (\ref{eq:RandomModelWwg}), welches die Beobachtungen als Funktion der zufälligen Vatereffekte darstellt sieht algebraisch ähnlich aus wie das fixe Modell in (\ref{eq:FixModelWwg}). Beim fixen Modell (\ref{eq:FixModelWwg}) sind die einzelnen Stufen $b_i$ fix und es wurden alle möglichen Faktorstufen des Geschlechts berücksichtigt. Hingegen in (\ref{eq:RandomModelWwg}) steht $u_i$ für den Effekt vom Vater $i$ und Vater $i$ ist einfach ein Vater aus einer sehr grossen Population von Vätern. Die Väter, welche im Vektor $u$ berücksichtigt sind, entsprechen einer zufälligen Auswahl aus der Population von Vätern.
 
 \begin{equation}
@@ -207,4 +209,280 @@ Der Schätzwert für die Varianzkomponente $\sigma_u^2$ ist negativ. Dies ist du
 
 Varianzkomponenten sind als Quadrate definiert und somit können diese nicht negativ sein. Da aber aufgrund von Datenkonstellationen die Schätzungen negativ sein können, ist die Methode der Varianzanalyse für die Varianzkomponentenschätzung nicht sehr beliebt. 
 
-Im nächsten Kapitel werden wir uns alternative Verfahren zur Schätzung von Varianzkomponenten anschauen.
+Im nächsten Abschnitt werden wir uns alternative Verfahren zur Schätzung von Varianzkomponenten anschauen.
+
+\pagebreak
+
+## Alternative Verfahren
+Im vorherigen Abschnitt haben wir Varianzkomponenten mit Hilfe der Varianzanalyse geschätzt. Wir haben gesehen, dass Schätzungen für die Varianzkomponenten berechnet werden können, indem wir die Beziehung zwischen den Erwartungswerten von Summenquadraten und den Varianzkomponenten verwendeten. Anstelle der Erwartungswerte wurden die empirischen Summenquadrate den Schätzwerten für die Varianzkomponenten gleichgesetzt.
+
+Ein Nachteil der Varianzanalyse ist, dass sie in Abhängigkeit der Datenkonstellation negative Schätzwerte liefern kann. Da Varianzkomonenten als Quadrate definiert sind, und eine Erweiterung in die komplexe Zahlenmenge biologisch schwer interpretierbar ist, sind diese negativen Schätzwerte unbrauchbar. Als Ausweg hat man andere Schätzverfahren für Varianzkomponenten entwickelt, bei denen das Problem von negativen Schätzwerten nicht auftritt. Zwei von diesen Schätzverfahren wollen wir im folgenden noch etwas genauer anschauen.
+
+
+## Likelihood basierte Verfahren
+Das __Maximum Likelihood__ (ML) Verfahren wurde anfangs des 20. Jahrhunderts von R.A. Fisher entwickelt. ML ist ein allgemeines Schätzverfahren um unbekannte Parameter aus Daten zu schätzen. Es wird also nicht nur für die Schätzung von Varianzkomponenten verwendet. Nehmen wir an, dass es sich bei den beobachteten Daten um kontinuierliche Grössen handelt. Das heisst, die beobachteten Werte sind im wesentlichen reelle Zahlen. Bei ML geht man davon aus, dass die beobachteten Daten einer bestimmten Dichteverteilung - zum Beispiel einer multivariaten Normalverteilung - folgen. Diese Dichteverteilung ist abhängig von unbekannten Parametern, welche aus den Daten geschätzt werden sollen. Sobald wir es mit diskreten Daten zu tun haben, dann können diese nur gewisse Werte annehmen und anstelle der Dichteverteilung der kontinuierlichen Daten, folgen die diskreten Daten einer Wahrscheinlichkeitsverteilung. In den folgenden Abschnitten nehmen wir für die Erklärung von ML kontinuierliche Daten an. Das Verfahren funktioniert aber auch für diskrete Daten.
+
+
+### Dichteverteilung von Beobachtungen
+Wir haben einem Vektor $y$ mit $n$ Beobachtungswerten. Wir nehmen an, dass diese Daten einer bestimmten Dichteverteilung folgen. Als Beispiel für eine Verteilung können wir uns die multivariate oder multi-dimensionale Normalverteilung vorstellen. Der Begriff __multivariat__ bedeutet, dass die Normalverteilung sich über mehrere Dimensionen ausdehnt. Bei $n$ Beobachtungen im Datensatz dehnt sich die gewählte Normalverteilung für $y$ über exakt $n$ Dimensionen aus. Allgemein ist eine reelle $n$-dimensionale Zufallsvariable $Y$ normalverteilt, wenn sie eine Dichteverteilung 
+
+$$f_Y(y) =  \frac{1}{\sqrt{(2\pi)^n\ det(\Sigma)}}\ exp\left(-{1\over 2}(y-\mu)^T \Sigma^{-1} (y-\mu) \right)$$
+
+\begin{tabular}{lll}
+mit  &  $\mu$  &  Erwartungsvektor der Länge $n$ \\
+     &  $\Sigma$  &  Covarianzmatrix mit Dimension $n\times n$\\
+     &  $det()$   &  Determinante
+\end{tabular}
+
+besitzt. Abgekürzt schreibt man auch $Y \sim \mathcal{N}_n(\mu, \Sigma)$. 
+
+Eine graphische Darstellung für eine zweidimensionale Normalverteilung, das heisst hier wäre $n=2$, ist im nachfolgenden Plot gezeigt.
+
+```{r TwoDimNorm, eval=TRUE, fig.show=TRUE, fig.align='center'}
+### # the following code is copied from http://www.ejwagenmakers.com/misc/Plotting_3d_in_R.pdf
+mu1<-0 # setting the expected value of x1
+mu2<-0 # setting the expected value of x2
+s11<-10 # setting the variance of x1
+s12<-15 # setting the covariance between x1 and x2
+s22<-10 # setting the variance of x2
+rho<-0.5 # setting the correlation coefficient between x1 and x2
+x1<-seq(-10,10,length=41) # generating the vector series x1
+x2<-x1 # copying x1 to x2
+
+f<-function(x1,x2)
+{
+  term1<-1/(2*pi*sqrt(s11*s22*(1-rho^2)))
+  term2<--1/(2*(1-rho^2))
+  term3<-(x1-mu1)^2/s11
+  term4<-(x2-mu2)^2/s22
+  term5<--2*rho*((x1-mu1)*(x2-mu2))/(sqrt(s11)*sqrt(s22))
+  term1*exp(term2*(term3+term4-term5))
+} # setting up the function of the multivariate normal density
+#
+z<-outer(x1,x2,f) # calculating the density values
+#
+persp(x1, x2, z,
+      main="Two dimensional Normal Distribution",
+#      sub=expression(italic(f)~(bold(x)) ==
+#                      frac(1,2~pi~sqrt(sigma[11]~sigma[22]~(1-rho^2))) ~
+#                       phantom(0)^bold(.)~exp~bgroup("{",
+#                                                     list(-frac(1,2(1-rho^2)),
+#                                                      bgroup("[", frac((x[1]~-~mu[1])^2, sigma[11])~-~2~rho~frac(x[1]~-~mu[1],                                                                                                                                                                                 sqrt(sigma[11]))~ frac(x[2]~-~mu[2],sqrt(sigma[22]))~+~
+#                                                      frac((x[2]~-~mu[2])^2, sigma[22]),"]")),"}")),
+      col="lightgreen",
+      theta=30, phi=20,
+      r=50,
+      d=0.1,
+      expand=0.5,
+      ltheta=90, lphi=180,
+      shade=0.75,
+      ticktype="detailed",
+      nticks=5) # produces the 3-D plot
+#
+mtext(expression(list(mu[1]==0,
+                      mu[2]==0,
+                      sigma[11]==10,
+                      sigma[22]==10,
+                      sigma[12]==15,
+                      rho==0.5)),
+      side=3) # adding a text line to the graph
+
+```
+
+\vspace{2ex}
+Die für $y$ gewählte Dichteverteilung ist in der Regel von unbekannten Parametern abhängig. Bei der eindimensionalen Normalverteilung sind das der Erwartungswert $\mu$ und die Varianz $\sigma^2$. Wir definieren den Parametervektor $\theta$ als einen Vektor, der alle unbekannten Parameter einer gewissen Verteilung enthält. Bei der eindimensionalen Normalverteilung ist 
+
+$$\theta = \left[
+  \begin{array}{c}
+  \mu\\
+  \sigma^2
+  \end{array}
+\right]$$
+
+### Likelihood Funktion
+Die gewählte Dichteverteilung für die Beobachtungen $y$ bestimmt die  Dichte $f(y | \theta)$ der Daten gegeben die unbekannten Parameter. Diese Funktion $f(y | \theta)$ liefert bei bekannten Werten von $\theta$ die Dichtewerte in Abhängigkeit der Beobachtungen $y$. Bevor die Daten beobachtet werden, kann $f(y | \theta)$ als Funktion der unbekannten Daten behandelt werden und liefert `a priori` Information zur Dichte von möglichen Daten bei gegebenen Verteilungsparametern $\theta$. Sobald aber die Daten beobachtet sind, dann sind diese fix und können nicht mehr verändert werden. Dann macht es keinen Sinn mehr $f(y | \theta)$ als Funktion von $y$ anzuschauen. Da aber die Parameter unbekannt sind, liegt es auf der Hand $f(y | \theta)$ als Funktion der unbekannten Parameter $\theta$ zu betrachten. Wir definieren also die Funktion $L(\theta)$ als 
+
+\begin{equation}
+L(\theta) = f(y | \theta)
+\label{eq:LikelihoodDefinition}
+\end{equation}
+
+Die Funktion $L(\theta)$ heisst __Likelihood__. Aufgrund der Definition von $L(\theta)$ können wir sagen, dass je besser ein Dichteverteilung mit gegebenem Parametervektor $\theta$ die beobachteten Daten $y$ beschreibt desto grösser ist der entsprechende Likelihood-Wert. Aufgrund dieses Arguments scheint es vernünftig, die unbekannten Parameter $\theta$ so zu wählen, dass  $L(\theta)$ maximal wird. Genau das wird im ML-Schätzverfahren umgesetzt. Wir definieren für eine gewählte Dichteverteilung der Beobachtung die Likelihoodfunktion. Dann maximieren wir $L(\theta)$ im Bezug auf $\theta$ und wählen den Wert für $\theta$ als Schätzer, welcher $L(\theta)$ maximiert. Formal schreiben wir das als
+
+$$\hat{\theta}_{ML} = argmax_{\theta} \ L(\theta)$$
+
+
+### Beispiel für ein Regressionsmodell
+<!-- siehe: https://www.statlect.com/fundamentals-of-statistics/linear-regression-maximum-likelihood -->
+Als erstes Beispiel schauen wir uns an, wie wir die Restvarianz $\sigma^2$ in einem Regressionsmodell (\ref{eq:SimpleRegModel}) mit dem ML-Verfahren schätzen können.  
+
+\begin{equation}
+y = Xb + e
+\label{eq:SimpleRegModel}
+\end{equation}
+
+Unter der Annahme, dass die Beobachtungen $y$ einer multivariaten Normalverteilung folgen, können wir die bedingte Dichteverteilung aller Daten gegeben bekannte Parameter schreiben als
+
+\begin{equation}
+f_Y(y | b, \sigma^2) = (2\pi \sigma^2)^{-n/2} exp\left(-{1\over 2\sigma^2} (y - Xb)^T\ (y - Xb)\right)
+\label{eq:SimpleRegCondDensityObs}
+\end{equation}
+
+Fassen wir die Dichteverteilung in (\ref{eq:SimpleRegCondDensityObs}) als Funktion der Parameter $b$ und $\sigma^2$ auf, so resultiert daraus die folgende Likelihoodfunktion
+
+\begin{equation}
+L(b, \sigma^2) = (2\pi \sigma^2)^{-n/2} exp\left(-{1\over 2\sigma^2} (y - Xb)^T\ (y - Xb)\right)
+\label{eq:SimpleRegLikelihood}
+\end{equation}
+
+Schätzwerte für die unbekannten Parameter $b$ und $\sigma^2$ erhalten wir indem wir $L(b, \sigma^2)$ mit Bezug auf $b$ und auf $\sigma^2$ maximieren. Allgemein finden wir das Maximum einer Funktion durch differenzieren und Nullsetzen der ersten Ableitung (Steigung). Die so erhaltenen Nullstellen der Steigung müssen mit höheren Ableitungen überprüft werden, ob sie tatsächlich ein Maximum darstellen. Für das Differenzieren verwenden wir nicht die Likelihoodfunktion $L(b, \sigma^2)$ direkt, sondern deren Logarithmus zur Basis $e$.
+
+$$l(b, \sigma^2) = \log(L(b, \sigma^2)) = -{n\over 2}\log(2\pi) - {n\over 2}\log(\sigma^2) - {1\over 2\sigma^2} (y - Xb)^T\ (y - Xb)$$
+
+Der Grund für diese Transformation ist, dass $l(b, \sigma^2)$ in der Regel viel einfacher zu differenzieren ist als $L(b, \sigma^2)$. Die Transformation auf die logarithmische Skala ändert nichts an der Position der auftretenden Extrema. Für uns heisst das, dass wo immer $l(b, \sigma^2)$ ein Maximum hat, hat auch $L(b, \sigma^2)$ ein Maximum.
+
+Obwohl wir eigentlich nur an der Schätzung für die Varianzkomponente $\sigma^2$ interessiert sind, bekommen wir mit dem ML-Verfahren auch eine Schätzung für den Vektor $b$. Wir berechnen die partielle Ableitung von $l(b, \sigma^2)$ nach $b$ und nach $\sigma^2$, setzen diese gleich Null und haben dann Kandidaten für mögliche Schätzwerte. 
+
+\begin{eqnarray}
+\frac{\partial l(b, \sigma^2)}{\partial b} &=& - {1\over 2\sigma^2} (-(y^TX)^T - X^Ty + 2X^TXb) \nonumber\\
+&=& - {1\over 2\sigma^2} (-2X^Ty  + 2X^TXb) 
+\label{eq:PartialLogLWrtB}
+\end{eqnarray}
+
+Das Maximum von $l(b, \sigma^2)$ kann dort auftreten, wo die Ableitung in (\ref{eq:PartialLogLWrtB}) gleich $0$ ist. Die Untersuchung höherer Ableitung würde ergeben, dass diese Nullstelle der Ableitung wirklich ein Maximum darstellt. Somit folgen die sogenannten Normalgleichungen
+
+$$X^Ty = X^TX\hat{b}$$
+
+Daraus folgt die ML-Schätzung für $b$ als
+
+
+\begin{equation}
+\hat{b} = (X^TX)^{-1}X^Ty
+\label{eq:MlEstB}
+\end{equation}
+
+Der ML-Schätzer für $b$ in (\ref{eq:MlEstB}) setzt voraus, dass die Matrix $X$ vollen Kolonnenrang $p$ hat. Das heisst, keine zwei oder mehr Kolonnen von $X$ sind linear abhängig voneinander. Der ML-Schätzer $\hat{b}$ für $b$ entspricht dem Schätzer, welcher wir schon mit Least Squares gefunden hatten. 
+
+Den ML-Schätzer für $\sigma^2$ finden wir analog zum Schätzer für $b$. Als erstes berechnen wir die partielle Ableitung von $l(b, \sigma^2)$ nach $\sigma^2$. Dann setzen wir diese gleich $0$ und erhalten so den ML-Schätzer für $\sigma^2$. 
+
+\begin{eqnarray}
+\frac{\partial l(b, \sigma^2)}{\partial \sigma^2} &=& - {n\over 2\sigma^2} + {1\over 2\sigma^4} (y - Xb)^T\ (y - Xb)
+\label{eq:PartialLogLWrtSigma2}
+\end{eqnarray}
+
+Vorausgesetzt, dass $\sigma^2 \ne 0$, gilt
+
+$${1\over \hat{\sigma}^2} (y - Xb)^T\ (y - Xb) - n = 0$$
+
+Dieser Ausdruck kann nur dann gleich $0$ sein, falls 
+
+\begin{equation}
+\hat{\sigma}^2 = {1\over n}  (y - Xb)^T\ (y - Xb)
+\label{eq:MlEstSigma2}
+\end{equation}
+
+Schreiben wir den Ausdruck in (\ref{eq:MlEstSigma2}) in der Summennotation, so erhalten wir
+
+\begin{equation}
+\hat{\sigma}^2 = {1\over n} \sum_{i=1}^n (y_i - x_i^Tb)^2
+\label{eq:MlEstSigma2Sum}
+\end{equation}
+
+Da in (\ref{eq:MlEstSigma2Sum}) der Vektor $b$ unbekannt ist, setzen wir den Schätzer $\hat{b}$ aus (\ref{eq:MlEstB}) ein und erhalten so den ML-Schätzer für $\sigma^2$
+
+\begin{equation}
+\hat{\sigma}^2 = {1\over n} \sum_{i=1}^n (y_i - x_i^T\hat{b})^2
+\label{eq:MlEstSigma2SumResult}
+\end{equation}
+
+Vergleichen wir den ML-Schätzer aus (\ref{eq:MlEstSigma2SumResult}) mit dem Schätzer, den wir bei Least Squares aufgrund der Residuen gefunden hatten, dann sind die beiden Schätzer nicht gleich. Der Schätzer für $\sigma^2$ aufgrund der Residuen ist definiert als 
+
+\begin{equation}
+\hat{\sigma}^2_{Res} = {1\over n-p} \sum_{i=1}^n r_i^2
+\label{eq:MlEstSigma2Residuals}
+\end{equation}
+
+wobei $r_i^2 = y_i - x_i^T\hat{b}$ und $p$ dem Kolonnenrang der Matrix $X$ entspricht. Wir hatten auch gesehen, dass $\hat{\sigma}^2_{Res}$ erwartungstreu ist. Somit ist der ML-Schätzer für $\sigma^2$ nicht erwartungstreu, d.h. $E\left[\hat{\sigma}^2_{ML}\right] \ne \sigma^2$. 
+
+
+\pagebreak
+
+### Beispiel für das gemischte lineare Modell
+Im allgemeinen lineare gemischten Modell 
+
+\begin{equation}
+y = Xb + Zu + e
+\label{eq:GenLinMixedModel}
+\end{equation}
+
+gibt es mindestens zwei Varianzkomponenten, welche zu schätzen sind. Für die beiden zufälligen Effekte $u$ und $e$ haben wir angenommen, dass 
+
+$$var(e) = R = I * \sigma_e^2$$
+
+und 
+
+$$var(u) = G \text{.}$$
+
+Je nach Anwendung hat auch $G$ eine einfache Struktur, d.h. wir können $G$ zerlegen in eine bekannte Matrix $A$ mal eine Varianzkomponente $\sigma_u^2$. Als Beispiel entspricht $G$ im Tiermodell der Verwandtschaftsmatrix mal die additiv genetische Varianz, d.h. $G = A * \sigma_a^2$. Die Erwartungswerte der zufälligen Effekte $u$ und $e$ sind für beide gleich. Es gilt also 
+
+$$E\left[e\right] = 0 \text{ und } E\left[u\right] = 0$$
+
+Aus diese Eigenschaften für die Erwartungswerte und die Varianzen folgt, dass für die Beobachtungen $y$ gilt
+
+$$E\left[y\right] = Xb \text{ und } var(y) = V$$
+
+### Likelihood für das gemischte Modell
+Unter der Annahme, dass die Beobachtungen $y$ einer multivariaten Normalverteilung folgen, d.h. 
+
+$$y \sim \mathcal{N}(Xb, V)$$
+
+dann ist die entsprechende Likelihoodfunktion $L(b,V)$ definiert als 
+
+$$L(b,V) = (2\pi)^{n/2}\ det(V)^{1/2}\ exp\left\{-{1\over 2}(y - Xb)^T V^{-1} (y - Xb)\right\}$$
+
+Auch hier transformieren wir die Funktion $L$ wieder auf die logarithmische Skala und erhalten 
+
+$$l(b,V) = \log(L(b,V)) = -{n\over 2}\log(2\pi) - {1\over 2}\log(det(V)) - {1\over 2}(y - Xb)^T V^{-1} (y - Xb)$$
+
+Den ML-Schätzer für $b$ erhalten wir durch Nullsetzen der partiellen Ableitung von $l(b,V)$ nach $b$. Als Resultat erhalten wir den bekannten verallgemeinerten Least Squares Schätzer 
+
+\begin{equation}
+\hat{b} = \left(X^TV^{-1}X\right)X^TV^{-1}y
+\label{eq:MLEstHatB}
+\end{equation}
+
+
+Die partielle Ableitung von $l(b,V)$ nach $\sigma^2$ entspricht
+
+\begin{equation}
+\frac{\partial l(b,V)}{\partial \sigma^2} 
+  = -{1\over 2}tr(V^{-1}\tilde{Z}\tilde{Z}^T) + {1\over 2}(y - Xb)^T V^{-1}\tilde{Z}\tilde{Z}^TV^{-1}(y - Xb)
+\label{eq:PartialLogLSigma2}
+\end{equation}
+  
+wobei $tr()$ die Spur (Summe der Diagonalelemente) einer Matrix bezeichnet. Die Varianzkomponente $\sigma^2$ entspricht der Kombination von $\sigma_e^2$ und $\sigma_u^2$ und $\tilde{Z}$ entspricht der Inzidenzmatrix aus der kombinierten Varianzkomponente.
+
+Setzt man die Ableitung in (\ref{eq:PartialLogLSigma2}) gleich Null und setzt für $b$ den Schätzer $\hat{b}$ aus (\ref{eq:MLEstHatB}), dann resultiert ein Gleichungssystem, dessen Lösung zum ML-Schätzer von $\sigma^2$ führt. 
+
+
+## Restricted (Residual) Maximum Likelihood (REML)
+<!-- siehe auch http://users.stat.umn.edu/~corbett/classes/5303/REML.pdf -->
+ML-Schätzer von Varianzkomponenten haben die Eigenschaft, dass sie die Anzahl Freiheitsgrade ($p$), welche zur Schätzung der fixen Effekte verwendet werden, nicht berücksichtigen. Sie sind somit nicht erwartungstreu, was wir beim ML-Schätzer der Restvarianz für das einfache Regressionsmodell gesehen hatten.
+
+Im Gegensatz zu ML berücksichtigen REML-Schätzungen von Varianzkomponenten die Anzahl Freiheitsgrade, welche für die Schätzung von fixen Effekten verwendet werden. Dies wird dadurch erreicht, dass die Likelihoodfunktion nicht als die Dichteverteilung von $y$ gegeben die Parameter aufgestellt werden, sondern von einer Transformation $\tilde{y} = Ky$. Dabei wird die Matrix $K$ so bestimmt, dass der Erwatungswert $E\left[\tilde{y}\right] = 0$ ist. Somit treten in der Likelihoodfunktion über $\tilde{y}$ keine fixen Effekte $b$ mehr auf, welche auch noch geschätzt werden müssen. 
+
+Der eigentliche Prozess, wie man zu den Schätzungen kommt ist analog zum Maximum-Likelihood Verfahren, nur wird anstelle von $y$ mit $\tilde{y}$ operiert.
+
+
+## Bayes'sche Ansätze (Ein Ausblick)
+In der Statistik gibt es zwei fundamentale Philosophien, wie Datenanalysen gemacht werden sollen. Auf der einen Seite gibt es den __frequentistischen__ Ansatz und auf der anderen Seite den __Bayes'schen__ Ansatz. Alles was wir bis jetzt behandelt haben stammt aus der frequentistischen Welt. 
+
+Bayes'sche Ansätze sind so benannt, weil sie auf dem Satz von Bayes begründet sind. Dieser Satz enthält eigentlich nur die Definition der bedingten Wahrscheinlichkeit. Eine Bayes'sche Schätzung eines unbekannten Parameters $\theta$ aufgrund von Daten $y$, basiert immer auf der sogenannten __a posteriori__ Verteilung ($P(\theta | \ y)$) des Parameters gegeben die Daten. Als eigentlicher Schätzwert wird dann meistens der Erwartungswert $E\left[\theta | y \right]$ verwendet.
+
+Die a posteriori Verteilung des Parameters gegeben die Daten lässt sich gemäss Satz von Bayes berechnen als
+
+$$P(\theta | y) = \frac{P(y | \theta) * P(\theta)}{P(y)}$$
+
+wobei $P(y | \theta)$ der Likelihood entspricht und $P(\theta)$ als __a priori__ Wahrscheinlichkeit des unbekannten Parameters bezeichnet wird. $P(y)$ steht für eine Normalisierungskonstante, welche keine weitere Bedeutung hat.
+
+

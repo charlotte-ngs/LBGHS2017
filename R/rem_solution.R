@@ -15,9 +15,13 @@
 #psExFile <- "ex/w10/lbg_hs_2017_w10_ex9.Rmd"
 #psAnsFile <- "../../r4tea-platform/LBGHS2017/ex/w10/lbg_hs_2017_w10_ans9.Rmd"
 
-psFile <- "sol/w11/lbg_hs_2017_w11_sol10.Rmd"
-psExFile <- "ex/w11/lbg_hs_2017_w11_ex10.Rmd"
-psAnsFile <- "../../r4tea-platform/LBGHS2017/ex/w11/lbg_hs_2017_w11_ans10.Rmd"
+#psFile <- "sol/w11/lbg_hs_2017_w11_sol10.Rmd"
+#psExFile <- "ex/w11/lbg_hs_2017_w11_ex10.Rmd"
+#psAnsFile <- "../../r4tea-platform/LBGHS2017/ex/w11/lbg_hs_2017_w11_ans10.Rmd"
+
+psFile <- "sol/w12/lbg_hs_2017_w12_sol11.Rmd"
+psExFile <- "ex/w12/lbg_hs_2017_w12_ex11.Rmd"
+psAnsFile <- "../../r4tea-platform/LBGHS2017/ex/w12/lbg_hs_2017_w12_ans11.Rmd"
 
 
 #' Remove solutions from solution document

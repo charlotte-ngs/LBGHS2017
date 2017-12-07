@@ -1,0 +1,227 @@
+---
+title: Züchtungslehre - Varianzkomponentenschätzung - Teil 2
+author: Peter von Rohr
+date: 2017-12-01
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Varianzanalyse
+
+- Erwartungswerte von Summenquadraten sind Funktionen von Varianzkomponenten
+- Negative Schätzwerte aufgrund von Datenkonstellationen
+- keine Konsistenz, d.h. bei steigenden Datenmengen keine Steigerung der Qualität
+- keine Berücksichtigung der Verteilung der Daten
+
+## Likelihood
+
+- Anpassung einer Verteilung an die Daten
+- Verteilungsparameter sollen so geschätzt werden, dass Verteilung "optimal" zu Daten passt
+- Als Kriterium dient die __Likelihood__ $L$
+- Definition
+
+$$L(\theta) = f(y | \theta)$$
+
+
+## Maximierung der Likelihood
+
+- Nach Beobachtung der Daten ist $y$ fix gegeben
+- Deshalb wird $L$ als Funktion der Parameter $\theta$ aufgegasst
+- __Ziel__: finde Parameter $\theta$, so dass $L$ möglichst gut zu beobachteten Daten passt
+- Umsetzung: Maximierung von $L$ im Bezug auf $\theta$, setzte $\theta$ beim Maximum von $L$ als Schätzwert
+
+$$\hat{\theta}_{ML} = argmax_{\theta} \ L(\theta)$$
+
+
+## Beispiel
+
+- Regressionmodell
+
+$$y = Xb + e$$
+
+- Ziel: Schätzung der Restvarianz $\sigma^2$ mit ML
+- Annahme: Beobachtungen sind normalverteilt
+
+$$f_Y(y | b, \sigma^2) = (2\pi \sigma^2)^{-n/2} exp\left(-{1\over 2\sigma^2} (y - Xb)^T\ (y - Xb)\right)$$
+
+
+## Multivariate Normalverteilung
+
+```{r TwoDimNorm, eval=TRUE, fig.show=TRUE, fig.align='center', fig.height=4, fig.width=6}
+### # the following code is copied from http://www.ejwagenmakers.com/misc/Plotting_3d_in_R.pdf
+mu1<-0 # setting the expected value of x1
+mu2<-0 # setting the expected value of x2
+s11<-10 # setting the variance of x1
+s12<-15 # setting the covariance between x1 and x2
+s22<-10 # setting the variance of x2
+rho<-0.5 # setting the correlation coefficient between x1 and x2
+x1<-seq(-10,10,length=41) # generating the vector series x1
+x2<-x1 # copying x1 to x2
+
+f<-function(x1,x2)
+{
+  term1<-1/(2*pi*sqrt(s11*s22*(1-rho^2)))
+  term2<--1/(2*(1-rho^2))
+  term3<-(x1-mu1)^2/s11
+  term4<-(x2-mu2)^2/s22
+  term5<--2*rho*((x1-mu1)*(x2-mu2))/(sqrt(s11)*sqrt(s22))
+  term1*exp(term2*(term3+term4-term5))
+} # setting up the function of the multivariate normal density
+#
+z<-outer(x1,x2,f) # calculating the density values
+#
+persp(x1, x2, z,
+      main="Two dimensional Normal Distribution",
+#      sub=expression(italic(f)~(bold(x)) ==
+#                      frac(1,2~pi~sqrt(sigma[11]~sigma[22]~(1-rho^2))) ~
+#                       phantom(0)^bold(.)~exp~bgroup("{",
+#                                                     list(-frac(1,2(1-rho^2)),
+#                                                      bgroup("[", frac((x[1]~-~mu[1])^2, sigma[11])~-~2~rho~frac(x[1]~-~mu[1],                                                                                                                                                                                 sqrt(sigma[11]))~ frac(x[2]~-~mu[2],sqrt(sigma[22]))~+~
+#                                                      frac((x[2]~-~mu[2])^2, sigma[22]),"]")),"}")),
+      col="lightgreen",
+      theta=30, phi=20,
+      r=50,
+      d=0.1,
+      expand=0.5,
+      ltheta=90, lphi=180,
+      shade=0.75,
+      ticktype="detailed",
+      nticks=5) # produces the 3-D plot
+#
+mtext(expression(list(mu[1]==0,
+                      mu[2]==0,
+                      sigma[11]==10,
+                      sigma[22]==10,
+                      sigma[12]==15,
+                      rho==0.5)),
+      side=3) # adding a text line to the graph
+
+```
+
+## Parameter
+
+- Für unser Beispiel sind $b$ und $\sigma^2$ unbekannte Parameter
+- Schätzung für $b$: Maximierung von $L$ im Bezug auf $b$
+- Schätzung für $\sigma^2$: Maximierung von $L$ im Bezug auf $\sigma^2$
+- Maximierung von $L$: 
+    + Partielle Ableitung
+    + Ableitung $0$ setzen
+    + nach gesuchtem Parameter auflösen
+- Vorbereitung: Transformation von $L$ zu $l$, wobei
+
+$$l(\theta) = \log(L(\theta))$$
+
+
+## ML Schätzung für $b$
+
+- Transformation
+
+$$l(b, \sigma^2) = \log(L(b, \sigma^2))$$
+$$= -{n\over 2}\log(2\pi) - {n\over 2}\log(\sigma^2) 
+                   - {1\over 2\sigma^2} (y - Xb)^T\ (y - Xb)$$
+
+- Partielle Ableitung:
+
+\begin{eqnarray}
+\frac{\partial l(b, \sigma^2)}{\partial b} &=& - {1\over 2\sigma^2} (-(y^TX)^T - X^Ty + 2X^TXb) \nonumber\\
+&=& - {1\over 2\sigma^2} (-2X^Ty  + 2X^TXb) 
+\label{eq:PartialLogLWrtB}
+\end{eqnarray}
+
+
+## Bestimmung von $\hat{b}_{ML}$
+
+- Nullstelle der Ableitung
+
+$$- {1\over 2\sigma^2} (-2X^Ty  + 2X^TXb) = 0$$
+
+- Normalgleichung
+
+$$X^Ty = X^TX\hat{b}$$
+
+- Resultat ist gleich wie bei LS
+
+$$\hat{b} = (X^TX)^{-1}X^Ty$$
+
+
+## ML Schätzung für $\sigma^2$
+
+- Analoges Vorgehen wie bei $b$
+- Partielle Ableitung von $l$ nach $\sigma^2$
+\begin{eqnarray}
+\frac{\partial l(b, \sigma^2)}{\partial \sigma^2} &=& - {n\over 2\sigma^2} + {1\over 2\sigma^4} (y - Xb)^T\ (y - Xb)
+\label{eq:PartialLogLWrtSigma2}
+\end{eqnarray}
+
+- Vorausgesetzt, $\sigma^2 \ne 0$
+
+$${1\over \hat{\sigma}^2} (y - Xb)^T\ (y - Xb) - n = 0$$
+
+- Nullstelle der Ableitung
+
+\begin{equation}
+\hat{\sigma}^2 = {1\over n}  (y - Xb)^T\ (y - Xb)
+\label{eq:MlEstSigma2}
+\end{equation}
+
+
+## Bestimmung von $\hat{\sigma}^2$
+
+- Da $b$ unbekannt, wird $\hat{b}_{ML}$ eingesetzt
+- In Summennotation:
+
+\begin{equation}
+\hat{\sigma}^2 = {1\over n} \sum_{i=1}^n (y_i - x_i^T\hat{b})^2
+\label{eq:MlEstSigma2SumResult}
+\end{equation}
+
+- Schätzung aufgrund der Residuen
+\begin{equation}
+\hat{\sigma}^2_{Res} = {1\over n-p} \sum_{i=1}^n r_i^2
+\label{eq:MlEstSigma2Residuals}
+\end{equation}
+
+- Somit $E\left[\hat{\sigma}^2_{ML}\right] \ne \sigma^2$
+
+
+## Lineares gemischtes Modell
+
+- Gleiches Vorgehen
+- Modell
+\begin{equation}
+y = Xb + Zu + e
+\label{eq:GenLinMixedModel}
+\end{equation}
+
+$$var(e) = R = I * \sigma_e^2$$
+$$var(u) = G \text{.}$$
+$$E\left[e\right] = 0 \text{ und } E\left[u\right] = 0$$
+$$E\left[y\right] = Xb \text{ und } var(y) = V$$
+$$y \sim \mathcal{N}(Xb, V)$$
+
+## ML-Schätzung
+
+- Log-Likelihood
+$$l(b,V) = \log(L(b,V)) = -{n\over 2}\log(2\pi) - {1\over 2}\log(det(V)) - {1\over 2}(y - Xb)^T V^{-1} (y - Xb)$$
+
+- Partielle Ableitungen bilden
+$$\frac{\partial l(b,V)}{\partial b}$$ 
+$$\frac{\partial l(b,V)}{\partial \sigma^2}$$ 
+
+- Nullstellen finden
+- Schätzer bestimmen
+
+
+## Restricted (Residual) Maximum Likelihood (REML)
+
+- ML-Schätzer für Varianzkomponenten nicht erwartungstreu
+- Problem: gleichzeitiges Schätzen von fixen Effekten, was bei Schätzung von $\sigma^2$ nicht berücksichtigt
+- Lösung: 
+    + vorgängige transformation von $y$ zu $\tilde{y} = Ky$, so dass gilt $E\left[\tilde{y}\right] = 0$
+    + dann gleiches Vorgehen mit $l(\theta) = f(\tilde{y} | \theta)$
+- Resultat entspricht __REML__-Schätzung, wobei $\hat{\sigma}_{REML}^2$ erwartungstreu
+
+
