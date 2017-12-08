@@ -245,9 +245,12 @@ knitr::kable(dfSolTable)
 
 ### Weitere Materialien
 ```{r FurtherMatTable, echo=FALSE, results='asis'}
-dfFurtherMat <- data.frame(Woche = c(7),
-                           Datum = c(format(as.Date("2017/11/03"), "%d.%m")),
-                           Thema = c("[Batman Plot](https://charlotte-ngs.github.io/BatmanPlot/BatmanPlotPost.html)"))
+dfFurtherMat <- data.frame(Woche = c(7,12),
+                           Datum = c(format(as.Date("2017/11/03"), "%d.%m"),
+                                     format(as.Date("2017/12/08"), "%d.%m")),
+                           Thema = c("[Batman Plot](https://charlotte-ngs.github.io/BatmanPlot/BatmanPlotPost.html)",
+                                     "[Demo Aufstellen der Mischmodellgleichungen](https://charlotte-ngs.github.io/LBGHS2017/sl/w8/demoMME.pdf)")
+                           )
 
 ### # generate table
 knitr::kable(dfFurtherMat)
