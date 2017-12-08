@@ -1,0 +1,137 @@
+---
+title: "Mischmodellgleichungen"
+author: "Peter von Rohr"
+date: "08/12/2017"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In der Vorlesung haben wir gezeigt, wie wir zu folgenden Datensatz die Mischmodellgleichungen aufstellen und lösen können. Wir haben dies mit ein paar R-statements gemacht, welche hier nochmals gezeigt werden.
+
+## Daten
+Die Daten als `dataframe` gegeben.
+
+```{r}
+nNrAniInPed <- 8
+nIdxFirstAniWithData <- 4
+dfWwg <- data.frame(Kalb = c(nIdxFirstAniWithData:nNrAniInPed),
+                    Geschlecht = c("M","F","F","M","M"),
+                    Vater = c(1,3,1,4,3),
+                    Mutter = c(NA,2,2,5,6),
+                    WWG = c(4.5,2.9,3.9,3.5,5.0))
+
+```
+
+Als Tabelle sehen die Daten wie folgt aus:
+
+```{r, echo=FALSE}
+knitr::kable(dfWwg)
+```
+
+## Varianzkomponenten
+Die für die Mischmodellgleichungen benötigten Varianzkomponenten lauten wie folgt.
+
+```{r}
+sigmae2 <- 40
+sigmaa2 <- 20
+alpha <- sigmae2/sigmaa2
+```
+
+
+## Pedigree
+Wie schon im Abschnitt Daten gezeigt, sind die Tiere verwandt miteinander. Aufgrund der angegebenen Verwandtschaft kann das folgende Pedigree aufgestellt werden.
+
+```{r}
+suppressPackageStartupMessages(library(pedigreemm))
+(ped <- pedigree(sire = c(NA,NA,NA,1,3,1,4,3), dam = c(NA,NA,NA,NA,2,2,5,6), label = c(1:8)))
+```
+
+Aufgrund des Pedigrees können wir die inverse Verwandtschaftsmatrix $A^{-1}$ wie folgt aufstellen
+
+```{r}
+(Ainv <- as.matrix(getAInv(ped)))
+```
+
+
+## Mischmodellgleichungen
+### Koeffizientenmatrix $M$
+Für die Koeffizientenmatrix müssen wir zuerst die Inzidenzmatrizen $X$ und $Z$ aufstellen.
+
+```{r}
+(X <- matrix(data = c(1, 0,
+                     0, 1,
+                     0, 1,
+                     1, 0,
+                     1, 0), ncol = 2, byrow = TRUE))
+```
+
+
+```{r}
+(Z <- cbind(matrix(data = 0, nrow = 5, ncol = 3), diag(5)))
+```
+
+Die vier Unter-Matrizen von $M$ lauten
+
+1. $X^TX$
+```{r}
+(XTX <- t(X) %*% X)
+```
+
+2. $X^TZ$
+```{r}
+(XTZ <- t(X) %*% Z)
+```
+
+3. $Z^TX$
+```{r}
+(ZTX <- t(XTZ))
+```
+
+4. $Z^TZ + A^{-1}\alpha$
+```{r}
+(ZTZAinvAlpha <- t(Z) %*% Z + Ainv * alpha)
+```
+
+Aufstellen von $M$
+```{r}
+(M <- rbind(cbind(XTX, XTZ), cbind(ZTX, ZTZAinvAlpha)))
+```
+
+### Rechte Handseite (rhs)
+Den Vektor $y$ extrahieren wir direkt aus den Daten
+
+```{r}
+(y <- dfWwg$WWG)
+```
+
+1. $X^Ty$
+```{r}
+(XTy <- t(X) %*% y)
+```
+
+2. $Z^Ty$
+```{r}
+(ZTy <- t(Z) %*% y)
+```
+
+Aufstellen von rhs
+
+```{r}
+(rhs <-  rbind(XTy,ZTy))
+```
+
+
+## Lösung
+Für dieses kleine Beispiel können wir die Lösung als $sol = M^{-1} * rhs$ berechnen
+
+```{r}
+(sol <- solve(M, rhs))
+```
+
+
+
+
+
