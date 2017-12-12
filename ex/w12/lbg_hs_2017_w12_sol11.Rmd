@@ -1,0 +1,127 @@
+---
+title:  Züchtungslehre - Lösung 11
+author: Peter von Rohr
+date: 2017-12-08
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis')
+```
+
+```{r DocumentStatus, echo=FALSE}
+en <- rmddochelper::R6ClassEnum$new()
+```
+
+
+Gegeben ist der folgende Datensatz.
+
+
+```{r ShowData, echo=FALSE, results='markup'}
+nNrRecords <- 9
+nNrSire <- 3
+dfMlrData <- data.frame(Tochter = as.character(c(1:nNrRecords)),
+                        Herde   = c("1","1","2","2","2","3","3","3","3"),
+                        Vater   = c("C","A","B","A","C","C","C","A","B"),
+                        Leistung = c(110,127,110,101,200,170,110,100,150))
+nNrHerde <- length(unique(dfMlrData$Herde))
+knitr::kable(dfMlrData)
+```
+
+
+```{r, echo=FALSE}
+en$incrCount();cat("## Aufgabe", en$getCount(), "\n")
+```
+
+Um den Einfluss der Herde auf die Leistung der Töchter abschätzen zu können, verwenden wir das folgende fixe Modell.
+
+$$y = Xb + e$$
+
+\begin{tabular}{lll}
+mit  &  $y$  &  Vektor der Leistungen\\
+     &  $b$  &  Vektor der fixen Herdeneffekte\\
+     &  $X$  &  Inzidenzmatrix von $b$\\
+     &  $e$  &  Vektor der Reste
+\end{tabular}
+
+Aus der folgenden Regressionsanalyse kennen wir die geschätzten Herdeneffekte
+
+```{r RegHerde, results='markup'}
+lmRegHerde <- lm(Leistung ~ -1 + Herde, data = dfMlrData)
+coefficients(lmRegHerde)
+```
+
+### Ihre Aufgaben
+Wir nehmen an, dass die Resteffekte $e$ unkorreliert sind und somit gilt, dass $var(e) = I*\sigma_e^2$, wobei $I$ die Einheitsmatrix darstellt. Schätzen Sie die Restvarianz $\sigma_e^2$ aufgrund der Residuen des oben gezeigten Regressionsmodells.
+
+<!-- solution -->
+### Lösung
+Die Residuen $r_i$ erhalten wir durch Subtraktion der Beobachtungen $y_i$ minus die gefitteten Werte $\hat{y}_i = x_i^T\hat{b}$. Für unser Zahlenbeispiel heisst das konkret, dass wir von jedem Beobachtungswert $y_i$ einfach den entsprechenden Herdeneffekt abziehen müssen. Die Herdeneffekte sind oben gegeben. Also ziehen wir von den Beobachtungen $y_1$ und $y_2$ den Effekt der Herde 1 ab, von den Beobachtungen $y_3$ bis $y_5$ den Effekt der Herde 2 usw. Als Resultat erhalten wir den Vektor der Residuen, der für unser Beispiel wie folgt aussieht.
+
+```{r CompResid, results='markup'}
+### # Vektor der Residuen
+(vecRes <- as.vector(residuals(lmRegHerde)))
+```
+
+Daraus lässt sich der Vektor der quadrierten Residuen berechnen.
+
+```{r CompQuadResid, results='markup'}
+### # Vektor der quadrierten Residuen
+(vecRes2 <- vecRes^2)
+```
+
+Summieren wir über die quadrierten Residuen und teilen die Summe durch die Anzahl Freiheitsgrade, dann erhalten wir die gefragte Schätzung der Restvarianz. Die Anzahl Freiheitsgrade hier entspricht den Anzahl Beobachtungen minus die Anzahl Herden.
+
+```{r CompVarRes, results='markup'}
+### # Restvarianz
+nResVarEst <- crossprod(vecRes) / (nrow(dfMlrData) - nNrHerde)
+cat("Restvarianz: ", nResVarEst, "\n")
+```
+
+<!-- /solution -->
+
+
+```{r, echo=FALSE}
+en$incrCount();cat("## Aufgabe", en$getCount(), "\n")
+```
+Den Einfluss der Väter auf die Leistungen der Töchter analysieren wir mit einem Modell, in welchem die Vatereffekte als zufällig betrachtet werden.
+
+Das Modell mit den zufälligen Vatereffekten sieht, wie folgt aus
+
+$$y = 1\mu + Zu + e$$
+
+\begin{tabular}{lll}
+mit  &  $y$    &  Vektor der Leistungen\\
+     &  $\mu$  &  allgemeiner Mittelwert\\
+     &  $1$    &  Vektor, deren Komponenten alle gleich $1$\\
+     &  $u$    &  Vektor der zufälligen Vatereffekte\\
+     &  $Z$    &  Inzidenzmatrix für $u$\\
+     &  $e$    &  Vektor der Reste
+\end{tabular}
+
+Die Varianzen für die zufälligen Effekte $u$ und $e$ sind bestimmt durch
+
+$$var(u) = I * \sigma_u^2 \quad \text{und} \quad var(e) = I*\sigma_e^2$$
+
+Die ANOVA-Tabelle des obigen Modells ist nachfolgend gegeben.
+
+```{r AnovaTable, results='markup'}
+tabAovVater <- aov(formula = Leistung ~ Vater, data = dfMlrData)
+summary(tabAovVater)
+```
+
+### Ihre Aufgaben
+Schätzen Sie aufgrund der gegebenen ANOVA-Tabelle die Varianz ($\sigma_u^2$) der zufälligen Vatereffekte und die Varianz ($\sigma_e^2$) der Resteffekte.
+
+<!-- solution -->
+### Lösung
+
+Die Schätzung der Restvarianz $\hat{\sigma_e^2}$ beträgt:
+
+$$\hat{\sigma_e^2} = 1224$$
+
+Die Schätzung der Varianz $\hat{\sigma_u^2}$ der Vatereffekte beträgt:
+
+$$\hat{\sigma_u^2} = \frac{1250 - 1224}{`r nNrRecords`} = `r round((1250 - 1224)/nNrRecords, digits = 2)`$$
+
+<!-- /solution -->
