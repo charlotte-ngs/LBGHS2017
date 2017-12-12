@@ -1,0 +1,90 @@
+---
+title: "Dichteverteilungen von Daten"
+output:
+  html_document: default
+  html_notebook: default
+---
+
+## Datensatz
+Gegeben ist ein Datensatz, der etwas grösser ist als unser kleiner Beispieldatensatz mit den Gewichten
+
+```{r}
+nNrAniInPed <- 8
+nIdxFirstAniWithData <- 4
+dfWwg <- data.frame(Kalb = c(nIdxFirstAniWithData:nNrAniInPed),
+                    Geschlecht = c("M","F","F","M","M"),
+                    Vater = c(1,3,1,4,3),
+                    Mutter = c(NA,2,2,5,6),
+                    WWG = c(4.5,2.9,3.9,3.5,5.0))
+
+dfWwgRed <- dfWwg[,c("Kalb","Geschlecht","WWG")]
+```
+
+Als Tabelle dargestellt bekommen wir
+
+```{r}
+knitr::kable(dfWwgRed)
+```
+
+Den grösseren Datensatz erzeugen wir durch Replikation des kleinen Datensatzes und durch Hinzufügen eines zufälligen Anteils
+
+```{r}
+y <- rep(dfWwg$WWG, 20) + rnorm(100, mean = mean(dfWwg$WWG))
+# y
+```
+
+## Empirische Verteilung
+Die Daten im Vektor $y$ weisen eine gewisse empirische Dichteverteilung auf. Diese Verteilung können wir als Histogramm darstellen mit 
+
+```{r}
+hist(y)
+```
+
+## Dichteverteilung - Normalverteilung
+Dichteverteilungen sind über 
+
+* Erwartungswert (Mittelwert $\mu$) und 
+* Varianz
+
+bestimmt. Zum Beispiel
+
+```{r}
+library(ggplot2)
+set.seed(1)
+# create some data to work with
+x = rnorm(1000);
+
+# overlay histogram, empirical density and normal density
+p0 = qplot(x, geom = 'blank') +   
+  stat_function(fun = dnorm, args = list(mean = 0, sd = 1), color = 'red')
+print(p0)
+```
+
+## Überlagerung
+Eine noch nicht ganz ideale Überlagerung
+```{r}
+# overlay histogram, empirical density and normal density
+p1 = qplot(y, geom = 'blank') + 
+    geom_histogram(aes(y =..density..),
+                   breaks = seq(1, 15, by = 1), 
+                   colour = "black", 
+                   fill = "white") +  
+  stat_function(fun = dnorm, args = list(mean = 6.5, sd = 2), color = 'blue')
+print(p1)
+```
+
+Wenn Mittelwert und Standardabweichung der Normalverteilung aus den empirischen Werten der Daten übernommen werden sieht es schon besser aus
+
+```{r}
+# overlay histogram, empirical density and normal density
+p2 = qplot(y, geom = 'blank') + 
+    geom_histogram(aes(y =..density..),
+                   breaks = seq(1, 15, by = 1), 
+                   colour = "black", 
+                   fill = "white") +  
+  stat_function(fun = dnorm, args = list(mean = mean(y), sd = sd(y)), colour = 'green')
+print(p2)
+
+```
+
+

@@ -236,6 +236,12 @@ dfSolTable$vecSolThema[which(Datum == format(as.Date("2017/11/10"), "%d.%m"))] <
 dfSolTable$vecSolThema[which(Datum == format(as.Date("2017/11/17"), "%d.%m"))] <- "[Berechnung der Inzucht](https://charlotte-ngs.github.io/LBGHS2017/sol/w8/lbg_hs_2017_w8_sol7.pdf)"
 # w9
 dfSolTable$vecSolThema[which(Datum == format(as.Date("2017/11/24"), "%d.%m"))] <- "[Fixe und gemischte lineare Modelle](https://charlotte-ngs.github.io/LBGHS2017/sol/w9/lbg_hs_2017_w9_sol8.pdf)"
+# w10
+dfSolTable$vecSolThema[which(Datum == format(as.Date("2017/12/01"), "%d.%m"))] <- "[Vergleich von Zuchtwertschätzmethoden](https://charlotte-ngs.github.io/LBGHS2017/sol/w10/lbg_hs_2017_w10_sol9.pdf)"
+# w11
+dfSolTable$vecSolThema[which(Datum == format(as.Date("2017/12/08"), "%d.%m"))] <- "[Zerlegung von BLUP-Zuchtwerten](https://charlotte-ngs.github.io/LBGHS2017/sol/w11/lbg_hs_2017_w11_sol10.pdf)"
+# w12
+dfSolTable$vecSolThema[which(Datum == format(as.Date("2017/12/15"), "%d.%m"))] <- "[Varianzkomponenten](https://charlotte-ngs.github.io/LBGHS2017/sol/w12/lbg_hs_2017_w12_sol11.pdf)"
 
 ### # generate table output
 colnames(dfSolTable) <- vecTableHeaders
