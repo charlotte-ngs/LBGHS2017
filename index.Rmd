@@ -207,6 +207,8 @@ dfExTable$vecExThema[which(Datum == format(as.Date("2017/11/24"), "%d.%m"))] <- 
 dfExTable$vecExThema[which(Datum == format(as.Date("2017/12/01"), "%d.%m"))] <- "[Zerlegung von BLUP-Zuchtwerten](https://charlotte-ngs.github.io/LBGHS2017/ex/w11/lbg_hs_2017_w11_ex10.pdf)"
 # w12
 dfExTable$vecExThema[which(Datum == format(as.Date("2017/12/08"), "%d.%m"))] <- "[Varianzkomponenten](https://charlotte-ngs.github.io/LBGHS2017/ex/w12/lbg_hs_2017_w12_ex11.pdf)"
+# w13
+dfExTable$vecExThema[which(Datum == format(as.Date("2017/12/15"), "%d.%m"))] <- "[Probeprüfung](https://charlotte-ngs.github.io/LBGHS2017/ex/w13/lbg_hs_2017_w13_exm.pdf)"
 
 ### # generate table output
 colnames(dfExTable) <- vecTableHeaders
@@ -242,6 +244,8 @@ dfSolTable$vecSolThema[which(Datum == format(as.Date("2017/12/01"), "%d.%m"))] <
 dfSolTable$vecSolThema[which(Datum == format(as.Date("2017/12/08"), "%d.%m"))] <- "[Zerlegung von BLUP-Zuchtwerten](https://charlotte-ngs.github.io/LBGHS2017/sol/w11/lbg_hs_2017_w11_sol10.pdf)"
 # w12
 dfSolTable$vecSolThema[which(Datum == format(as.Date("2017/12/15"), "%d.%m"))] <- "[Varianzkomponenten](https://charlotte-ngs.github.io/LBGHS2017/sol/w12/lbg_hs_2017_w12_sol11.pdf)"
+# w13
+#dfSolTable$vecSolThema[which(Datum == format(as.Date("2017/12/22"), "%d.%m"))] <- "[Probeprüfung](https://charlotte-ngs.github.io/LBGHS2017/sol/w13/lbg_hs_2017_w13_exmsol.pdf)"
 
 ### # generate table output
 colnames(dfSolTable) <- vecTableHeaders
@@ -251,11 +255,13 @@ knitr::kable(dfSolTable)
 
 ### Weitere Materialien
 ```{r FurtherMatTable, echo=FALSE, results='asis'}
-dfFurtherMat <- data.frame(Woche = c(7,12),
+dfFurtherMat <- data.frame(Woche = c(7,12,13),
                            Datum = c(format(as.Date("2017/11/03"), "%d.%m"),
-                                     format(as.Date("2017/12/08"), "%d.%m")),
+                                     format(as.Date("2017/12/08"), "%d.%m"),
+                                     format(as.Date("2017/12/15"), "%d.%m")),
                            Thema = c("[Batman Plot](https://charlotte-ngs.github.io/BatmanPlot/BatmanPlotPost.html)",
-                                     "[Demo Aufstellen der Mischmodellgleichungen](https://charlotte-ngs.github.io/LBGHS2017/sl/w8/demoMME.pdf)")
+                                     "[Demo Aufstellen der Mischmodellgleichungen](https://charlotte-ngs.github.io/LBGHS2017/sl/w8/demoMME.pdf)",
+                                     "[SVT-Flyer](https://charlotte-ngs.github.io/LBGHS2017/misc/SVT-Flyer-2017-web.pdf)")
                            )
 
 ### # generate table

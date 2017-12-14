@@ -1,0 +1,394 @@
+\documentclass{scrartcl}
+
+%\usepackage{fancyhdr}
+\usepackage{amsmath}
+
+\newcommand{\points}[1]
+{\begin{flushright}\textbf{#1}\end{flushright}}
+\newcommand{\sol}
+{\vspace{2ex}\textbf{L\"osung}:}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+<<PointsQ1, echo=FALSE>>=
+# Assign Points for Q1
+lPointsQ1 <- list(TaskA = 36,
+                  TaskB = 12,
+                  TaskC = 4)
+nPointQ1Total <- sum(unlist(lPointsQ1))
+@
+<<PointsQ2, echo=FALSE>>=
+# Assign Points for Q2
+lPointsQ2 <- list(TaskA = 8,
+                  TaskB = 5,
+                  TaskC = 4)
+nPointQ2Total <- sum(unlist(lPointsQ2))
+@
+<<PointsQ3, echo=FALSE>>=
+# Assign Points for Q3
+lPointsQ3 <- list(TaskA = 10,
+                  TaskB = 6,
+                  TaskC = 8)
+nPointQ3Total <- sum(unlist(lPointsQ3))
+@
+<<PointsQ4, echo=FALSE>>=
+# Assign Points for Q4
+lPointsQ4 <- list(TaskA = 6,
+                  TaskB = 12,
+                  TaskC = 12)
+nPointQ4Total <- sum(unlist(lPointsQ4))
+@
+<<PointsQ5, echo=FALSE>>=
+# Assign Points for Q5
+lPointsQ5 <- list(TaskA = 25,
+                  TaskB = 0,
+                  TaskC = 0)
+nPointQ5Total <- sum(unlist(lPointsQ5))
+@
+<<PointsTotal, echo=FALSE>>=
+nPointOverallTotal <- nPointQ1Total + nPointQ2Total + nPointQ3Total + nPointQ4Total + nPointQ5Total
+@
+
+
+\thispagestyle{empty}
+
+\titlehead
+{
+	ETH Z\"urich\\%
+	D-USYS\\%
+	Institut f\"ur Agrarwissenschaften
+}
+
+\title{\vspace{5ex} Probepr\"ufung \\
+       Z\"uchtungslehre\\
+       HS 2017 \vspace{3ex}}
+\author{Peter von Rohr \vspace{3ex}}
+\date{
+  \begin{tabular}{lr}
+  \textsc{Datum}  & \textsc{\emph{15. Dezember 2017}} \\
+  \textsc{Beginn} & \textsc{\emph{09:15 Uhr}}\\
+  \textsc{Ende}   & \vspace{3ex}
+\end{tabular}}
+\maketitle
+
+% Table with Name
+\begin{tabular}{p{3cm}p{6cm}}
+Name:     &  \\
+         &  \\
+Legi-Nr:  & \\
+\end{tabular}
+
+% Table with Points
+
+\vspace{3ex}
+\begin{center}
+\begin{tabular}{|p{3cm}|c|c|}
+\hline
+Aufgabe  &  Maximale Punktzahl     &  Erreichte Punktzahl\\
+\hline
+1        &  \Sexpr{nPointQ1Total}  & \\
+\hline
+2        &  \Sexpr{nPointQ2Total}  & \\
+\hline
+3        &  \Sexpr{nPointQ3Total}  & \\
+\hline
+4        & \Sexpr{nPointQ4Total}   & \\
+\hline
+5        & \Sexpr{nPointQ5Total}   & \\
+\hline
+Total    &  \Sexpr{nPointOverallTotal} & \\
+\hline
+\end{tabular}
+\end{center}
+
+\clearpage
+\pagebreak
+
+\section*{Aufgabe 1: Verwandtschaft und Inzucht (\Sexpr{nPointQ1Total})}
+Gegeben ist das folgende Pedigree.
+
+\begin{center}
+<<SetupPed, echo=FALSE>>=
+library(pedigreemm)
+nNrAni <- 6
+ped <- pedigree(sire = c(NA,NA,NA,1,1,1), dam = c(NA,NA,NA,2,4,4), label = 1:nNrAni)
+print(ped)
+@
+\end{center}
+
+\begin{enumerate}
+\item[a)] Stellen Sie die additiv genetische Verwandtschaftsmatrix $A$ auf
+\points{\Sexpr{lPointsQ1$TaskA}}
+\end{enumerate}
+
+\sol
+
+
+\clearpage
+\pagebreak
+
+\begin{enumerate}
+\item[b)] Welche Tiere im gezeigten Pedigree sind ingez\"uchtet und wie gross sind die Inzuchtkoeffizienten $F_X$? Bitte vervollst\"andigen Sie die nachfolgende Tabelle.
+\points{\Sexpr{lPointsQ1$TaskB}}
+\end{enumerate}
+
+{\renewcommand{\arraystretch}{1.7}
+ \renewcommand{\tabcolsep}{0.2cm}
+ \begin{tabular}{|p{4cm}|p{4cm}|p{4cm}|}
+\hline
+Tier ID  &  ingez\"uchtet (ja/nein)  &  Inzuchtkoeffizient $F_X$ \\
+\hline
+1        &                           &  \\
+\hline
+2        &                           &  \\
+\hline
+3        &                           &  \\
+\hline
+4        &                           &  \\
+\hline
+5        &                           &  \\
+\hline
+6        &                           &  \\
+\hline
+\end{tabular}}
+
+
+
+\clearpage
+\pagebreak
+
+\begin{enumerate}
+\item[c)] In der Paarungsplanung geht es oft darum Inzucht zu verhindern. Wenn wir einen Paarungspartner f\"ur Kuh $6$ im oben gezeigten Pedigree suchen, kommen die Stiere $1$, $3$ oder $5$ in Frage. W\"ahlen Sie den Paarungspartner so aus, dass das Kalb aus der Paarung nicht ingez\"uchtet ist. Begr\"unden Sie Ihre Auswahl des Paarungspartners.
+\points{\Sexpr{lPointsQ1$TaskC}}
+\end{enumerate}
+
+\sol
+
+\clearpage
+\pagebreak
+
+
+\section*{Aufgabe 2: Selektion und Selektionsindex (\Sexpr{nPointQ2Total})}
+
+
+\begin{enumerate}
+\item[a)] Was veranschaulichen die zwei folgenden Diagramme. Benennen Sie die Punkte $1$ bis $4$
+\points{\Sexpr{lPointsQ2$TaskA}}
+\end{enumerate}
+
+\begin{center}
+\includegraphics[width=7cm]{"pdf/VermehrungElternNachkommen"}
+\includegraphics[width=7cm]{"pdf/ZuechtungElternNachkommen"}
+\end{center}
+
+\sol
+
+\clearpage
+\pagebreak
+
+
+\begin{enumerate}
+\item[b)] Die Theorie des Selektionsindexes zeigt auf, wie der Gesamtzuchtwert $H$ aufgrund von verf\"ugbaren Informationsquellen gesch\"atzt werden kann. Dabei werden die Informationsquellen durch einen Vektor $x$ repr\"asentiert und mit einem Vektor $b$ von unbekannten Indexgewichten zu einem Index $I$ zusammengefasst. Das Ziel ist nun den Vektor $b$ so zu bestimmen, dass $I$ den Gesamtzuchtwert $H$ m\"oglichst genau sch\"atzt. Das heisst, die Fehlervarianz $var(H-I)$ soll minimal sein.
+
+Wie lauten die Indexgleichungen zur Bestimmung der Indexgewichte $b$, aufgrund der Anforderung der minimalen Fehlervarianz? Benennen Sie die Komponenten in den Indexgleichungen.
+\points{\Sexpr{lPointsQ2$TaskB}}
+\end{enumerate}
+
+\sol
+
+\clearpage
+\pagebreak
+
+\begin{enumerate}
+\item[c)] Eine Fleischrinderzuchtorganisation entwirft ein neues Zuchtziel mit den zwei Merkmalen Geburtsgewicht (\texttt{GBG}) und Absetzgewicht (\texttt{ABG}). Die gleichen Merkmale wie im Zuchtziel, werden bei den Selektionskandidaten erhoben und stehen in Form von gesch\"atzten Zuchtwerten als Informationsquellen zur Verf\"ugung. Die wirtschaftlichen Gewichte der beiden Merkmale im Zuchtziel betragen $3.00$ Fr/kg f\"ur \texttt{GBG} und $2.50$ Fr/kg f\"ur \texttt{ABG}. Wie lauten die Gewichtungsfaktoren f\"ur einen Index aus den Informationsquellen \texttt{GBG} und \texttt{ABG}?
+\points{\Sexpr{lPointsQ2$TaskC}}
+\end{enumerate}
+
+\sol
+
+
+\clearpage
+\pagebreak
+
+\section*{Aufgabe 3: Varianzanalyse (\Sexpr{nPointQ3Total})}
+
+Aufgrund des folgenden Datensatzes aus der Pflanzenzucht f\"ur das Merkmal \texttt{Stengell\"ange} sollen Varianzkomponenten gesch\"atzt werden.
+
+<<ShowData, echo=FALSE, results=tex>>=
+nNrRecords <- 10
+dfMlrData <- data.frame(Pflanze       = as.character(c(1:nNrRecords)),
+                        Sorte         = c("S1","S1","S1","S2","S2","S2","S3","S3","S3","S3"),
+                        Messperson    = c("A","A","B","A","C","C","C","A","B","A"),
+                        Stengellaenge = c(13,11.3,12.2,10.9,20.7,21.2,13.8,19,12.4,17.4))
+nNrSorte <- length(unique(dfMlrData$Sorte))
+print(xtable::xtable(dfMlrData), include.rownames = FALSE)
+@
+
+\begin{enumerate}
+\item[a)] In einer ersten Analyse soll nur der Einfluss der Sorte auf die Stengell\"ange betrachtet werden. Dabei soll Sorte als fixer Effekt modelliert werden. Sch\"atzen Sie die Restvarianz $\sigma_e^2$ aufgrund der Residuen f\"ur das folgende Modell.
+\points{\Sexpr{lPointsQ3$TaskA}}
+\end{enumerate}
+
+Das Modell mit der Sorte als fixen Effekt.
+
+$$y = Xb + e$$
+
+\begin{tabular}{lll}
+mit  &  $y$  &  Vektor der gemessenen Stengell\"angen\\
+     &  $b$  &  Vektor der fixen Sorteneffekte\\
+     &  $X$  &  Inzidenzmatrix f\"ur $b$\\
+     &  $e$  &  Resteffekte
+\end{tabular}
+
+\noindent Wir nehmen an, dass die Reste unabh\"angig sind und somit gilt, dass $var(e) = I * \sigma_e^2$ ist. Die gesch\"atzten Sorteneffekte aus dem oben gezeigten Regressionsmodell lauten
+
+<<RegSorte>>=
+lmRegModelSorte <- lm(Stengellaenge ~ -1 + Sorte, data = dfMlrData)
+round(coefficients(lmRegModelSorte), digits = 2)
+@
+
+\sol
+
+
+\clearpage
+\pagebreak
+
+\begin{enumerate}
+\item[b)] Sch\"atzen Sie f\"ur den gegebenen Datensatz die Restvarianz mit Maximum Likelihood. Wo liegt der Unterschied zur Sch\"atzung aus Aufgabe a)? Weshalb wird die Sch\"atzung der Restvarianz aufgrund der Residuen als ``glaubw\"urdiger'' betrachtet?
+\points{\Sexpr{lPointsQ3$TaskB}}
+\end{enumerate}
+
+\sol
+
+\clearpage
+\pagebreak
+
+\begin{enumerate}
+\item[c)] Der Einfluss der Messperson soll in einer separaten Analyse untersucht werden, wobei die Messperson als zuf\"alliger Effekt ins Modell einfliessen soll. Sch\"atzen Sie die Varianzkomponenten des zuf\"alligen Effektes der Messperson und des Resteffektes mit Hilfe einer Varianzanalyse. Folgendes Modell soll den Daten zu Grunde liegen.
+\points{\Sexpr{lPointsQ3$TaskC}}
+\end{enumerate}
+
+$$y = 1\mu + Zm + e$$
+
+\vspace{2ex}
+\begin{tabular}{llp{12cm}}
+mit  &  $y$    &  Vektor der gemessenen Stengell\"angen\\
+     &  $\mu$  &  allgemeines Mittel\\
+     &  $1$    &  Inzidenzvektor f\"ur $\mu$\\
+     &  $m$    &  Vektor der zuf\"alligen Effekte der Messperson\\
+     &  $Z$    &  Inzidenzmatrix f\"ur $m$\\
+     &  $e$    &  Vektor der Resteffekte
+\end{tabular}
+
+\vspace{2ex}
+\noindent Die Varianzen der zuf\"alligen Effekte haben die folgende Struktur:
+$$var(m) = I * \sigma_m^2 \quad \text{und} \quad var(e) = I * \sigma_e^2$$
+
+\noindent wobei $I$ f\"ur die Einheitsmatrix steht.
+
+Die Summenquadrate (SSQ) f\"ur die Messpersonen und die Residuen und die Freiheitsgrade (DF) sind in der folgenden Tabelle zusammengefasst.
+
+<<SummaryAnova, echo=FALSE, results=tex>>=
+nAnzObs <- nrow(dfMlrData)
+tabAnovaMessPerson <- aov(formula = Stengellaenge ~ Messperson, data = dfMlrData)
+nDfResidual <- tabAnovaMessPerson$df.residual
+vecFitMessPers <- fitted(tabAnovaMessPerson) - mean(dfMlrData$Stengellaenge)
+nSSqFitMessPers <- crossprod(vecFitMessPers)
+nDfMessPers <- nAnzObs - nDfResidual-1
+vecResMessPers <- residuals(tabAnovaMessPerson)
+nSsqResMessPers <- crossprod(vecResMessPers)
+dfSummaryAnova <- data.frame(Effekt = c("Messperson", "Residuen"),
+                             DF     = as.integer(c(nDfMessPers, nDfResidual)),
+                             SSQ    = c(nSSqFitMessPers, nSsqResMessPers))
+print(xtable::xtable(dfSummaryAnova, digits = 3), include.rownames = FALSE)
+@
+
+
+\sol
+
+\clearpage
+\pagebreak
+
+\section*{Aufgabe 4: Zuchtwertsch\"atzung (\Sexpr{nPointQ4Total})}
+Der folgende Datensatz soll f\"ur die Vorhersage von Zuchtwerten verwendet werden.
+
+<<ShowDataSet, echo=FALSE, results=tex>>=
+sigmaa2 <- 32
+sigmap2 <- 128
+h2 <- sigmaa2/sigmap2
+k <- (4-h2)/h2
+nNrRecords <- 6
+nNrSire <- 3
+dfMlrData <- data.frame(Tochter = as.character(c(1:nNrRecords) + nNrSire),
+                        Herde   = c("1","1","2","1","2","2"),
+                        Vater   = c("C","A","B","B","C","A"),
+                        Leistung = c(112,105,118,120,135,115))
+nNrHerde <- length(unique(dfMlrData$Herde))
+#knitr::kable(dfMlrData)
+print(xtable::xtable(dfMlrData), include.rownames = FALSE)
+@
+
+Die Varianzen sind aus der folgenden Tabelle ersichtlich
+
+<<VarTable, echo=FALSE, results=tex>>=
+dfVarTable <- data.frame(Komponenten = c("phaentypisch", "genetisch additiv"),
+                         Symbol      = c("$\\sigma_p^2$", "$\\sigma_a^2$"),
+                         Wert        = c(sigmap2, sigmaa2))
+print(xtable::xtable(dfVarTable), include.rownames = FALSE, type = "latex", sanitize.text.function = function(x){x})
+@
+
+
+<<SetupProgMean, echo=FALSE, results=hide>>=
+mu <- mean(dfMlrData$Leistung)
+@
+
+\begin{enumerate}
+\item[a)] Sch\"atzen Sie die Zuchtwerte der V\"ater aufgrund der Mittelwerte ihrer Nachkommen. Wir nehmen an, dass das allgemeine Populationsmittel $\mu = \Sexpr{mu}$ betr\"agt.
+\points{\Sexpr{lPointsQ4$TaskA}}
+\end{enumerate}
+
+\sol
+
+
+\clearpage
+\pagebreak
+
+\begin{enumerate}
+\item[b)] Wie lautet das BLUP-Vatermodell in Matrix-Vektor-Schreibweise f\"ur den in dieser Aufgabe gezeigten Datensatz. Benennen Sie die einzelnen Modellkomponenten. Geben Sie Erwartungswerte und die Varianzen f\"ur alle zuf\"alligen Effekte im Modell an.
+\points{\Sexpr{lPointsQ4$TaskB}}
+\end{enumerate}
+
+\sol
+
+\clearpage
+\pagebreak
+
+\begin{enumerate}
+\item[c)] Stellen Sie die Mischmodellgleichungen f\"ur das BLUP-Vatermodell f\"ur den in dieser Aufgabe angegebenen Datensatz an.
+\points{\Sexpr{lPointsQ4$TaskC}}
+\end{enumerate}
+
+\sol
+
+
+\clearpage
+\pagebreak
+
+\section*{Aufgabe 5: Inverse der Verwandtschaftsmatrix (\Sexpr{nPointQ5Total})}
+F\"ur das folgende Pedigree soll die Inverse $A^{-1}$ der genetisch additiven Verwandtschaftsmatrix aufgestellt werden.
+
+\begin{center}
+<<SmallExamPed, echo=FALSE>>=
+library(pedigreemm)
+nNrAni <- 5
+ped <- pedigree(sire = c(NA,NA,1,1,NA), dam = c(NA,NA,2,NA,3), label = 1:nNrAni)
+print(ped)
+@
+\end{center}
+
+\points{\Sexpr{lPointsQ5$TaskA}}
+
+\sol
+
+\end{document}
