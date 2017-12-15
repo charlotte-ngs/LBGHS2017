@@ -245,7 +245,7 @@ dfSolTable$vecSolThema[which(Datum == format(as.Date("2017/12/08"), "%d.%m"))] <
 # w12
 dfSolTable$vecSolThema[which(Datum == format(as.Date("2017/12/15"), "%d.%m"))] <- "[Varianzkomponenten](https://charlotte-ngs.github.io/LBGHS2017/sol/w12/lbg_hs_2017_w12_sol11.pdf)"
 # w13
-#dfSolTable$vecSolThema[which(Datum == format(as.Date("2017/12/22"), "%d.%m"))] <- "[Probeprüfung](https://charlotte-ngs.github.io/LBGHS2017/sol/w13/lbg_hs_2017_w13_exmsol.pdf)"
+dfSolTable$vecSolThema[which(Datum == format(as.Date("2017/12/22"), "%d.%m"))] <- "[Probeprüfung](https://charlotte-ngs.github.io/LBGHS2017/sol/w13/lbg_hs_2017_w13_exmsol.pdf)"
 
 ### # generate table output
 colnames(dfSolTable) <- vecTableHeaders

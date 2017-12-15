@@ -1,0 +1,669 @@
+---
+output:
+  pdf_document:
+    includes:
+      in_header: header.tex
+    fig_caption: false
+    keep_tex: true
+documentclass: article
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Points, echo=FALSE}
+# Assign Points for Q1
+lPointsQ1 <- list(TaskA = 36,
+                  TaskB = 12,
+                  TaskC = 4)
+nPointQ1Total <- sum(unlist(lPointsQ1))
+# Assign Points for Q2
+lPointsQ2 <- list(TaskA = 8,
+                  TaskB = 5,
+                  TaskC = 4)
+nPointQ2Total <- sum(unlist(lPointsQ2))
+# Assign Points for Q3
+lPointsQ3 <- list(TaskA = 10,
+                  TaskB = 6,
+                  TaskC = 8)
+nPointQ3Total <- sum(unlist(lPointsQ3))
+# Assign Points for Q4
+lPointsQ4 <- list(TaskA = 6,
+                  TaskB = 12,
+                  TaskC = 12)
+nPointQ4Total <- sum(unlist(lPointsQ4))
+# Assign Points for Q5
+lPointsQ5 <- list(TaskA = 25,
+                  TaskB = 0,
+                  TaskC = 0)
+nPointQ5Total <- sum(unlist(lPointsQ5))
+# compute overal sum of points
+nPointOverallTotal <- nPointQ1Total + nPointQ2Total + nPointQ3Total + nPointQ4Total + nPointQ5Total
+```
+
+\thispagestyle{empty}
+
+\begin{tabular}{l}
+ETH Zürich \\
+D-USYS\\
+Institut für Agrarwissenschaften\\
+\end{tabular}
+
+\vspace{15ex}
+\begin{center}
+\huge
+Lösungen zur Probeprüfung \\ \vspace{1ex}
+Züchtungslehre \\  \vspace{1ex}
+HS 2017 \\
+
+\normalsize
+\vspace{7ex}
+Peter von Rohr 
+\end{center}
+
+\vspace{7ex}
+\begin{tabular}{p{5cm}lr}
+  & \textsc{Datum}  & \textsc{\emph{15. Dezember 2017}} \\
+  & \textsc{Beginn} & \textsc{\emph{09:15 Uhr}}\\
+  & \textsc{Ende}   & \vspace{3ex}
+\end{tabular}
+
+\vspace{5ex}
+<!-- Table with Name -->
+\large
+\begin{tabular}{p{2.5cm}p{3cm}p{6cm}}
+  &  Name:     &  \\
+  &            &  \\
+  &  Legi-Nr:  & \\
+\end{tabular}
+\normalsize
+
+<!-- Table with Points -->
+
+\vspace{9ex}
+\begin{center}
+\begin{tabular}{|p{3cm}|c|c|}
+\hline
+Aufgabe  &  Maximale Punktzahl      &  Erreichte Punktzahl\\
+\hline
+1        &  `r nPointQ1Total`       & \\
+\hline
+2        &  `r nPointQ2Total`       & \\
+\hline
+3        &  `r nPointQ3Total`       & \\
+\hline
+4        & `r nPointQ4Total`        & \\
+\hline
+5        & `r nPointQ5Total`        & \\
+\hline
+Total    &  `r nPointOverallTotal`  & \\
+\hline
+\end{tabular}
+\end{center}
+
+\clearpage
+\pagebreak
+
+## Aufgabe 1: Verwandtschaft und Inzucht (`r nPointQ1Total`)
+Gegeben ist das folgende Pedigree.
+
+
+```{r SetupPed, echo=FALSE}
+suppressPackageStartupMessages(library(pedigreemm))
+nNrAni <- 6
+ped <- pedigree(sire = c(NA,NA,NA,1,1,1), dam = c(NA,NA,NA,2,4,4), label = 1:nNrAni)
+print(ped)
+```
+
+\vspace{3ex}
+\begin{enumerate}
+\item[a)] Stellen Sie die additiv genetische Verwandtschaftsmatrix $A$ auf
+\points{`r lPointsQ1$TaskA`}
+\end{enumerate}
+
+\sol
+
+```{r ComputePed, echo=FALSE, results='asis'}
+matA <- as.matrix(getA(ped = ped))
+cat("$$A = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matA, pnDigits = 3), collapse = "\n"))
+cat("\\right]\n$$")
+```
+
+
+\clearpage
+\pagebreak
+
+
+\begin{enumerate}
+\item[b)] Welche Tiere im gezeigten Pedigree sind ingezüchtet und wie gross sind die Inzuchtkoeffizienten $F_X$? Bitte vervollständigen Sie die nachfolgende Tabelle.
+\points{`r lPointsQ1$TaskB`}
+\end{enumerate}
+
+\renewcommand{\arraystretch}{1.7}
+ \renewcommand{\tabcolsep}{0.2cm}
+ \begin{tabular}{|p{4cm}|p{4cm}|p{4cm}|}
+\hline
+Tier ID  &  ingezüchtet (ja/nein)  &  Inzuchtkoeffizient $F_X$ \\
+\hline
+1        &                           &  \\
+\hline
+2        &                           &  \\
+\hline
+3        &                           &  \\
+\hline
+4        &                           &  \\
+\hline
+5        &                           &  \\
+\hline
+6        &                           &  \\
+\hline
+\end{tabular}
+
+\sol
+
+```{r SolQ1bPrepare, echo=FALSE, results='hide'}
+TierId <- 1:nNrAni
+vecInzCoeff <- diag(matA)-1
+igz <- unlist(lapply(TierId, function(x) ifelse(vecInzCoeff[x]>0,"ja","nein")))
+dfSolQ1b <- data.frame(TierId,igz,vecInzCoeff, row.names = NULL)
+names(dfSolQ1b) <- c("Tier Id", "ingezuechtet (ja/nein)", "Inzuchtkoeffizient")
+#xSolQ1b <- xtable::xtable(dfSolQ1b, align = c("l","r","c","r"))
+```
+
+```{r SolQ1bPrint, echo=FALSE, results='asis'}
+#print(xSolQ1b, include.rownames = FALSE, hline.after = 1:nNrAni)
+knitr::kable(dfSolQ1b)
+```
+
+
+
+\clearpage
+\pagebreak
+
+\begin{enumerate}
+\item[c)] In der Paarungsplanung geht es oft darum Inzucht zu verhindern. Wenn wir einen Paarungspartner für Kuh $6$ im oben gezeigten Pedigree suchen, kommen die Stiere $1$, $3$ oder $5$ in Frage. Wählen Sie den Paarungspartner so aus, dass das Kalb aus der Paarung nicht ingezüchtet ist. Begründen Sie Ihre Auswahl des Paarungspartners.
+\points{`r lPointsQ1$TaskC`}
+\end{enumerate}
+
+\sol
+
+Der Paarungspartner muss so gewählt werden, dass er nicht mit Kuh $6$ verwandt ist. Dies ist nur für den Paarungspartner $3$ der Fall. Als Kontrolle können wir die das Pedigree erweitern und die Inzuchtkoeffizienten nochmals rechnen.
+
+```{r ExtendPed, echo=FALSE}
+nNrAni <- 7
+pedExt <- pedigree(sire = c(NA,NA,NA,1,1,1,3), dam = c(NA,NA,NA,2,4,4,6), label = 1:nNrAni)
+print(pedExt)
+```
+
+
+Die Inzuchtkoeffizienten der Tiere lauten:
+
+```{r InbreedingPedExt, echo=FALSE}
+nAniInterest <- 7
+vecInbr <- inbreeding(ped = pedExt)
+print(vecInbr)
+```
+
+Wobei der Inzuchtkoeffizient von Tier $`r nAniInterest`$ ist gleich: $`r vecInbr[nAniInterest]`$
+
+\clearpage
+\pagebreak
+
+
+## Aufgabe 2: Selektion und Selektionsindex (`r nPointQ2Total`)
+
+\begin{enumerate}
+\item[a)] Was veranschaulichen die zwei folgenden Diagramme. Benennen Sie die Punkte $1$ bis $4$
+\points{`r lPointsQ2$TaskA`}
+\end{enumerate}
+
+\begin{center}
+\includegraphics[width=7cm]{"pdf/VermehrungElternNachkommen"}
+\includegraphics[width=7cm]{"pdf/ZuechtungElternNachkommen"}
+\end{center}
+
+\sol
+
+In den beiden Diagrammen wird der Unterschied zwischen gerichteter Selektion in Zuchtpopulationen und Vermehrung in Wildtier oder Produktions-  und Vermehrungspopulationen dargestellt.
+
+Die vier Punkte bedeuten
+
+\begin{enumerate}
+\item Nachkommendurchschnitt
+\item Elterndurchschnitt
+\item Eltern
+\item Nachkommen
+\end{enumerate}
+
+\clearpage
+\pagebreak
+
+
+\begin{enumerate}
+\item[b)] Die Theorie des Selektionsindexes zeigt auf, wie der Gesamtzuchtwert $H$ aufgrund von verfügbaren Informationsquellen geschätzt werden kann. Dabei werden die Informationsquellen durch einen Vektor $x$ repräsentiert und mit einem Vektor $b$ von unbekannten Indexgewichten zu einem Index $I$ zusammengefasst. Das Ziel ist nun den Vektor $b$ so zu bestimmen, dass $I$ den Gesamtzuchtwert $H$ möglichst genau schätzt. Das heisst, die Fehlervarianz $var(H-I)$ soll minimal sein.
+
+Wie lauten die Indexgleichungen zur Bestimmung der Indexgewichte $b$, aufgrund der Anforderung der minimalen Fehlervarianz? Benennen Sie die Komponenten in den Indexgleichungen.
+\points{`r lPointsQ2$TaskB`}
+\end{enumerate}
+
+\sol
+
+Die Indexgleichungen lauten $$Pb = Gv$$
+
+\begin{tabular}{llp{12cm}}
+mit  &  $P$  &  Covarianzmatrix zwischen den Informationsquellen $x$\\
+     &  $b$  &  Vektor der unbekannten Indexgewichte\\
+     &  $G$  &  Covarianzmatrix zwischen Informationsquellen und Merkmalen im Gesamtzuchtwert\\
+     &  $v$  &  Vektor der wirtschaftlichen Gewichte
+\end{tabular}
+
+\clearpage
+\pagebreak
+
+\begin{enumerate}
+\item[c)] Eine Fleischrinderzuchtorganisation entwirft ein neues Zuchtziel mit den zwei Merkmalen Geburtsgewicht (\texttt{GBG}) und Absetzgewicht (\texttt{ABG}). Die gleichen Merkmale wie im Zuchtziel, werden bei den Selektionskandidaten erhoben und stehen in Form von geschätzten Zuchtwerten als Informationsquellen zur Verfügung. Die wirtschaftlichen Gewichte der beiden Merkmale im Zuchtziel betragen $3.00$ Fr/kg für \texttt{GBG} und $2.50$ Fr/kg für \texttt{ABG}. Wie lauten die Gewichtungsfaktoren für einen Index aus den Informationsquellen \texttt{GBG} und \texttt{ABG}?
+\points{`r lPointsQ2$TaskC`}
+\end{enumerate}
+
+\sol
+
+Da die gleichen Merkmale im Zuchtziel und im Index sind, dann gilt $b=v$ und somit ist
+
+```{r IndexWeight, echo=FALSE, results='asis'}
+cat("$$b = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(c(3.00,2.50), ncol = 1), pnDigits = 1), collapse = "\n"))
+cat("\\right]\n$$\n")
+```
+
+\clearpage
+\pagebreak
+
+## Aufgabe 3: Varianzanalyse (`r nPointQ3Total`)
+
+Aufgrund des folgenden Datensatzes aus der Pflanzenzucht für das Merkmal \texttt{Stengellänge} sollen Varianzkomponenten geschätzt werden.
+
+```{r ShowData, echo=FALSE, results='asis'}
+nNrRecords <- 10
+dfMlrData <- data.frame(Pflanze       = as.character(c(1:nNrRecords)),
+                        Sorte         = c("S1","S1","S1","S2","S2","S2","S3","S3","S3","S3"),
+                        Messperson    = c("A","A","B","A","C","C","C","A","B","A"),
+                        Stengellaenge = c(13,11.3,12.2,10.9,20.7,21.2,13.8,19,12.4,17.4))
+nNrSorte <- length(unique(dfMlrData$Sorte))
+knitr::kable(dfMlrData)
+```
+
+\begin{enumerate}
+\item[a)] In einer ersten Analyse soll nur der Einfluss der Sorte auf die Stengellänge betrachtet werden. Dabei soll Sorte als fixer Effekt modelliert werden. Schätzen Sie die Restvarianz $\sigma_e^2$ aufgrund der Residuen für das folgende Modell.
+\points{`r lPointsQ3$TaskA`}
+\end{enumerate}
+
+Das Modell mit der Sorte als fixen Effekt.
+
+$$y = Xb + e$$
+
+\begin{tabular}{lll}
+mit  &  $y$  &  Vektor der gemessenen Stengellängen\\
+     &  $b$  &  Vektor der fixen Sorteneffekte\\
+     &  $X$  &  Inzidenzmatrix für $b$\\
+     &  $e$  &  Resteffekte
+\end{tabular}
+
+\noindent Wir nehmen an, dass die Reste unabhängig sind und somit gilt, dass $var(e) = I * \sigma_e^2$ ist. Die geschätzten Sorteneffekte aus dem oben gezeigten Regressionsmodell lauten
+
+```{r RegSorte}
+lmRegModelSorte <- lm(Stengellaenge ~ -1 + Sorte, data = dfMlrData)
+round(coefficients(lmRegModelSorte), digits = 2)
+```
+
+\sol
+
+Der Residuenvektor lautet
+
+```{r VectorResiduals}
+vecRes <- residuals(lmRegModelSorte)
+print(round(vecRes, digits = 2))
+```
+
+Die geschätzte Restvarianz beträgt somit
+
+```{r EstResVar}
+nRestVarEst <- crossprod(vecRes)/(nrow(dfMlrData) - nNrSorte)
+cat("Restvarianz: ", round(nRestVarEst, digits = 2))
+cat("Reststandardabweichung: ", round(sqrt(nRestVarEst), digits = 2))
+```
+
+Als Vergleich dazu, was \texttt{lm()} liefert
+
+```{r SummaryLm}
+summary(lmRegModelSorte)
+```
+
+
+\clearpage
+\pagebreak
+
+\begin{enumerate}
+\item[b)] Schätzen Sie für den gegebenen Datensatz die Restvarianz mit Maximum Likelihood. Wo liegt der Unterschied zur Schätzung aus Aufgabe a)? Weshalb wird die Schätzung der Restvarianz aufgrund der Residuen als ``glaubwürdiger'' betrachtet?
+\points{`r lPointsQ3$TaskB`}
+\end{enumerate}
+
+\sol
+
+Die Maximum Likelihood Schätzung der Restvarianz ist gleich, wie die Schätzung aufgrund der Residuen bis auf den Faktor vor der Summe der quadrierten Residuen. Dieser lautet bei Maximum Likelihood $1/n$ und bei der Residuen-Methode $1/(n-p)$. Da der Faktor bei ML immer kleiner ist als bei der Residuen-Methode wird die Restvarianz mit ML tendenziell immer unterschätzt.
+
+Somit beträgt der ML-Schätzwert für die Restvarianz
+
+```{r EstResVarML}
+nRestVarEstML <- crossprod(vecRes)/nrow(dfMlrData)
+cat("ML-Schaetzung der Restvarianz: ", round(nRestVarEstML, digits = 2))
+cat("ML-Schaetzung der Reststandardabweichung: ",
+    round(sqrt(nRestVarEstML), digits = 2))
+```
+
+
+Die Schätzung der Restvarianz mit der Residuen-Methode wird als glaubwürdiger betrachtet, da diese erwartungstreu ist.
+
+\clearpage
+\pagebreak
+
+\begin{enumerate}
+\item[c)] Der Einfluss der Messperson soll in einer separaten Analyse untersucht werden, wobei die Messperson als zufälliger Effekt ins Modell einfliessen soll. Schätzen Sie die Varianzkomponenten des zufälligen Effektes der Messperson und des Resteffektes mit Hilfe einer Varianzanalyse. Folgendes Modell soll den Daten zu Grunde liegen.
+\points{`r lPointsQ3$TaskC`}
+\end{enumerate}
+
+$$y = 1\mu + Zm + e$$
+
+\vspace{2ex}
+\begin{tabular}{llp{12cm}}
+mit  &  $y$    &  Vektor der gemessenen Stengellängen\\
+     &  $\mu$  &  allgemeines Mittel\\
+     &  $1$    &  Inzidenzvektor für $\mu$\\
+     &  $m$    &  Vektor der zufälligen Effekte der Messperson\\
+     &  $Z$    &  Inzidenzmatrix für $m$\\
+     &  $e$    &  Vektor der Resteffekte
+\end{tabular}
+
+\vspace{2ex}
+\noindent Die Varianzen der zufälligen Effekte haben die folgende Struktur:
+$$var(m) = I * \sigma_m^2 \quad \text{und} \quad var(e) = I * \sigma_e^2$$
+
+\noindent wobei $I$ für die Einheitsmatrix steht.
+
+Die Summenquadrate (SSQ) für die Messpersonen und die Residuen und die Freiheitsgrade (DF) sind in der folgenden Tabelle zusammengefasst.
+
+```{r SummaryAnova, echo=FALSE, results='asis'}
+nAnzObs <- nrow(dfMlrData)
+tabAnovaMessPerson <- aov(formula = Stengellaenge ~ Messperson, data = dfMlrData)
+nDfResidual <- tabAnovaMessPerson$df.residual
+vecFitMessPers <- fitted(tabAnovaMessPerson) - mean(dfMlrData$Stengellaenge)
+nSSqFitMessPers <- crossprod(vecFitMessPers)
+nDfMessPers <- nAnzObs - nDfResidual-1
+vecResMessPers <- residuals(tabAnovaMessPerson)
+nSsqResMessPers <- crossprod(vecResMessPers)
+dfSummaryAnova <- data.frame(Effekt = c("Messperson", "Residuen"),
+                             DF     = as.integer(c(nDfMessPers, nDfResidual)),
+                             SSQ    = c(nSSqFitMessPers, nSsqResMessPers))
+knitr::kable(dfSummaryAnova)
+```
+
+
+\sol
+
+```{r}
+nMsqResMessPers <- nSsqResMessPers/nDfResidual
+```
+
+Somit ist die Schätzung der Restvarianz:
+$$`r round(nSsqResMessPers, digits = 3)`/`r as.integer(nDfResidual)` = `r round(nMsqResMessPers, digits = 3)`$$
+
+Für die Varianz der Effekte der Messpersonen erhalten wir folgende Schätzung:
+
+```{r}
+nMsqMessPers <- nSSqFitMessPers / nDfMessPers
+nEstVarMessPers <- (nMsqMessPers - nMsqResMessPers)/nAnzObs
+```
+
+Die Schätzung der Varianz des Effektes der Messperson lautet:
+$$(`r round(nMsqMessPers, digits = 3)` - `r round(nMsqResMessPers, digits = 3)` / `r as.integer(nAnzObs)`)
+  =  `r round(nEstVarMessPers, digits = 3)`
+$$
+
+\clearpage
+\pagebreak
+
+## Aufgabe 4: Zuchtwertschätzung (`r nPointQ4Total`)}
+Der folgende Datensatz soll für die Vorhersage von Zuchtwerten verwendet werden.
+
+```{r ShowDataSet, echo=FALSE, results='asis'}
+sigmaa2 <- 32
+sigmap2 <- 128
+h2 <- sigmaa2/sigmap2
+k <- (4-h2)/h2
+nNrRecords <- 6
+nNrSire <- 3
+dfMlrData <- data.frame(Tochter = as.character(c(1:nNrRecords) + nNrSire),
+                        Herde   = c("1","1","2","1","2","2"),
+                        Vater   = c("C","A","B","B","C","A"),
+                        Leistung = c(112,105,118,120,135,115))
+nNrHerde <- length(unique(dfMlrData$Herde))
+knitr::kable(dfMlrData)
+```
+
+Die Varianzen sind aus der folgenden Tabelle ersichtlich
+
+```{r VarTable, echo=FALSE, results='asis'}
+dfVarTable <- data.frame(Komponenten = c("phaentypisch", "genetisch additiv"),
+                         Symbol      = c("$\\sigma_p^2$", "$\\sigma_a^2$"),
+                         Wert        = c(sigmap2, sigmaa2))
+knitr::kable(dfVarTable)
+```
+
+```{r SetupProgMean, echo=FALSE, results='hide'}
+mu <- mean(dfMlrData$Leistung)
+```
+
+\begin{enumerate}
+\item[a)] Schätzen Sie die Zuchtwerte der Väter aufgrund der Mittelwerte ihrer Nachkommen. Wir nehmen an, dass das allgemeine Populationsmittel $\mu = `r mu`$ beträgt.
+\points{`r lPointsQ4$TaskA`}
+\end{enumerate}
+
+\sol
+
+Der geschätzte Zuchtwert $\hat{a}_s$ eines Vaters $s$ aufgrund der Mittelwerte $\tilde{y}_s$ seiner Nachkommen lautet
+
+$$\hat{a}_s = \frac{2n}{n+k}(\tilde{y}_s - \mu)$$
+
+wobei $n$ für die Anzahl Beobachtungen steht und $k = \frac{4-h^2}{h^2} = `r k`$ ist.
+
+
+```{r BvSireProgMean, echo=FALSE}
+vecSirIds <- LETTERS[1:nNrSire]
+vecNrRecPerSire <- sapply(vecSirIds, function(x) length(which(dfMlrData$Vater == x)), USE.NAMES = FALSE)
+vecCorFact <- 2*vecNrRecPerSire/(vecNrRecPerSire + k)
+vecCorAvSire <- sapply(vecSirIds, function(x) mean(as.vector(dfMlrData$Leistung[which(dfMlrData$Vater == x)])))
+```
+
+Der Faktor vor der Differenz zwischen $\tilde{y}_s$ und $\mu$ ist:
+$$\frac{2n}{n+k} = `r round(vecCorFact, digits = 2)`$$
+
+Somit sind die Zuchtwerte der drei Väter:
+
+```{r BvSireProgMeanResult, echo=FALSE, results='asis'}
+vecSireBv <- vecCorFact * (vecCorAvSire - mu)
+dfSireBvTable <- data.frame(Vater = vecSirIds,
+                            Zuchtwert = vecSireBv)
+knitr::kable(dfSireBvTable, digits = 2)
+```
+
+\clearpage
+\pagebreak
+
+\begin{enumerate}
+\item[b)] Wie lautet das BLUP-Vatermodell in Matrix-Vektor-Schreibweise für den in dieser Aufgabe gezeigten Datensatz. Benennen Sie die einzelnen Modellkomponenten. Geben Sie Erwartungswerte und die Varianzen für alle zufälligen Effekte im Modell an.
+\points{`r lPointsQ4$TaskB`}
+\end{enumerate}
+
+\sol
+
+Das allgemeine BLUP-Vatermodell lautet:
+
+$$y = Xb + Zs + e$$
+
+\begin{tabular}{lll}
+mit  &  $y$  &  Vektor der phänotypischen Leistungen, entspricht der Kolonne Leistung im Datensatz \\
+     &  $b$  &  Vektor der fixen Herden-Effekte\\
+     &  $X$  &  Inzidenzmatrix verknüpft $b$ mit $y$\\
+     &  $s$  &  Vektor der zufälligen Vatereffekte\\
+     &  $Z$  &  Inzidenzmatrix verknüpft $s$ mit $y$ \\
+     &  $e$  &  Vektor der Resteffekte
+\end{tabular}
+
+Die Erwartungswerte und die Varianzen für die zufälligen Teile des Modells lauten:
+
+
+\begin{equation*}
+E \left[ s \right] = 0 \quad \text{und} \quad E\left[ e \right] = 0
+\end{equation*}
+
+Somit ist $$E\left[ y \right] = Xb$$.
+
+Die Varianzen von $e$ und $s$ sind definiert als
+
+\begin{equation*}
+var(s) = G = A * \sigma_s^2 = I * \sigma_s^2 \quad \text{und} \quad var(e) = R = I * \sigma_e^2
+\end{equation*}
+
+Da die Väter nicht miteinander verwandt sind, ist in diesem Bespiel $A = I$. Die Covarianzen zwischen $s$ und $e$ werden auf $0$ gesetzt. Daraus können wir die Covarianzmatrix von $y$ berechnen als
+
+$$var(y) = ZGZ^T + R = ZZ^T * \sigma_s^2 + I * \sigma_e^2$$
+
+
+\clearpage
+\pagebreak
+
+\begin{enumerate}
+\item[c)] Stellen Sie die Mischmodellgleichungen für das BLUP-Vatermodell für den in dieser Aufgabe angegebenen Datensatz an.
+\points{`r lPointsQ4$TaskC`}
+\end{enumerate}
+
+\sol
+
+Die Komponenten der Mischmodellgleichungen des Vatermodells lauten:
+
+\begin{itemize}
+\item Varianzverhältnis
+\end{itemize}
+
+```{r SetupVarComp, echo=FALSE, results='hide'}
+sigmas2 <- sigmaa2/4
+sigmae2Sire <- sigmap2 - sigmas2
+alphaSire <- sigmae2Sire / sigmas2
+```
+
+$$\alpha = \frac{\sigma_e^2}{\sigma_s^2} = \frac{`r sigmae2Sire`}{`r sigmas2`} = `r alphaSire`$$
+
+\begin{itemize}
+\item Koeffizientenmatrix
+\end{itemize}
+
+```{r CoeffMat, echo=FALSE, results='asis'}
+matX <- matrix(c(1,0,
+                 1,0,
+                 0,1,
+                 1,0,
+                 0,1,
+                 0,1), ncol = nNrHerde, byrow = TRUE)
+matZ <- matrix(c(0,0,1,
+                 1,0,0,
+                 0,1,0,
+                 0,1,0,
+                 0,0,1,
+                 1,0,0), ncol = nNrSire, byrow = TRUE)
+matXtX <- crossprod(matX)
+matXtZ <- crossprod(matX,matZ)
+matZtZ <- crossprod(matZ)
+matZtZIalpha <- matZtZ + diag(1,nrow = nNrSire) * alphaSire
+
+cat("$$X^TX = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matXtX, pnDigits = 0), collapse = "\n"))
+cat("\\right]\n$$\n")
+cat("$$X^TZ = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matXtZ, pnDigits = 0), collapse = "\n"))
+cat("\\right]\n$$\n")
+cat("$$Z^TZ + I * \\alpha = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matZtZIalpha, pnDigits = 0), collapse = "\n"))
+cat("\\right]\n$$\n")
+```
+
+\begin{itemize}
+\item Lösungsvektor
+\end{itemize}
+
+```{r SolVec, echo=FALSE, results='asis'}
+vecSol <- c("\\hat{b}_{Herde1}", "\\hat{b}_{Herde2}",
+            "\\hat{s}_{VaterA}", "\\hat{s}_{VaterB}", "\\hat{s}_{VaterC}")
+cat("$$\\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecSol)), collapse = "\n"))
+cat("\\right]\n$$\n")
+```
+
+\begin{itemize}
+\item Rechte Handseite
+\end{itemize}
+
+```{r RightHandside, echo=FALSE, results='asis'}
+vecY <- as.vector(dfMlrData$Leistung)
+vecXtY <- crossprod(matX,vecY)
+vecZtY <- crossprod(matZ,vecY)
+vecRhs <- c(vecXtY,vecZtY)
+cat("$$X^Ty = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = vecXtY, pnDigits = 2), collapse = "\n"))
+cat("\\right]\n$$\n")
+cat("$$Z^Ty = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = vecZtY, pnDigits = 2), collapse = "\n"))
+cat("\\right]\n$$\n")
+```
+
+\clearpage
+\pagebreak
+
+\begin{itemize}
+\item Zusammengesetzt
+\end{itemize}
+
+```{r Mmg, echo=FALSE, results='asis'}
+matCoef <- cbind(rbind(matXtX, t(matXtZ)),rbind(matXtZ, matZtZIalpha))
+cat("$$\\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matCoef, pnDigits = 2), collapse = "\n"))
+cat("\\right]\n")
+cat("\\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecSol)), collapse = "\n"))
+cat("\\right]\n")
+cat(" = \\left[\n")
+cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vecRhs)), collapse = "\n"))
+cat("\\right]\n$$\n")
+```
+
+\clearpage
+\pagebreak
+
+## Aufgabe 5: Inverse der Verwandtschaftsmatrix (`r nPointQ5Total`)
+Für das folgende Pedigree soll die Inverse $A^{-1}$ der genetisch additiven Verwandtschaftsmatrix aufgestellt werden.
+
+```{r SmallExamPed, echo=FALSE}
+suppressPackageStartupMessages(library(pedigreemm))
+nNrAni <- 5
+ped <- pedigree(sire = c(NA,NA,1,1,NA), dam = c(NA,NA,2,NA,3), label = 1:nNrAni)
+print(ped)
+```
+
+\points{`r lPointsQ5$TaskA`}
+
+\sol
+
+```{r echo=FALSE}
+print(as.matrix(getAInv(ped = ped)))
+```
+
