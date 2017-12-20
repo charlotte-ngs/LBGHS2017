@@ -1,0 +1,365 @@
+---
+output:
+  pdf_document:
+    includes:
+      in_header: header.tex
+    fig_caption: false
+    keep_tex: true
+documentclass: article
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r TaskCounts, echo=FALSE}
+cnt <- rmddochelper::R6ClassCount$new()
+cnt$set_prefix(ps_prefix = "## Aufgabe")
+```
+
+
+```{r Points, echo=FALSE}
+# Assign Points for Q0
+lPointsQ0 <- list(TaskA = 0,
+                  TaskB = 0,
+                  TaskC = 0)
+nPointQ0Total <- sum(unlist(lPointsQ0))
+# Assign Points for Q1
+lPointsQ1 <- list(TaskA = 0,
+                  TaskB = 0,
+                  TaskC = 0)
+nPointQ1Total <- sum(unlist(lPointsQ1))
+# Assign Points for Q2
+lPointsQ2 <- list(TaskA = 0,
+                  TaskB = 0,
+                  TaskC = 0)
+nPointQ2Total <- sum(unlist(lPointsQ2))
+# Assign Points for Q3
+lPointsQ3 <- list(TaskA = 0,
+                  TaskB = 0,
+                  TaskC = 0)
+nPointQ3Total <- sum(unlist(lPointsQ3))
+# Assign Points for Q4
+lPointsQ4 <- list(TaskA = 0,
+                  TaskB = 0,
+                  TaskC = 0)
+nPointQ4Total <- sum(unlist(lPointsQ4))
+# Assign Points for Q5
+lPointsQ5 <- list(TaskA = 0,
+                  TaskB = 0,
+                  TaskC = 0)
+nPointQ5Total <- sum(unlist(lPointsQ5))
+# compute overal sum of points
+nPointOverallTotal <- nPointQ1Total + nPointQ2Total + nPointQ3Total + nPointQ4Total + nPointQ5Total
+```
+
+\thispagestyle{empty}
+
+\begin{tabular}{l}
+ETH Zürich \\
+D-USYS\\
+Institut für Agrarwissenschaften\\
+\end{tabular}
+
+\vspace{15ex}
+\begin{center}
+\huge
+Lösungen zur Prüfung \\ \vspace{1ex}
+Züchtungslehre \\  \vspace{1ex}
+HS 2017 \\
+
+\normalsize
+\vspace{7ex}
+Peter von Rohr 
+\end{center}
+
+\vspace{7ex}
+\begin{tabular}{p{5cm}lr}
+  & \textsc{Datum}  & \textsc{\emph{22. Dezember 2017}} \\
+  & \textsc{Beginn} & \textsc{\emph{09:15 Uhr}}\\
+  & \textsc{Ende}   & \textsc{\emph{11:15 Uhr}}\\ 
+\end{tabular}
+
+\vspace{5ex}
+<!-- Table with Name -->
+\large
+\begin{tabular}{p{2.5cm}p{3cm}p{6cm}}
+  &  Name:     &  \\
+  &            &  \\
+  &  Legi-Nr:  & \\
+\end{tabular}
+\normalsize
+
+<!-- Table with Points -->
+
+\vspace{9ex}
+\begin{center}
+\begin{tabular}{|p{3cm}|c|c|}
+\hline
+Aufgabe  &  Maximale Punktzahl      &  Erreichte Punktzahl\\
+%\hline
+%0        &  `r nPointQ0Total`       & \\
+\hline
+1        &  `r nPointQ1Total`       & \\
+\hline
+2        &  `r nPointQ2Total`       & \\
+\hline
+3        &  `r nPointQ3Total`       & \\
+\hline
+4        & `r nPointQ4Total`        & \\
+\hline
+5        & `r nPointQ5Total`        & \\
+\hline
+Total    &  `r nPointOverallTotal`  & \\
+\hline
+\end{tabular}
+\end{center}
+
+\clearpage
+\pagebreak
+
+<!--
+```{r, eval=FALSE, echo=FALSE, results='asis'}
+cat(cnt$out(ps_suffix = "Titel"), "\n")
+```
+  (`r nPointQ0Total`)
+
+\begin{enumerate}
+\item[a)] 
+\points{`r lPointsQ0$TaskA`}
+\end{enumerate}
+
+\sol
+
+
+\clearpage
+\pagebreak
+
+
+\begin{enumerate}
+\item[b)] 
+\points{`r lPointsQ0$TaskB`}
+\end{enumerate}
+
+
+\sol
+
+\clearpage
+\pagebreak
+
+\begin{enumerate}
+\item[c)] 
+\points{`r lPointsQ0$TaskC`}
+\end{enumerate}
+
+\sol
+
+-->
+
+```{r, echo=FALSE, results='asis'}
+cat(cnt$out(ps_suffix = "Verwandtschaft und Inzucht"), "\n")
+lPointsQ1$TaskA <- 36
+```
+
+Gegeben ist das folgende Pedigree
+
+```{r, echo=FALSE}
+suppressPackageStartupMessages(require(pedigreemm))
+n_nr_ani <- 6
+ped <- pedigree(sire = c(NA,NA,1,1,4,4), dam = c(NA,NA,2,3,2,5), label = c(1:n_nr_ani))
+print(ped)
+```
+
+\begin{enumerate}
+\item[a)] Stellen Sie die genetisch-additive Verwandtschaftsmatrix $A$ auf
+\points{`r lPointsQ1$TaskA`}
+\end{enumerate}
+
+\sol
+
+```{r}
+(matA <- as.matrix(getA(ped = ped)))
+```
+
+
+\clearpage
+\pagebreak
+
+```{r, echo=FALSE}
+lPointsQ1$TaskB <- 6
+```
+
+\begin{enumerate}
+\item[b)] Bei welchen Elementen in der Matrix $A$ finden Sie den Inzuchtkoeffizienten vom Tier $5$?
+\points{`r lPointsQ1$TaskB`}
+\end{enumerate}
+
+\sol
+
+$$(2,4), (4,2), (5,5)$$
+
+\clearpage
+\pagebreak
+
+```{r, echo=FALSE}
+lPointsQ1$TaskC <- 4
+```
+
+\begin{enumerate}
+\item[c)] Welche bekannten Eltern müsste $5$ haben, damit es einen Inzuchtkoeffizienten $F_5 = 0$ hätte?
+\points{`r lPointsQ1$TaskC`}
+\end{enumerate}
+
+\sol
+
+Da nur $1$ und $2$ nicht verwandt sind, ist das die einzige Kombination. 
+
+\clearpage
+\pagebreak
+
+```{r, echo=FALSE, results='asis'}
+cat(cnt$out(ps_suffix = "Varianzkomponentenschätzung"), "\n")
+```
+Gegeben ist der folgende Datensatz für die Merkmale Gewicht und Brustumfang beim Rindvieh.
+
+```{r, echo=FALSE}
+set.seed(7)
+n_nr_obs <- 10
+n_mean_weight <- 642
+n_sd_weigt <- 5
+n_mean_bc <- 155
+n_sd_bc <- 12
+### # Betriebszuteilung zufaellig
+vec_betrieb <- sample(x = c(1,2), size = 10, replace = TRUE)
+### # Modellmatrix fuer Betriebe
+mat_x <- matrix(data = 0, nrow = n_nr_obs, ncol = max(vec_betrieb))
+vec_result <- sapply(1:nrow(mat_x), function(x) mat_x[x,vec_betrieb[x]] <<- 1)
+### # betriebseffekte
+vec_b_betrieb <- c(-10.6, 32.1)
+vec_gewicht <- round(crossprod(t(mat_x),vec_b_betrieb) + rnorm(n_nr_obs, mean = n_mean_weight, sd = n_sd_weigt), digits = 0)
+
+dfWtBc <- data.frame(Tier = c(1:n_nr_obs),
+                     Betrieb = as.factor(vec_betrieb),
+                     Gewicht = vec_gewicht,
+                     Brustumfang = round(rnorm(n_nr_obs, mean = n_mean_bc, sd = n_sd_bc), digits = 0))
+knitr::kable(dfWtBc)
+```
+
+```{r, echo=FALSE}
+lPointsQ2$TaskA = 12
+```
+\begin{enumerate}
+\item[a)] Wie gross ist die geschätzte Restvarianz für das Merkmal Gewicht, wenn die folgenden Annahmen zutreffen. 
+\points{`r lPointsQ2$TaskA`}
+\end{enumerate}
+
+In einem ersten Modell nehmen wir an, dass das Gewicht nur durch den Betrieb beeinflusst ist. Somit haben wir das folgende Modell, welches die Gewichte beeinflusst durch die Betriebseffekte erklären soll.
+
+$$y = Xb + e$$
+
+\begin{tabular}{lll}
+wobei  &  & \\
+       &  $y$  &  Beobachtungsvektor der Gewichte \\
+       &  $b$  &  Vektor der Betriebseffekte \\
+       &  $X$  &  Inzidenzmatrix, welche Betriebe und Beobachtungen verknüpft \\
+       &  $e$  &  Vektor der zufälligen Resteffekte mit $E[e] = 0$ und $var(e) = I \sigma^2$
+\end{tabular}
+
+Die Schätzwerte für die Betriebseffekte wurden mit der Funktion `lm()` in R mit den folgenden Statements geschätzt.
+
+```{r}
+lm_gewicht <- lm(Gewicht ~ -1 + Betrieb, data = dfWtBc)
+round(coefficients(lm_gewicht), digits = 1)
+```
+
+### Ihre Aufgabe
+Schätzen Sie die Restvarianz $\sigma^2$ für das oben angegebene Modell für das Merkmal `Gewicht` mit der Methode basierend auf den Residuen, wie sie auch im Output vom Befehl `summary()` von R ausgegeben werden.
+
+\sol
+
+Der Vektor der Residuen $e$ sieht wie folgt aus
+
+```{r}
+(vec_residuals <- residuals(lm_gewicht))
+```
+
+Die Schätzung der Restvarianz berechnet sich als Summe der quadrierten Residuen geteilt durch die Anzahl Freiheitsgrade $df_e$, wobei $df_e = n - p$ und $n$ entspricht der Anzahl Beobachtungen und $p$ der Anzahl Betriebseffekte. Somit gilt $df_e = `r n_nr_obs` - `r length(coefficients(lm_gewicht))` = `r n_nr_obs - length(coefficients(lm_gewicht))`$. 
+
+Die Schätzung der Restvarianz und der Standardabweichung betragen
+
+```{r}
+(n_sigma2_hat <- crossprod(vec_residuals)/(n_nr_obs - length(coefficients(lm_gewicht))))
+(n_sigma_hat <- sqrt(n_sigma2_hat))
+```
+
+Als Kontrolle vergleichen wir dies mit dem Output von R
+
+```{r}
+summary(lm_gewicht)
+```
+
+
+\clearpage
+\pagebreak
+
+```{r, echo=FALSE}
+lPointsQ2$TaskB = 6
+```
+\begin{enumerate}
+\item[b)] Wie unterscheidet sich die in Aufgabe a) berechnete Schätzung der Restvarianz von der Schätzung der Restvarianz mit Maximum Likelhood? 
+\points{`r lPointsQ2$TaskB`}
+\end{enumerate}
+
+### Ihre Aufgabe
+
+- Beschreiben Sie den Unterschied zwischen den beiden Schätzungen kurz
+- Geben Sie den Zahlenwert der Maximum-Likelhood-Schätzung für die Restvarianz
+- Welche der Schätzungen gilt als "besser" und weshalb?
+
+\sol
+
+- Bei der Maximum-Likelihood wird die Anzahl Freiheitsgrade $p$ für die Schätzung der fixen Effekte nicht berücksichtigt
+- Der Zahlenwert ist gleich wie in a), aber der Faktor der Summenquadrate der Residuen ist $1/n$ und nicht $1/(n-p)$. Somit erhalten wir 
+$$\widehat{\sigma^2_{ML}} = `r crossprod(vec_residuals)/n_nr_obs`$$ 
+- Die Schätzung unter a) basierend auf den Residuen ist erwartungstreu und wird deshalb als besser angeschaut.
+
+
+\clearpage
+\pagebreak
+
+```{r, echo=FALSE}
+lPointsQ2$TaskC = 4
+```
+\begin{enumerate}
+\item[c)] Beim Wägen des elften Tieres auf Betrieb 1 erleidet die Waage ein Defekt. Das Gewicht wird so geschätzt, dass es in einem Intervall von $\pm 2$ Standardabweichungen um den Mittelwert der Gewichte auf Betrieb 1 liegt. 
+\points{`r lPointsQ2$TaskC`}
+\end{enumerate}
+
+### Hinweis
+- Verwenden Sie für die Standardabweichung den Wert basierend auf dem Resultat aus Aufgabe a)
+- Falls Sie Aufgabe a) nicht lösen konnten, verwenden Sie einen Wert von $10$ als Approximation der geschätzten Reststandardabweichung.
+
+
+\sol
+
+```{r}
+(n_av_gew_btr1 <- mean(dfWtBc$Gewicht[dfWtBc$Betrieb == 1]))
+(n_lower <-  n_av_gew_btr1 - 2* n_sigma_hat)
+(n_upper <- n_av_gew_btr1 + 2* n_sigma_hat)
+```
+
+\clearpage
+\pagebreak
+
+```{r, echo=FALSE, results='asis'}
+cat(cnt$out(ps_suffix = "Tierzucht"), "\n")
+```
+
+\begin{enumerate}
+\item[a)] 
+\points{`r lPointsQ3$TaskA`}
+\end{enumerate}
+
+\sol
+
+
