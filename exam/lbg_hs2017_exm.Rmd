@@ -20,35 +20,30 @@ cnt$set_prefix(ps_prefix = "## Aufgabe")
 
 
 ```{r Points, echo=FALSE}
-# Assign Points for Q0
-lPointsQ0 <- list(TaskA = 0,
-                  TaskB = 0,
-                  TaskC = 0)
-nPointQ0Total <- sum(unlist(lPointsQ0))
 # Assign Points for Q1
-lPointsQ1 <- list(TaskA = 0,
-                  TaskB = 0,
-                  TaskC = 0)
+lPointsQ1 <- list(TaskA = 36,
+                  TaskB = 8,
+                  TaskC = 4)
 nPointQ1Total <- sum(unlist(lPointsQ1))
 # Assign Points for Q2
-lPointsQ2 <- list(TaskA = 0,
-                  TaskB = 0,
-                  TaskC = 0)
+lPointsQ2 <- list(TaskA = 12,
+                  TaskB = 6,
+                  TaskC = 4)
 nPointQ2Total <- sum(unlist(lPointsQ2))
 # Assign Points for Q3
-lPointsQ3 <- list(TaskA = 0,
-                  TaskB = 0,
-                  TaskC = 0)
+lPointsQ3 <- list(TaskA = 8,
+                  TaskB = 12,
+                  TaskC = 10)
 nPointQ3Total <- sum(unlist(lPointsQ3))
 # Assign Points for Q4
-lPointsQ4 <- list(TaskA = 0,
-                  TaskB = 0,
+lPointsQ4 <- list(TaskA = 25,
+                  TaskB = 5,
                   TaskC = 0)
 nPointQ4Total <- sum(unlist(lPointsQ4))
 # Assign Points for Q5
-lPointsQ5 <- list(TaskA = 0,
-                  TaskB = 0,
-                  TaskC = 0)
+lPointsQ5 <- list(TaskA = 9,
+                  TaskB = 16,
+                  TaskC = 4)
 nPointQ5Total <- sum(unlist(lPointsQ5))
 # compute overal sum of points
 nPointOverallTotal <- nPointQ1Total + nPointQ2Total + nPointQ3Total + nPointQ4Total + nPointQ5Total
@@ -65,7 +60,7 @@ Institut für Agrarwissenschaften\\
 \vspace{15ex}
 \begin{center}
 \huge
-Lösungen zur Prüfung \\ \vspace{1ex}
+Prüfung \\ \vspace{1ex}
 Züchtungslehre \\  \vspace{1ex}
 HS 2017 \\
 
@@ -98,8 +93,6 @@ Peter von Rohr
 \begin{tabular}{|p{3cm}|c|c|}
 \hline
 Aufgabe  &  Maximale Punktzahl      &  Erreichte Punktzahl\\
-%\hline
-%0        &  `r nPointQ0Total`       & \\
 \hline
 1        &  `r nPointQ1Total`       & \\
 \hline
@@ -119,46 +112,10 @@ Total    &  `r nPointOverallTotal`  & \\
 \clearpage
 \pagebreak
 
-<!--
-```{r, eval=FALSE, echo=FALSE, results='asis'}
-cat(cnt$out(ps_suffix = "Titel"), "\n")
-```
-  (`r nPointQ0Total`)
 
-\begin{enumerate}
-\item[a)] 
-\points{`r lPointsQ0$TaskA`}
-\end{enumerate}
-
-\sol
-
-
-\clearpage
-\pagebreak
-
-
-\begin{enumerate}
-\item[b)] 
-\points{`r lPointsQ0$TaskB`}
-\end{enumerate}
-
-
-\sol
-
-\clearpage
-\pagebreak
-
-\begin{enumerate}
-\item[c)] 
-\points{`r lPointsQ0$TaskC`}
-\end{enumerate}
-
-\sol
-
--->
 
 ```{r, echo=FALSE, results='asis'}
-cat(cnt$out(ps_suffix = "Verwandtschaft und Inzucht"), "\n")
+cat(cnt$out(ps_suffix = paste0("Verwandtschaft und Inzucht (", nPointQ1Total, ")", collapse = "")), "\n")
 lPointsQ1$TaskA <- 36
 ```
 
@@ -172,15 +129,10 @@ print(ped)
 ```
 
 \begin{enumerate}
-\item[a)] Stellen Sie die genetisch-additive Verwandtschaftsmatrix $A$ auf
+\item[a)] Stellen Sie die genetisch-additive Verwandtschaftsmatrix $A$ für das oben gegebene Pedigree auf.
 \points{`r lPointsQ1$TaskA`}
 \end{enumerate}
 
-\sol
-
-```{r}
-(matA <- as.matrix(getA(ped = ped)))
-```
 
 
 \clearpage
@@ -195,14 +147,6 @@ lPointsQ1$TaskB <- 8
 \points{`r lPointsQ1$TaskB`}
 \end{enumerate}
 
-\sol
-
-In den folgenden Elementen ist dieser ersichtlich. 
-$$(2,4), (4,2), (5,5)$$
-
-Der Wert des Inzuchtkoeffizienten beträgt
-$$F_5 = `r matA[5,5] - 1`$$
-
 
 \clearpage
 \pagebreak
@@ -216,17 +160,14 @@ lPointsQ1$TaskC <- 4
 \points{`r lPointsQ1$TaskC`}
 \end{enumerate}
 
-\sol
-
-Da nur $1$ und $2$ nicht verwandt sind, ist das die einzige Kombination. 
 
 \clearpage
 \pagebreak
 
 ```{r, echo=FALSE, results='asis'}
-cat(cnt$out(ps_suffix = "Varianzkomponentenschätzung"), "\n")
+cat(cnt$out(ps_suffix = paste0("Varianzkomponentenschätzung ( ", nPointQ2Total, ")", collapse = "")), "\n")
 ```
-Gegeben ist der folgende Datensatz für die Merkmale Gewicht und Brustumfang beim Rindvieh.
+Gegeben ist der folgende Datensatz für das Merkmal Gewicht beim Rindvieh.
 
 ```{r, echo=FALSE}
 set.seed(7)
@@ -246,8 +187,8 @@ vec_gewicht <- round(crossprod(t(mat_x),vec_b_betrieb) + rnorm(n_nr_obs, mean = 
 
 dfWtBc <- data.frame(Tier = c(1:n_nr_obs),
                      Betrieb = as.factor(vec_betrieb),
-                     Gewicht = vec_gewicht,
-                     Brustumfang = round(rnorm(n_nr_obs, mean = n_mean_bc, sd = n_sd_bc), digits = 0))
+                     Gewicht = vec_gewicht) #,
+                     #Brustumfang = round(rnorm(n_nr_obs, mean = n_mean_bc, sd = n_sd_bc), digits = 0))
 knitr::kable(dfWtBc)
 ```
 
@@ -281,30 +222,6 @@ round(coefficients(lm_gewicht), digits = 1)
 ### Ihre Aufgabe
 Schätzen Sie die Restvarianz $\sigma^2$ für das oben angegebene Modell für das Merkmal `Gewicht` mit der Methode basierend auf den Residuen, wie sie auch im Output vom Befehl `summary()` von R ausgegeben werden.
 
-\sol
-
-Der Vektor der Residuen $e$ sieht wie folgt aus
-
-```{r}
-(vec_residuals <- residuals(lm_gewicht))
-```
-
-Die Schätzung der Restvarianz berechnet sich als Summe der quadrierten Residuen geteilt durch die Anzahl Freiheitsgrade $df_e$, wobei $df_e = n - p$ und $n$ entspricht der Anzahl Beobachtungen und $p$ der Anzahl Betriebseffekte. Somit gilt $df_e = `r n_nr_obs` - `r length(coefficients(lm_gewicht))` = `r n_nr_obs - length(coefficients(lm_gewicht))`$. 
-
-Die Schätzung der Restvarianz und der Standardabweichung betragen
-
-```{r}
-(ssq_res <- crossprod(vec_residuals))
-(n_sigma2_hat <- ssq_res/(n_nr_obs - length(coefficients(lm_gewicht))))
-(n_sigma_hat <- sqrt(n_sigma2_hat))
-```
-
-Als Kontrolle vergleichen wir dies mit dem Output von R
-
-```{r}
-summary(lm_gewicht)
-```
-
 
 \clearpage
 \pagebreak
@@ -323,13 +240,6 @@ lPointsQ2$TaskB = 6
 - Geben Sie den Zahlenwert der Maximum-Likelhood-Schätzung für die Restvarianz
 - Welche der Schätzungen gilt als "besser" und weshalb?
 
-\sol
-
-- Bei der Maximum-Likelihood wird die Anzahl Freiheitsgrade $p$ für die Schätzung der fixen Effekte nicht berücksichtigt
-- Der Zahlenwert ist gleich wie in a), aber der Faktor der Summenquadrate der Residuen ist $1/n$ und nicht $1/(n-p)$. Somit erhalten wir 
-$$\widehat{\sigma^2_{ML}} = `r crossprod(vec_residuals)/n_nr_obs`$$ 
-- Die Schätzung unter a) basierend auf den Residuen ist erwartungstreu und wird deshalb als besser angeschaut.
-
 
 \clearpage
 \pagebreak
@@ -338,7 +248,7 @@ $$\widehat{\sigma^2_{ML}} = `r crossprod(vec_residuals)/n_nr_obs`$$
 lPointsQ2$TaskC = 4
 ```
 \begin{enumerate}
-\item[c)] Beim Wägen des elften Tieres auf Betrieb 1 erleidet die Waage ein Defekt. Das Gewicht wird so geschätzt, dass es in einem Intervall von $\pm 2$ Standardabweichungen um den Mittelwert der Gewichte auf Betrieb 1 liegt. 
+\item[c)] Beim Wägen des elften Tieres auf Betrieb 1 erleidet die Waage einen Defekt. Das Gewicht wird so geschätzt, dass es in einem Intervall von $\pm 2$ Standardabweichungen um den Mittelwert der Gewichte auf Betrieb 1 liegt. 
 \points{`r lPointsQ2$TaskC`}
 \end{enumerate}
 
@@ -346,20 +256,14 @@ lPointsQ2$TaskC = 4
 - Verwenden Sie für die Standardabweichung den Wert basierend auf dem Resultat aus Aufgabe a)
 - Falls Sie Aufgabe a) nicht lösen konnten, verwenden Sie einen Wert von $10$ als Approximation der geschätzten Reststandardabweichung.
 
-
-\sol
-
-```{r}
-(n_av_gew_btr1 <- mean(dfWtBc$Gewicht[dfWtBc$Betrieb == 1]))
-(n_lower <-  n_av_gew_btr1 - 2* n_sigma_hat)
-(n_upper <- n_av_gew_btr1 + 2* n_sigma_hat)
-```
+### Ihre Aufgabe
+Geben Sie die untere und die obere Grenze des Intervalls an, in welchem das geschätzte Gewicht liegen kann.
 
 \clearpage
 \pagebreak
 
 ```{r, echo=FALSE, results='asis'}
-cat(cnt$out(ps_suffix = "Tierzucht"), "\n")
+cat(cnt$out(ps_suffix = paste0("Tierzucht (", nPointQ3Total, ")", collapse = "")), "\n")
 lPointsQ3$TaskA <- 8
 ```
 
@@ -398,16 +302,6 @@ Nutztiere &  &  \\
 \end{tabular}
 \end{center}
 
-\vspace{5ex}
-\sol
-
-\vspace{3ex}
-```{r, echo=FALSE}
-dfPopSol <- data.frame(Population = c("Wildtiere", "Nutztiere"),
-                    Selektion  = c("Natürliche Selektion aufgrund der Umwelt", "künstliche, gerichtete Selektion"),
-                    Anpaarung  = c("zufällige Paarung", "gezielte Anpaarung"))
-knitr::kable(dfPopSol)
-```
 
 \clearpage
 \pagebreak
@@ -428,46 +322,27 @@ knitr::include_graphics(path = "png/GerichteteSelektionElternNk.png")
 \clearpage
 \pagebreak
 
-\sol
-
-```{r GerichteteSelektionElternNkSol, conv.odg=TRUE, odg.path="odg", odg.graph.cache=TRUE, odg.out.format=c("pdf","png"), fig.align='center', echo=FALSE, results='asis'}
-knitr::include_graphics(path = "png/GerichteteSelektionElternNkSol.png")
-```
-
-wobei
-```{r, echo=FALSE}
-dfSol <- data.frame(Abk = c("ED", "SG", "RD","sEltern", "sNachkommen"),
-                    Bedeutung = c("Elterndurchschnitt",
-                                  "Selektionsgrenze",
-                                  "Remontierungsdurchschnitt",
-                                  "Standardabweichung der Eltern",
-                                  "Standardabweichung der Nachkommen"))
-knitr::kable(dfSol)
-```
-
-
-\clearpage
-\pagebreak
-
 ```{r, echo=FALSE}
 lPointsQ3$TaskC <- 10
+vec_w <- c(5, 1)
 ```
 
 \begin{enumerate}
-\item[c)] In der Schweinezucht sollen die zwei Fleischqualitätsmerkmale \textbf{Zartheit} (ZH) und \textbf{Saftigkeit} (SH) im Gesamtzuchtwert $H$ berücksichtigt werden. Die wirtschaftlichen Gewichte für diese beiden Merkmale sind $w_{ZH} = 3$ und $w_{SH} = 1$. Da diese beiden Merkmale nur schwer messbar sind, wird der Gesamtzuchtwert mit einem Index $I$ geschätzt, welcher die Merkmale \textbf{Scherkraft} (SK) und \textbf{Safthaltevermögen} (SV) beinhaltet. Wie müssen die beiden Merkmale im Index gewichtet werden, damit der Index $I$ den Gesamtzuchtwert $H$ mit einer minimalen Fehlervarianz schätzt? 
+\item[c)] In der Schweinezucht sollen die zwei Fleischqualitätsmerkmale \textbf{Zartheit} (ZH) und \textbf{Saftigkeit} (SH) im Gesamtzuchtwert $H$ berücksichtigt werden. Die wirtschaftlichen Gewichte für diese beiden Merkmale sind $w_{ZH} = `r vec_w[1]`$ und $w_{SH} = `r vec_w[2]`$. Da diese beiden Merkmale nur schwer messbar sind, wird der Gesamtzuchtwert mit einem Index $I$ geschätzt, welcher die Merkmale \textbf{Scherkraft} (SK) und \textbf{Safthaltevermögen} (SV) beinhaltet. Wie müssen die beiden Merkmale im Index gewichtet werden, damit der Index $I$ den Gesamtzuchtwert $H$ mit einer minimalen Fehlervarianz schätzt? 
+\points{`r lPointsQ3$TaskC`}
 \end{enumerate}
 
 ### Annahmen
 * Wie schon erwähnt, ist der Vektor der wirtschaftlichen Gewichte $w$ gegeben als
 
 ```{r, echo=FALSE, results='asis'}
-vec_w <- c(5, 1)
+#vec_w <- c(5, 1)
 cat("$$w = \\left[\n")
 cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vec_w), pnDigits = 0), collapse = "\n"))
 cat("\\right]\n$$")
 ```
 
-* Die Varianz-Kovarianzmatrix $P$ zwischen den Merkmalen `SK` und `SV` in Index beträgt
+* Die Varianz-Kovarianzmatrix $P$ zwischen den Merkmalen `SK` und `SV` im Index beträgt
 
 ```{r, echo=FALSE, results='asis'}
 matP <- diag(c(4, 10))
@@ -488,31 +363,12 @@ cat("\\right]\n$$")
 ### Ihre Aufgabe
 Berechnen Sie aus den oben gemachten Angaben den Vektor $b$ der Indexgewichte.
 
-\sol
-
-Den Vektor $b$ berechnet man aus der Indexgleichung 
-$$Pb = Gw$$
-
-somit gilt
-$$b = P^{-1}Gw$$
-```{r}
-(mat_inv_P <- solve(matP))
-(mat_inv_P %*% matG)
-```
-
-```{r, echo=FALSE, results='asis'}
-vec_b = mat_inv_P %*% matG %*% as.matrix(vec_w)
-cat("$$b = \\left[\n")
-cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = as.matrix(vec_b), pnDigits = 2), collapse = "\n"))
-cat("\\right]\n$$")
-```
-
 
 \clearpage
 \pagebreak
 
 ```{r, echo=FALSE, results='asis'}
-cat(cnt$out(ps_suffix = "Inzucht"), "\n")
+cat(cnt$out(ps_suffix = paste0("Inzucht (", nPointQ4Total, ")", collapse = "")), "\n")
 lPointsQ4$TaskA <- 25
 ```
 
@@ -532,19 +388,6 @@ print(ped)
 Die Cholesky-Zerlegung der Matrix $A$ lautet
 $$A = R*R^T$$
 
-\sol
-
-Die Matrix $R$ lautet
-
-```{r}
-(matR <- t(chol(as.matrix(getA(ped)))))
-```
-
-```{r, echo=FALSE, results='asis'}
-cat("$$R = \\left[\n")
-cat(paste(rmddochelper::sConvertMatrixToLaTexArray(pmatAMatrix = matR, pnDigits = 4), collapse = "\n"))
-cat("\\right]\n$$")
-```
 
 \clearpage
 \pagebreak
@@ -557,27 +400,12 @@ lPointsQ4$TaskB <- 5
 \points{`r lPointsQ4$TaskB`}
 \end{enumerate}
 
-\sol
-
-Die Inzuchtkoeffizienten entsprechen den Summen der quadrierten Werte auf jeder Zeile von $R$
-
-```{r}
-(matR2 <- matR*matR)
-(vec_inb <- apply(matR2, 1, sum) - 1)
-```
-
-Als Kontrolle mit `pedigreemm()`
-
-```{r}
-inbreeding(ped = ped)
-```
-
 \clearpage
 \pagebreak
 
 
 ```{r, echo=FALSE, results='asis'}
-cat(cnt$out(ps_suffix = "Zuchtwertschätzung"), "\n")
+cat(cnt$out(ps_suffix = paste0("Zuchtwertschätzung (", nPointQ5Total, ")", collapse = "")), "\n")
 lPointsQ5$TaskA <- 9
 ```
 Zuchtwerte sollen aufgrund des folgenden Datensatzes geschätzt werden
@@ -614,18 +442,6 @@ mu <- mean(dfMlrData$Leistung[!is.na(dfMlrData$Leistung)])
 \points{`r lPointsQ5$TaskA`}
 \end{enumerate}
 
-\sol
-
-Die geschätzten Zuchtwerte aufgrund von Eigenleistungen berechnen sich als
-$$\hat{a}_i = h^2(y_i - \mu)$$
-
-Auf die Daten aus der oben gezeigten Tabelle angewendet, heisst das
-
-```{r, echo=FALSE, results='asis'}
-dfZwsEl <- data.frame(Tier = dfMlrData$Tier,
-                      ZWS = h2 * (dfMlrData$Leistung - mu))
-knitr::kable(dfZwsEl)
-```
 
 \clearpage
 \pagebreak
@@ -639,97 +455,6 @@ lPointsQ5$TaskB <- 16
 \points{`r lPointsQ5$TaskB`}
 \end{enumerate}
 
-\sol
-
-Das Modell lautet wie folgt:
-$$y = Xb + Za + e$$
-
-\begin{tabular}{lll}
-wobei &  &  \\
-      & $y$ & Vektor aller Beobachtungen \\
-      & $b$ & Vektor der fixen Herdeneffekte \\
-      & $X$ & Inzidenzmatrix, welche $b$ mit $y$ verknüpft \\
-      & $a$ & Vektor der zufälligen Zuchtwerte aller Tiere \\
-      & $Z$ & Inzidenzmatrix, welche $a$ mit $y$ verknüpft \\
-      & $e$ & Vektor der zufälligen Resteffekte
-\end{tabular}
-
-Mischmodellgleichungen
-
-### Koeffizientenmatrix $M$
-Für die Koeffizientenmatrix müssen wir zuerst die Inzidenzmatrizen $X$ und $Z$ aufstellen.
-
-```{r}
-(X <- matrix(data = c(0, 1,
-                     1, 0,
-                     1, 0,
-                     0, 1), ncol = 2, byrow = TRUE))
-```
-
-
-```{r}
-(Z <- cbind(matrix(data = 0, nrow = 4, ncol = 2), diag(4)))
-```
-
-Die vier Unter-Matrizen von $M$ lauten
-
-1. $X^TX$
-```{r}
-(XTX <- t(X) %*% X)
-```
-
-2. $X^TZ$
-```{r}
-(XTZ <- t(X) %*% Z)
-```
-
-3. $Z^TX$
-```{r}
-(ZTX <- t(XTZ))
-```
-
-4. $Z^TZ + A^{-1}\alpha$
-```{r}
-Ainv <- diag(nNrRecords)
-(ZTZAinvAlpha <- t(Z) %*% Z + Ainv * alpha)
-```
-
-Aufstellen von $M$
-```{r}
-(M <- rbind(cbind(XTX, XTZ), cbind(ZTX, ZTZAinvAlpha)))
-```
-
-### Rechte Handseite (rhs)
-Den Vektor $y$ extrahieren wir direkt aus den Daten
-
-```{r}
-(y <- dfMlrData$Leistung[!is.na(dfMlrData$Leistung)])
-```
-
-1. $X^Ty$
-```{r}
-(XTy <- t(X) %*% y)
-```
-
-2. $Z^Ty$
-```{r}
-(ZTy <- t(Z) %*% y)
-```
-
-Aufstellen von rhs
-
-```{r}
-(rhs <-  rbind(XTy,ZTy))
-```
-
-
-### Lösung
-Für dieses kleine Beispiel können wir die Lösung als $sol = M^{-1} * rhs$ berechnen
-
-```{r}
-(sol <- solve(M, rhs))
-```
-
 
 \clearpage
 \pagebreak
@@ -742,9 +467,4 @@ lPointsQ5$TaskC <- 4
 \item[c)] Welche Unterschiede stellen Sie fest beim Vergleich der Resultate aus den Aufgaben a) und b)
 \points{`r lPointsQ5$TaskC`}
 \end{enumerate}
-
-\sol
-
-* In a) bekommen nur Tiere mit einer Eigenleistung einen geschätzten Zuchtwert. In b) bekommen alle Tiere einen Zuchtwert
-* In a) wird nur das Populationsmittel als Umwelteinfluss betrachtet, in b) werden auch die Herden berücksichtigt.
 
